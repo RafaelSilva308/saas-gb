@@ -1,0 +1,305 @@
+import { useMemo, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { ArrowLeft, CalendarDays, CreditCard, Mail, Pencil, Phone, TrendingUp, User } from 'lucide-react'
+import { Card, CardBody, CardHeader } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { Badge, FaixaBadge } from '@/components/ui/Badge'
+import { Avatar } from '@/components/ui/Avatar'
+import { EmptyState, Progress, Tabs } from '@/components/ui/Misc'
+import { FormularioAluno } from './alunos/FormularioAluno'
+import { useStore } from '@/app/store'
+import { aulaPorId, turmaPorId } from '@/data/mock'
+import { FAIXAS, STATUS_ALUNO, STATUS_PAGAMENTO, brl, dataCurta, dataLonga, idade } from '@/lib/format'
+import type { Faixa } from '@/types'
+
+const ORDEM_FAIXAS: Faixa[] = ['branca', 'azul', 'roxa', 'marrom', 'preta']
+
+export function AlunoDetalhe() {
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const { alunos, planos, chamadas, transacoes } = useStore()
+  const [aba, setAba] = useState<'resumo' | 'presenca' | 'financeiro'>('resumo')
+  const [editando, setEditando] = useState(false)
+
+  const aluno = alunos.find((a) => a.id === id)
+
+  const historico = useMemo(() => {
+    if (!aluno) return []
+    return chamadas
+      .filter((c) => c.registros.some((r) => r.alunoId === aluno.id))
+      .map((c) => ({
+        data: c.data,
+        aula: aulaPorId(c.aulaId),
+        status: c.registros.find((r) => r.alunoId === aluno.id)!.status,
+      }))
+      .sort((a, b) => b.data.localeCompare(a.data))
+      .slice(0, 30)
+  }, [aluno, chamadas])
+
+  const pagamentos = useMemo(
+    () => (aluno ? transacoes.filter((t) => t.alunoId === aluno.id).slice(0, 12) : []),
+    [aluno, transacoes],
+  )
+
+  if (!aluno) {
+    return (
+      <Card>
+        <EmptyState
+          icone={<User className="size-6" />}
+          titulo="Aluno não encontrado"
+          mensagem="Esse cadastro pode ter sido removido ou o endereço está incorreto."
+          acao={
+            <Button variante="secundaria" onClick={() => navigate('/alunos')}>
+              Voltar para a lista
+            </Button>
+          }
+        />
+      </Card>
+    )
+  }
+
+  const plano = planos.find((p) => p.id === aluno.planoId)
+  const pag = STATUS_PAGAMENTO[aluno.statusPagamento]
+  const idxFaixa = ORDEM_FAIXAS.indexOf(aluno.faixa)
+  const proximaFaixa = idxFaixa >= 0 && idxFaixa < ORDEM_FAIXAS.length - 1 ? ORDEM_FAIXAS[idxFaixa + 1] : null
+  const progressoGraduacao = Math.min(100, (aluno.graus / 4) * 100)
+  const presentes = historico.filter((h) => h.status === 'presente').length
+
+  return (
+    <>
+      <Link
+        to="/alunos"
+        className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-gb-gray-500 hover:text-gb-blue-600"
+      >
+        <ArrowLeft className="size-4" />
+        Voltar para alunos
+      </Link>
+
+      {/* Cabeçalho da ficha */}
+      <Card className="mb-4">
+        <div className="flex flex-wrap items-start gap-5 p-6">
+          <Avatar nome={aluno.nome} tamanho="xl" />
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="gb-title text-3xl text-gb-ink">{aluno.nome}</h1>
+              <Badge tom={STATUS_ALUNO[aluno.status].tom}>{STATUS_ALUNO[aluno.status].label}</Badge>
+              <Badge tom={pag.tom}>{pag.label}</Badge>
+            </div>
+            <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm text-gb-gray-500">
+              <FaixaBadge faixa={aluno.faixa} graus={aluno.graus} />
+              <span className="inline-flex items-center gap-1.5">
+                <Mail className="size-4" /> {aluno.email}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Phone className="size-4" /> {aluno.telefone}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <CalendarDays className="size-4" /> {idade(aluno.nascimento)} anos
+              </span>
+            </div>
+            {aluno.responsavel?.nome && (
+              <p className="mt-2 text-sm text-gb-gray-500">
+                Responsável: <span className="font-semibold text-gb-gray-700">{aluno.responsavel.nome}</span> ·{' '}
+                {aluno.responsavel.telefone}
+              </p>
+            )}
+          </div>
+          <Button variante="secundaria" onClick={() => setEditando(true)}>
+            <Pencil className="size-4" />
+            Editar cadastro
+          </Button>
+        </div>
+
+        {aluno.observacoes && (
+          <div className="border-t border-gb-gray-200 bg-gb-warn-bg px-6 py-3">
+            <p className="gb-label text-gb-warn">Observação de treino</p>
+            <p className="mt-1 text-sm text-gb-gray-700">{aluno.observacoes}</p>
+          </div>
+        )}
+      </Card>
+
+      {/* Indicadores da ficha */}
+      <div className="mb-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          { label: 'Frequência (30 dias)', valor: `${aluno.frequencia30d}%`, Icone: TrendingUp },
+          { label: 'Presenças registradas', valor: presentes, Icone: CalendarDays },
+          { label: 'Plano', valor: plano?.nome ?? '—', nota: plano ? brl(plano.valor) : undefined, Icone: CreditCard },
+          { label: 'Aluno desde', valor: dataCurta(aluno.matriculaEm), Icone: User },
+        ].map(({ label, valor, nota, Icone }) => (
+          <div key={label} className="rounded-lg border border-gb-gray-200 bg-white p-5 shadow-[var(--shadow-card)]">
+            <div className="flex items-start justify-between gap-3">
+              <p className="gb-label">{label}</p>
+              <span className="grid size-9 shrink-0 place-items-center rounded-md bg-gb-blue-50 text-gb-blue-600">
+                <Icone className="size-[18px]" />
+              </span>
+            </div>
+            <p className="gb-metric mt-3 truncate text-gb-ink">{valor}</p>
+            {nota && <p className="mt-1 text-xs text-gb-gray-500">{nota}</p>}
+          </div>
+        ))}
+      </div>
+
+      <div className="mb-4">
+        <Tabs
+          valor={aba}
+          aoMudar={setAba}
+          itens={[
+            { id: 'resumo', label: 'Resumo' },
+            { id: 'presenca', label: 'Presença', contagem: historico.length },
+            { id: 'financeiro', label: 'Financeiro', contagem: pagamentos.length },
+          ]}
+        />
+      </div>
+
+      {aba === 'resumo' && (
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Card>
+            <CardHeader titulo="Jornada de graduação" descricao="Faixa atual e próximo objetivo" />
+            <CardBody className="space-y-5">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="gb-label">Faixa atual</p>
+                  <p className="mt-1">
+                    <FaixaBadge faixa={aluno.faixa} graus={aluno.graus} />
+                  </p>
+                </div>
+                {proximaFaixa && (
+                  <div className="text-right">
+                    <p className="gb-label">Próxima faixa</p>
+                    <p className="mt-1">
+                      <FaixaBadge faixa={proximaFaixa} />
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <div className="mb-1.5 flex items-baseline justify-between">
+                  <span className="text-sm font-semibold text-gb-gray-700">Graus na faixa atual</span>
+                  <span className="text-sm text-gb-gray-500">{aluno.graus} de 4</span>
+                </div>
+                <Progress valor={progressoGraduacao} cor={FAIXAS[aluno.faixa].cor === '#e4e8ed' ? '#667085' : FAIXAS[aluno.faixa].cor} altura="h-3" />
+              </div>
+
+              <div className="rounded-md border border-gb-blue-100 bg-gb-blue-50 p-4">
+                <p className="text-sm font-semibold text-gb-blue-700">O que falta para o próximo grau</p>
+                <ul className="mt-2 space-y-1 text-sm text-gb-gray-700">
+                  <li>· Manter frequência acima de 70% por três meses</li>
+                  <li>· Participar de ao menos um exame de graduação</li>
+                  <li>· Demonstrar o programa técnico da faixa atual</li>
+                </ul>
+              </div>
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardHeader titulo="Últimos treinos" descricao="Presenças mais recentes" />
+            {historico.length === 0 ? (
+              <EmptyState
+                icone={<CalendarDays className="size-6" />}
+                titulo="Nenhum treino registrado"
+                mensagem="As presenças aparecem aqui assim que a chamada for feita."
+              />
+            ) : (
+              <ul className="divide-y divide-gb-gray-200">
+                {historico.slice(0, 8).map((h, i) => (
+                  <li key={`${h.data}-${i}`} className="flex items-center gap-4 px-5 py-3">
+                    <span className="w-16 shrink-0 text-xs font-semibold text-gb-gray-500">{dataCurta(h.data)}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-semibold text-gb-ink">{h.aula?.titulo}</span>
+                      <span className="block text-xs text-gb-gray-500">
+                        {turmaPorId(h.aula?.turmaId ?? '')?.nome} · {h.aula?.inicio}
+                      </span>
+                    </span>
+                    <Badge tom={h.status === 'presente' ? 'ok' : h.status === 'justificado' ? 'alerta' : 'neutro'}>
+                      {h.status === 'presente' ? 'Presente' : h.status === 'justificado' ? 'Justificado' : 'Ausente'}
+                    </Badge>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
+        </div>
+      )}
+
+      {aba === 'presenca' && (
+        <Card>
+          <CardHeader titulo="Histórico de presença" descricao="Últimos 30 registros" />
+          {historico.length === 0 ? (
+            <EmptyState icone={<CalendarDays className="size-6" />} titulo="Sem registros" mensagem="Nenhuma chamada inclui este aluno ainda." />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[600px] text-left">
+                <thead>
+                  <tr className="border-b border-gb-gray-200">
+                    {['Data', 'Aula', 'Turma', 'Horário', 'Situação'].map((h) => (
+                      <th key={h} className="gb-label px-5 py-3">
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gb-gray-200">
+                  {historico.map((h, i) => (
+                    <tr key={`${h.data}-${i}`} className="hover:bg-gb-gray-50">
+                      <td className="px-5 py-3 text-sm text-gb-gray-700">{dataLonga(h.data)}</td>
+                      <td className="px-5 py-3 text-sm font-semibold text-gb-ink">{h.aula?.titulo}</td>
+                      <td className="px-5 py-3 text-sm text-gb-gray-700">{turmaPorId(h.aula?.turmaId ?? '')?.nome}</td>
+                      <td className="px-5 py-3 font-mono text-sm text-gb-gray-700">{h.aula?.inicio}</td>
+                      <td className="px-5 py-3">
+                        <Badge tom={h.status === 'presente' ? 'ok' : h.status === 'justificado' ? 'alerta' : 'neutro'}>
+                          {h.status === 'presente' ? 'Presente' : h.status === 'justificado' ? 'Justificado' : 'Ausente'}
+                        </Badge>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </Card>
+      )}
+
+      {aba === 'financeiro' && (
+        <Card>
+          <CardHeader
+            titulo="Pagamentos"
+            descricao={`Plano ${plano?.nome ?? '—'} · vencimento dia ${aluno.vencimentoDia}`}
+          />
+          {pagamentos.length === 0 ? (
+            <EmptyState icone={<CreditCard className="size-6" />} titulo="Sem lançamentos" mensagem="Nenhum pagamento registrado para este aluno." />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[600px] text-left">
+                <thead>
+                  <tr className="border-b border-gb-gray-200">
+                    {['Data', 'Descrição', 'Método', 'Valor', 'Situação'].map((h) => (
+                      <th key={h} className="gb-label px-5 py-3">
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gb-gray-200">
+                  {pagamentos.map((t) => (
+                    <tr key={t.id} className="hover:bg-gb-gray-50">
+                      <td className="px-5 py-3 text-sm text-gb-gray-700">{dataCurta(t.data)}</td>
+                      <td className="px-5 py-3 text-sm font-semibold text-gb-ink">{t.descricao}</td>
+                      <td className="px-5 py-3 text-sm capitalize text-gb-gray-700">{t.metodo}</td>
+                      <td className="px-5 py-3 text-sm font-bold text-gb-ink">{brl(t.valor)}</td>
+                      <td className="px-5 py-3">
+                        <Badge tom={t.conciliada ? 'ok' : 'alerta'}>{t.conciliada ? 'Conciliado' : 'A conferir'}</Badge>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </Card>
+      )}
+
+      <FormularioAluno aberto={editando} aluno={aluno} aoFechar={() => setEditando(false)} />
+    </>
+  )
+}

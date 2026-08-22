@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+/* =========================================================================
+   GB SaaS — Design Tokens
+   Derivados do "Guia de direção visual para SaaS de academia de jiu-jitsu".
+   Vermelho = ação/urgência (parcimônia). Azul = estrutura/navegação/confiança.
+   Branco/cinza/preto = legibilidade e ordem.
+   ========================================================================= */
+@theme {
+  /* Vermelho institucional */
+  --color-gb-red-50: #fef2f2;
+  --color-gb-red-100: #fde3e3;
+  --color-gb-red-500: #e00000;
+  --color-gb-red-600: #d40000;
+  --color-gb-red-700: #b30000;
+
+  /* Azul institucional */
+  --color-gb-blue-50: #eef4fb;
+  --color-gb-blue-100: #dbe8f6;
+  --color-gb-blue-300: #7fabd8;
+  --color-gb-blue-500: #246db1;
+  --color-gb-blue-600: #1764a8;
+  --color-gb-blue-700: #12507f;
+  --color-gb-blue-900: #0d3b5f;
+
+  /* Neutros */
+  --color-gb-ink: #111111;
+  --color-gb-ink-soft: #1a1a1a;
+  --color-gb-gray-50: #f7f9fa;
+  --color-gb-gray-100: #f2f4f6;
+  --color-gb-gray-200: #e4e8ed;
+  --color-gb-gray-300: #d0d6de;
+  --color-gb-gray-500: #667085;
+  --color-gb-gray-700: #414855;
+
+  /* Estados funcionais */
+  --color-gb-success: #12805c;
+  --color-gb-success-bg: #e7f5f0;
+  --color-gb-warn: #b25e09;
+  --color-gb-warn-bg: #fdf3e7;
+
+  /* Tipografia */
+  --font-display: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Sombras mínimas — o guia pede sombra sutil */
+  --shadow-card: 0 1px 2px rgba(17, 17, 17, 0.04), 0 1px 3px rgba(17, 17, 17, 0.06);
+  --shadow-pop: 0 10px 30px rgba(17, 17, 17, 0.12);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-color: var(--color-gb-gray-100);
+    color: var(--color-gb-ink);
+    font-family: var(--font-sans);
+  }
+
+  /* Foco sempre visível — o guia proíbe depender apenas de cor para estado */
+  :focus-visible {
+    outline: 2px solid var(--color-gb-blue-600);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--color-gb-blue-100);
+  }
+}
+
+@layer components {
+  /* Título de página: condensado, caixa alta, preto */
+  .gb-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 1.05;
+  }
+
+  /* Label curta de métrica/tabela */
+  .gb-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-gb-gray-500);
+  }
+
+  /* Número grande de indicador */
+  .gb-metric {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 2.5rem;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  /* Acento diagonal — usado com moderação, só em momentos de destaque */
+  .gb-diagonal {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 24px 100%, 0 calc(100% - 24px));
+  }
+}
+
+/* Scrollbar discreta */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-gb-gray-300);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gb-gray-500);
+  background-clip: content-box;
+}

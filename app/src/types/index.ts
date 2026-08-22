@@ -1,0 +1,113 @@
+/* =========================================================================
+   Modelo de domínio do GB SaaS.
+   Estes tipos são o contrato que o back-end deverá honrar na Fase 2.
+   ========================================================================= */
+
+export type Papel = 'gestor' | 'professor' | 'aluno'
+
+export interface Usuario {
+  id: string
+  nome: string
+  email: string
+  papel: Papel
+  avatar?: string
+}
+
+export type Faixa = 'branca' | 'cinza' | 'amarela' | 'laranja' | 'verde' | 'azul' | 'roxa' | 'marrom' | 'preta'
+
+export type StatusAluno = 'ativo' | 'inativo' | 'experimental'
+
+export type StatusPagamento = 'em_dia' | 'vence_em_breve' | 'atrasado'
+
+export interface Aluno {
+  id: string
+  nome: string
+  email: string
+  telefone: string
+  nascimento: string // ISO
+  avatar?: string
+  faixa: Faixa
+  graus: number
+  status: StatusAluno
+  matriculaEm: string // ISO
+  planoId: string
+  vencimentoDia: number // dia do mês
+  statusPagamento: StatusPagamento
+  frequencia30d: number // 0-100
+  responsavel?: { nome: string; telefone: string }
+  observacoes?: string
+}
+
+export type Periodicidade = 'mensal' | 'trimestral' | 'semestral' | 'anual'
+
+export interface Plano {
+  id: string
+  nome: string
+  descricao: string
+  valor: number
+  periodicidade: Periodicidade
+  aulasPorSemana: number | 'ilimitado'
+  ativo: boolean
+}
+
+export interface Turma {
+  id: string
+  nome: string
+  professor: string
+  faixaEtaria: string
+  nivel: string
+  cor: string
+}
+
+export type DiaSemana = 0 | 1 | 2 | 3 | 4 | 5 | 6
+
+export interface Aula {
+  id: string
+  turmaId: string
+  titulo: string
+  diaSemana: DiaSemana
+  inicio: string // "19:00"
+  fim: string // "20:00"
+  capacidade: number
+  local: string
+}
+
+export type StatusPresenca = 'presente' | 'ausente' | 'justificado'
+
+export interface RegistroPresenca {
+  alunoId: string
+  status: StatusPresenca
+}
+
+export interface ChamadaAula {
+  id: string
+  aulaId: string
+  data: string // ISO date
+  registros: RegistroPresenca[]
+  fechada: boolean
+}
+
+export type TipoTransacao = 'receita' | 'despesa'
+
+export interface Transacao {
+  id: string
+  tipo: TipoTransacao
+  categoria: string
+  descricao: string
+  valor: number
+  data: string // ISO date
+  alunoId?: string
+  metodo: 'pix' | 'dinheiro' | 'cartao' | 'boleto' | 'transferencia'
+  conciliada: boolean
+}
+
+export interface Comunicado {
+  id: string
+  titulo: string
+  corpo: string
+  autor: string
+  data: string // ISO
+  destino: 'todos' | 'turma' | 'inadimplentes'
+  turmaId?: string
+  fixado: boolean
+}
