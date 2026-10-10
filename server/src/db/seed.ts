@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import { hashSenha } from '../auth/senha.js'
 import { diaDaSemana } from '../datas.js'
+import { criarCategoriasPadrao } from '../financeiro.js'
 import { comTransacao, criarPool, type Db } from './pool.js'
 
 /** Mesmos dados da demonstração do front (e-mails fictícios, senha `treino123`). Não usar em produção. */
@@ -215,7 +216,8 @@ if (executadoDireto) {
     process.exitCode = 1
   } else {
     const hoje = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' })
-    await semear(db, hoje)
+    const { academiaId } = await semear(db, hoje)
+    await criarCategoriasPadrao(db, academiaId)
     console.log('Academia de demonstração criada. Entre com gestor@redshield.com.br / treino123.')
   }
   await db.end()
