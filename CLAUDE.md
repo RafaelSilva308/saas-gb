@@ -1,6 +1,6 @@
 # CLAUDE.md — contexto do projeto para sessões futuras
 
-Sistema de gestão da academia **REDSHIELD** (jiu-jitsu). **Front-end com dados simulados (`app/`) + API em construção (`server/`, Fastify + PostgreSQL, 43 testes), ainda não ligada ao front.** Não há deploy, e-mail real nem financeiro no servidor; veja `PROGRESSO.md`.
+Sistema de gestão da academia **REDSHIELD** (jiu-jitsu). **Front-end com dados simulados (`app/`) + API completa para a v1 (`server/`, Fastify + PostgreSQL, 80 testes), ainda não ligada ao front.** Não há deploy feito (só `Dockerfile`/`railway.json`/CI/backup escritos, nunca executados); veja `PROGRESSO.md` e `DEPLOY.md`.
 Idioma do produto, dos documentos e dos commits: **português do Brasil**.
 
 ## Leia nesta ordem

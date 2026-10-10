@@ -172,15 +172,15 @@ Fase 10 Piloto → lançamento
 ### Fase 2 — Fundação · ~1 a 2 semanas
 
 - [ ] Criar **projetos novos** na Neon e na Railway só para o REDSHIELD (D10). **Dev** e **prod** separados desde o início; na Neon, uma *branch* gratuita serve de ambiente de teste. Escolher a região mais próxima do Brasil e **conferir se a Neon tem São Paulo**.
-- [ ] Banco: criar um papel de aplicação **sem permissão de dono** (a API não roda migração nem altera esquema) e outro papel só para migrações. Usar a conexão **com pool** da Neon e SSL obrigatório.
-- [ ] API Fastify servindo também o front compilado (D9). Segredos nas variáveis da Railway. Definir **alerta e limite de gasto** na Railway, porque o crédito incluído no plano é dividido com o outro projeto da conta.
+- [~] Banco: criar um papel de aplicação **sem permissão de dono** (a API não roda migração nem altera esquema) e outro papel só para migrações. Usar a conexão **com pool** da Neon e SSL obrigatório.
+- [~] API Fastify servindo também o front compilado (D9). Segredos nas variáveis da Railway. Definir **alerta e limite de gasto** na Railway, porque o crédito incluído no plano é dividido com o outro projeto da conta.
 - [x] Aplicar o [`db/schema.sql`](./db/schema.sql) como migração versionada (001) e criar um *seed* equivalente aos dados simulados atuais.
 - [~] Autenticação real (e-mail + senha; recuperação de senha por e-mail), **incluindo o papel aluno** e o vínculo `usuario.aluno_id` → `aluno`. Sessão com cookie `httpOnly`, `Secure` e `SameSite=Strict`. Escolher a biblioteca de autenticação **verificando se está mantida hoje**; se não houver uma boa, implementar o mínimo (senha com Argon2id, sessão em tabela, recuperação por e-mail com token de uso único).
 - [x] **Autorização no servidor**, por papel e por `academia_id` — a guarda do front é só navegação. Todo acesso filtra pela academia da sessão; nenhuma rota aceita `academia_id` vindo do cliente.
 - [ ] Camada de API no front: conversão **reais ↔ centavos** na borda (problema 3) e datas em ISO.
-- [ ] CI no GitHub Actions: lint + `tsc` + testes + build. Deploy automático na Railway a partir da `main`. O GitHub Pages atual (demonstração com dados simulados) deixa de ser necessário quando o back-end entrar; decidir se mantém como vitrine.
+- [~] CI no GitHub Actions: lint + `tsc` + testes + build. Deploy automático na Railway a partir da `main`. O GitHub Pages atual (demonstração com dados simulados) deixa de ser necessário quando o back-end entrar; decidir se mantém como vitrine.
 - [ ] Monitoramento de erro (Sentry) e de disponibilidade (UptimeRobot), ambos gratuitos.
-- [ ] **Backup:** rotina de `pg_dump` agendada (GitHub Actions) para armazenamento externo. A janela de restauração do plano gratuito da Neon é de cerca de 6 horas e **não substitui backup**. Fazer **um teste de restauração de verdade**.
+- [~] **Backup:** rotina de `pg_dump` agendada (GitHub Actions) para armazenamento externo. A janela de restauração do plano gratuito da Neon é de cerca de 6 horas e **não substitui backup**. Fazer **um teste de restauração de verdade**.
 
 **Pronto quando:** login real funciona em produção; um usuário de uma academia **não consegue** ler dados de outra (teste automatizado); o backup foi restaurado com sucesso em um banco vazio.
 
@@ -208,38 +208,38 @@ Fase 10 Piloto → lançamento
 
 ### Fase 5 — Cobranças e financeiro · ~2 semanas
 
-- [ ] Geração mensal de `cobranca` para cada aluno ativo, conforme plano e dia de vencimento. Idempotente (`unique (aluno_id, competencia)`).
-- [ ] Baixa manual de cobrança: cria a `transacao` vinculada e marca como paga **na mesma transação de banco**.
-- [ ] Lançamento avulso de receitas e despesas, com as categorias de **E4**.
-- [ ] Lista de inadimplência a partir das cobranças abertas vencidas (a "situação de pagamento" do aluno é calculada, não gravada).
+- [x] Geração mensal de `cobranca` para cada aluno ativo, conforme plano e dia de vencimento. Idempotente (`unique (aluno_id, competencia)`).
+- [x] Baixa manual de cobrança: cria a `transacao` vinculada e marca como paga **na mesma transação de banco**.
+- [x] Lançamento avulso de receitas e despesas, com as categorias de **E4**.
+- [x] Lista de inadimplência a partir das cobranças abertas vencidas (a "situação de pagamento" do aluno é calculada, não gravada).
 - [ ] Opcional (decidir em **V6**): botão "Cobrar pelo WhatsApp" que abre `wa.me/<telefone>?text=<mensagem pronta>`. Custo zero, 1 clique por aluno, sem integração.
 
 **Pronto quando:** o professor fecha um mês real — gera cobranças, dá baixa em pagamentos — e o resultado bate com a planilha dele.
 
 ### Fase 6 — Painel, métricas e graduações · ~1 a 2 semanas
 
-- [ ] Trocar `selectors.ts` por consultas no servidor (SQL/views), para o celular não varrer 45 dias de chamadas.
-- [ ] Graduações: registrar promoção, histórico por aluno, e a lista de elegíveis conforme a regra de **E1**.
-- [ ] Auditoria de ponta a ponta nas ações sensíveis (mudança de faixa, remoção de lançamento).
+- [~] Trocar `selectors.ts` por consultas no servidor (SQL/views), para o celular não varrer 45 dias de chamadas.
+- [x] Graduações: registrar promoção, histórico por aluno, e a lista de elegíveis conforme a regra de **E1**.
+- [~] Auditoria de ponta a ponta nas ações sensíveis (mudança de faixa, remoção de lançamento).
 
 **Pronto quando:** os quatro indicadores do Painel batem com contas feitas à mão sobre os dados reais.
 
 ### Fase 7 — E-mail e rotinas automáticas · ~1 semana
 
 - [ ] Provedor de e-mail configurado com o domínio (SPF, DKIM, DMARC) — **V4** precisa estar resolvida.
-- [ ] Rotinas: gerar cobranças (dia 1), lembrete de vencimento, aviso de atraso, resumo semanal, só dos avisos que **E9** confirmou.
-- [ ] Registro em `envio_email` antes de enviar, com índice único, para a rotina **nunca mandar o mesmo aviso duas vezes**.
-- [ ] Respeitar os interruptores de Configurações (`config_aviso`).
+- [~] Rotinas: gerar cobranças (dia 1), lembrete de vencimento, aviso de atraso, resumo semanal, só dos avisos que **E9** confirmou.
+- [x] Registro em `envio_email` antes de enviar, com índice único, para a rotina **nunca mandar o mesmo aviso duas vezes**.
+- [x] Respeitar os interruptores de Configurações (`config_aviso`).
 - [ ] Atenção ao limite diário do provedor gratuito ao concentrar vencimentos (ver seção 4).
 
 **Pronto quando:** um lembrete real chega na caixa de entrada (não no spam) e rodar a rotina duas vezes não duplica o envio.
 
 ### Fase 8 — Segurança, LGPD e testes · ~1 a 2 semanas
 
-- [ ] Testes de ponta a ponta nos fluxos que não podem quebrar: **check-in do aluno**, **correção do professor**, cadastro com cobrança, baixa de pagamento, **professor não abre Financeiro**, **um aluno não vê a ficha, os dados ou o check-in de outro aluno**, **uma academia não vê dados de outra**.
-- [ ] Rate limit no login; HTTPS e HSTS; senhas com Argon2id ou o equivalente do provedor.
-- [ ] Política de privacidade acessível no sistema; exportação e exclusão/anonimização de dados de um titular sob pedido.
-- [ ] Revisão de segurança do código e das regras de acesso do banco.
+- [~] Testes de ponta a ponta nos fluxos que não podem quebrar: **check-in do aluno**, **correção do professor**, cadastro com cobrança, baixa de pagamento, **professor não abre Financeiro**, **um aluno não vê a ficha, os dados ou o check-in de outro aluno**, **uma academia não vê dados de outra**.
+- [~] Rate limit no login; HTTPS e HSTS; senhas com Argon2id ou o equivalente do provedor.
+- [~] Política de privacidade acessível no sistema; exportação e exclusão/anonimização de dados de um titular sob pedido.
+- [~] Revisão de segurança do código e das regras de acesso do banco.
 - [ ] Teste de restauração de backup repetido, agora com dados reais de teste.
 
 **Pronto quando:** o checklist de segurança da seção 7 do `PLANO_DESENVOLVIMENTO.md` está inteiro marcado.
@@ -247,7 +247,7 @@ Fase 10 Piloto → lançamento
 ### Fase 9 — Importar a planilha · ~1 semana
 
 - [ ] Exportar a planilha em CSV (**E10**).
-- [ ] Script de importação com validação por linha e **relatório de linhas rejeitadas**.
+- [x] Script de importação com validação por linha e **relatório de linhas rejeitadas**.
 - [ ] Rodar primeiro em ambiente de teste; revisar as rejeições **junto com o professor**.
 - [ ] Importar em produção e conferir totais: número de alunos e soma das mensalidades contra a planilha.
 
