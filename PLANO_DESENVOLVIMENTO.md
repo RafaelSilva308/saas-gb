@@ -1,5 +1,8 @@
 # Plano de desenvolvimento — SaaS de gestão para academia de jiu-jitsu
 
+> **Ordem de execução, decisões pendentes, modelo do banco e custos:** veja [`ROADMAP.md`](./ROADMAP.md).
+> Onde este documento e o `ROADMAP.md` divergirem, vale o `ROADMAP.md`.
+
 Documento de referência do projeto. Descreve **o que já existe**, **como continuar** e
 **como o back-end deve ser construído** quando o front-end estiver aprovado.
 
@@ -35,7 +38,7 @@ status claros e caminhos curtos para as tarefas do dia.
 |---|---|---|
 | **Gestor** (dono) | Indicadores, inadimplência, ocupação, retenção, resultado do mês | Painel, Financeiro, Planos |
 | **Professor** | Chamada, organização das turmas, observações de treino, acompanhamento individual | Presença, Agenda, Alunos |
-| **Aluno / responsável** | Calendário, presença, evolução de faixa, comunicados, próximos objetivos | Painel do aluno, Agenda, Progresso |
+| **Aluno / responsável** | Calendário, presença, evolução de faixa, próximos objetivos | Painel do aluno, Agenda, Progresso |
 
 ---
 
@@ -52,7 +55,7 @@ Oito blocos, na ordem em que agregam valor:
 | 5 | Receitas e despesas | ✅ Front-end pronto | `src/pages/Financeiro.tsx` |
 | 6 | Controle de presença por turma | ✅ Front-end pronto | `src/pages/Presenca.tsx` |
 | 7 | Agenda de aulas | ✅ Front-end pronto | `src/pages/Agenda.tsx` |
-| 8 | Progresso de faixas + comunicados | ✅ Front-end pronto | `src/pages/Progresso.tsx`, `Comunicados.tsx` |
+| 8 | Progresso de faixas | ✅ Front-end pronto | `src/pages/Progresso.tsx` |
 
 **Fora do MVP** (registrado para não virar escopo escondido): app nativo, gateway de pagamento com
 cobrança automática, catraca/QR code de entrada, loja online, multi-unidade (rede de academias),
@@ -94,8 +97,8 @@ toda faixa tem legenda, todo gráfico tem eixo e tooltip.
 
 ### 3.3 Geometria diagonal
 
-Usada **só em momentos de destaque**: painel institucional do login, cartão da próxima aula,
-banner de comunicados. Classe `.gb-diagonal` + polígonos SVG abstratos. O resto do produto é limpo.
+Usada **só em momentos de destaque**: painel institucional do login, cartão da próxima aula
+e destaques de graduação. Classe `.gb-diagonal` + polígonos SVG abstratos. O resto do produto é limpo.
 
 ---
 
@@ -176,7 +179,7 @@ npm run preview  # serve o build
 |---|---|---|
 | `gestor@gb.com.br` | Gestor | Tudo, incluindo Financeiro e Planos |
 | `professor@gb.com.br` | Professor | Alunos, Agenda, Presença, Progresso |
-| `aluno@gb.com.br` | Aluno | Painel, Agenda, Progresso, Comunicados |
+| `aluno@gb.com.br` | Aluno | Painel, Agenda, Progresso |
 
 ---
 
@@ -210,7 +213,7 @@ Antes de escrever uma linha de back-end, percorrer com o professor:
 | ORM | Prisma | Migrations versionadas, tipos gerados, legível para quem for manter depois |
 | Auth | JWT curto + refresh em cookie `httpOnly` | Sem token no `localStorage` |
 | Validação | Zod | Mesmo schema valida requisição no servidor e formulário no cliente |
-| Arquivos | S3 / Cloudflare R2 | Fotos de aluno, anexos de comunicado |
+| Arquivos | S3 / Cloudflare R2 | Fotos de aluno |
 | Fila / agendamento | pg-boss ou node-cron | Lembretes de vencimento, resumo semanal |
 | Testes | Vitest + Supertest | Mesmo runner do front |
 | Observabilidade | Pino + Sentry | Log estruturado, erro rastreado |
@@ -275,10 +278,6 @@ graduacao                  -- histórico, não só o estado atual
   id, aluno_id → aluno, faixa, graus, data,
   concedida_por → usuario, observacao
 
-comunicado
-  id, academia_id, titulo, corpo, autor_id → usuario, data,
-  destino (todos|turma|inadimplentes), turma_id?, fixado
-
 log_auditoria
   id, academia_id, usuario_id, acao, entidade, entidade_id,
   dados_antes (jsonb), dados_depois (jsonb), ip, criado_em
@@ -324,8 +323,6 @@ Base: `/api/v1`. Autenticação por `Authorization: Bearer <jwt>`. Respostas em 
 | `POST` | `/cobrancas/:id/pagar` | gestor | baixa de pagamento |
 | `GET` `POST` | `/transacoes?mes&tipo` | gestor | `store.transacoes`, `salvarTransacao` |
 | `DELETE` | `/transacoes/:id` | gestor | `store.removerTransacao` |
-| `GET` `POST` | `/comunicados` | leitura: todos / escrita: gestor, professor | `store.comunicados` |
-| `DELETE` | `/comunicados/:id` | gestor, professor | `removerComunicado` |
 | `GET` | `/metricas/painel` | conforme papel | tudo em `selectors.ts` |
 | `GET` | `/metricas/financeiro?meses=6` | gestor | `serieFinanceira()` |
 | `GET` | `/metricas/presenca?semanas=8` | gestor, professor | `seriePresenca()` |
@@ -347,8 +344,8 @@ Todo endpoint valida o papel no servidor. Regras:
 | Papel | Pode |
 |---|---|
 | `gestor` | Tudo dentro da própria academia |
-| `professor` | Alunos, turmas, aulas, chamadas, graduações, comunicados. **Não vê Financeiro nem Planos.** |
-| `aluno` | Só a própria ficha, a agenda e os comunicados destinados a ele |
+| `professor` | Alunos, turmas, aulas, chamadas, graduações. **Não vê Financeiro nem Planos.** |
+| `aluno` | Só a própria ficha, e a agenda |
 
 Todo *query* filtra por `academia_id` da sessão. Nenhuma rota aceita `academia_id` vindo do cliente.
 
@@ -455,7 +452,7 @@ por isso as URLs têm `#` (ex.: `/#/painel`).
 | 3 | 2 semanas | Turmas, aulas, chamadas, presença |
 | 4 | 2 semanas | Cobranças, transações, rotinas automáticas |
 | 5 | 1 semana | Endpoints de métricas + integração do painel |
-| 6 | 1 semana | Comunicados, graduações, auditoria |
+| 6 | 1 semana | Graduações, auditoria |
 | 7 | 1 semana | Testes E2E, LGPD, importação da planilha |
 | 8 | 1 semana | Piloto com o professor usando de verdade, em paralelo à planilha |
 | 9 | — | Corte definitivo |
@@ -469,9 +466,9 @@ Total estimado: **~11 semanas** após a validação do front.
 Em ordem de valor percebido:
 
 1. **PWA instalável com chamada offline.** O tatame nem sempre tem sinal. Registrar offline e sincronizar depois é o recurso que mais muda o dia do professor.
-2. **Portal do aluno.** Ficha, presença, evolução de faixa e comunicados no celular do aluno.
+2. **Portal do aluno.** Ficha, presença, evolução de faixa no celular do aluno.
 3. **Cobrança automatizada.** PIX com QR dinâmico (Asaas, Pagar.me ou Mercado Pago) e baixa automática na `cobranca`.
-4. **WhatsApp.** Lembretes e comunicados no canal que a academia realmente usa.
+4. **WhatsApp.** Lembretes no canal que a academia realmente usa.
 5. **Relatório de retenção.** *Cohort* por mês de matrícula — mostra em que ponto da jornada o aluno desiste.
 6. **Programa técnico por faixa.** Currículo de técnicas com marcação do que o aluno já domina.
 7. **Multi-unidade.** O `academia_id` já está no modelo; falta a troca de contexto na interface.

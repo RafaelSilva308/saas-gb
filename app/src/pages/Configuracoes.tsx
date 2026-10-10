@@ -45,7 +45,7 @@ export function Configuracoes() {
       {aba === 'academia' && (
         <div className="grid gap-4 lg:grid-cols-3">
           <Card className="lg:col-span-2">
-            <CardHeader titulo="Dados da academia" descricao="Aparecem em recibos, comunicados e relatórios" />
+            <CardHeader titulo="Dados da academia" descricao="Aparecem em recibos e relatórios" />
             <CardBody className="grid gap-4 sm:grid-cols-2">
               <Input label="Nome da academia" defaultValue="Academia de Jiu-Jitsu — Unidade Centro" wrapClass="sm:col-span-2" />
               <Input label="CNPJ" defaultValue="00.000.000/0001-00" />
@@ -128,7 +128,7 @@ export function Configuracoes() {
                         ? 'Tudo, incluindo financeiro'
                         : u.papel === 'professor'
                           ? 'Alunos, agenda e presença'
-                          : 'Sua própria ficha e avisos'}
+                          : 'Sua própria ficha e agenda'}
                     </td>
                     <td className="px-5 py-3 text-right">
                       <Button variante="fantasma" tamanho="sm">
@@ -150,7 +150,7 @@ export function Configuracoes() {
               {[
                 { Icone: Building2, papel: 'Gestor', desc: 'Indicadores, inadimplência, ocupação de turmas, planos e financeiro completo.' },
                 { Icone: Users, papel: 'Professor', desc: 'Chamada, organização das turmas, observações de treino e acompanhamento individual.' },
-                { Icone: Palette, papel: 'Aluno', desc: 'Calendário, presença, evolução de faixa, comunicados e próximos objetivos.' },
+                { Icone: Palette, papel: 'Aluno', desc: 'Calendário, presença, evolução de faixa e próximos objetivos.' },
               ].map(({ Icone, papel, desc }) => (
                 <div key={papel} className="rounded-md border border-gb-gray-200 bg-white p-4">
                   <p className="flex items-center gap-2 font-bold text-gb-ink">

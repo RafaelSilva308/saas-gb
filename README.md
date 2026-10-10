@@ -25,7 +25,7 @@ Senha `treino123` para todos.
 |---|---|---|
 | `gestor@gb.com.br` | Gestor | Tudo, incluindo Financeiro e Planos |
 | `professor@gb.com.br` | Professor | Alunos, Agenda, Presença, Progresso |
-| `aluno@gb.com.br` | Aluno | Painel, Agenda, Progresso, Comunicados |
+| `aluno@gb.com.br` | Aluno | Painel, Agenda, Progresso |
 
 ## O que já está pronto
 
@@ -39,8 +39,7 @@ Senha `treino123` para todos.
 | Chamada por turma, pensada para uso no tatame | `/presenca` |
 | Quadro de horários semanal | `/agenda` |
 | Distribuição de faixas e elegíveis à graduação | `/progresso` |
-| Comunicados para alunos e responsáveis | `/comunicados` |
-| Dados da academia, equipe, avisos e identidade visual | `/configuracoes` |
+| Dados da academia, equipe, avisos automáticos e identidade visual | `/configuracoes` |
 
 Tudo funciona em desktop, tablet e celular.
 

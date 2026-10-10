@@ -18,7 +18,6 @@ const Presenca = lazy(() => import('@/pages/Presenca').then((m) => ({ default: m
 const Planos = lazy(() => import('@/pages/Planos').then((m) => ({ default: m.Planos })))
 const Financeiro = lazy(() => import('@/pages/Financeiro').then((m) => ({ default: m.Financeiro })))
 const Progresso = lazy(() => import('@/pages/Progresso').then((m) => ({ default: m.Progresso })))
-const Comunicados = lazy(() => import('@/pages/Comunicados').then((m) => ({ default: m.Comunicados })))
 const Configuracoes = lazy(() => import('@/pages/Configuracoes').then((m) => ({ default: m.Configuracoes })))
 
 function Carregando() {
@@ -90,7 +89,6 @@ export default function App() {
                 />
 
                 <Route path="/progresso" element={<Progresso />} />
-                <Route path="/comunicados" element={<Comunicados />} />
                 <Route path="/configuracoes" element={<Configuracoes />} />
 
                 <Route path="/sem-acesso" element={<SemAcesso />} />

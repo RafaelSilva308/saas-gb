@@ -100,14 +100,3 @@ export interface Transacao {
   metodo: 'pix' | 'dinheiro' | 'cartao' | 'boleto' | 'transferencia'
   conciliada: boolean
 }
-
-export interface Comunicado {
-  id: string
-  titulo: string
-  corpo: string
-  autor: string
-  data: string // ISO
-  destino: 'todos' | 'turma' | 'inadimplentes'
-  turmaId?: string
-  fixado: boolean
-}

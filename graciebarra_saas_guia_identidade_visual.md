@@ -33,7 +33,7 @@ A hierarquia sugerida é: título de página em preto e caixa alta; subtítulo e
 
 ## Linguagem de interface
 
-A interface deve usar verbos diretos e linguagem acolhedora. Exemplos adequados são “Ver agenda”, “Registrar presença”, “Acompanhar progresso”, “Adicionar aluno”, “Agendar aula” e “Enviar comunicado”. Evite jargão técnico, excesso de abreviações e mensagens com tom punitivo. O sistema deve refletir a ideia de que a evolução acontece com consistência e apoio da comunidade.
+A interface deve usar verbos diretos e linguagem acolhedora. Exemplos adequados são “Ver agenda”, “Registrar presença”, “Acompanhar progresso”, “Adicionar aluno” e “Agendar aula”. Evite jargão técnico, excesso de abreviações e mensagens com tom punitivo. O sistema deve refletir a ideia de que a evolução acontece com consistência e apoio da comunidade.
 
 ## Componentes recomendados
 
@@ -53,7 +53,7 @@ A interface deve usar verbos diretos e linguagem acolhedora. Exemplos adequados 
 
 A linguagem visual observada emprega diagonais, recortes angulares e blocos geométricos. No SaaS, esses elementos devem funcionar como **acentos**, em cabeçalhos, banners de progresso, divisores ou ilustrações de onboarding. Use formas abstratas e originais; não redesenhe o monograma, o escudo, o selo ou o logotipo oficial.
 
-Uma boa regra é manter a maior parte do produto limpa e reservar as diagonais para momentos de destaque: início da jornada, conquista de graduação, chamada para aula experimental e comunicados importantes.
+Uma boa regra é manter a maior parte do produto limpa e reservar as diagonais para momentos de destaque: início da jornada, conquista de graduação, chamada para aula experimental.
 
 ## Fotografia e conteúdo visual
 
@@ -63,7 +63,7 @@ Prefira imagens reais de alunos e professores em situações de aprendizado, aqu
 
 A tela inicial ideal deve mostrar imediatamente: alunos ativos, próxima aula, presença recente, progresso de faixas e ações rápidas. A arquitetura visual deve reduzir ansiedade operacional do professor: menos elementos decorativos, mais previsibilidade, status claros e caminhos curtos para as tarefas diárias.
 
-Para alunos e responsáveis, o produto pode enfatizar calendário, presença, evolução, comunicados e próximos objetivos. Para professores, deve priorizar chamada, organização das turmas, observações de treino e acompanhamento individual. Para gestores, deve apresentar indicadores, inadimplência, ocupação de turmas e retenção sem perder o tom humano da marca.
+Para alunos e responsáveis, o produto pode enfatizar calendário, presença, evolução e próximos objetivos. Para professores, deve priorizar chamada, organização das turmas, observações de treino e acompanhamento individual. Para gestores, deve apresentar indicadores, inadimplência, ocupação de turmas e retenção sem perder o tom humano da marca.
 
 ## O que fazer e o que evitar
 
