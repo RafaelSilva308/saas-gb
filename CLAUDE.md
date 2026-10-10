@@ -1,10 +1,11 @@
 # CLAUDE.md — contexto do projeto para sessões futuras
 
-Sistema de gestão da academia **REDSHIELD** (jiu-jitsu). **Hoje: só o front-end, com dados simulados.** Não há back-end, banco, login real, e-mail nem testes automatizados.
+Sistema de gestão da academia **REDSHIELD** (jiu-jitsu). **Front-end com dados simulados (`app/`) + API em construção (`server/`, Fastify + PostgreSQL, 43 testes), ainda não ligada ao front.** Não há deploy, e-mail real nem financeiro no servidor; veja `PROGRESSO.md`.
 Idioma do produto, dos documentos e dos commits: **português do Brasil**.
 
 ## Leia nesta ordem
 
+0. [`PROGRESSO.md`](./PROGRESSO.md): **o que já foi feito e o que falta** no back-end (atualizar ao fim de cada sessão).
 1. [`ROADMAP.md`](./ROADMAP.md): **fonte de verdade.** Decisões de produto já tomadas (D1–D7), pendências (V = dono do produto, E = academia), ordem de execução em 10 fases, infraestrutura e custos, riscos.
 2. [`BANCO_DE_DADOS.md`](./BANCO_DE_DADOS.md) + [`db/schema.sql`](./db/schema.sql): modelo PostgreSQL, **testado** em PG 16.
 3. [`ROTEIRO_DEMONSTRACAO.md`](./ROTEIRO_DEMONSTRACAO.md): sessão de validação com o professor (versão de 15 e de 35 minutos).
@@ -77,3 +78,13 @@ npx oxlint         # lint (restam avisos antigos de react/only-export-components
 - Desenvolver na branch designada pela sessão, nunca direto na `main`. Não abrir PR sem o usuário pedir.
 - Se o PR da branch já foi mergeado, recomece a branch a partir da `main` e trate o trabalho como mudança nova.
 - Commits e descrições de PR em português, com o resumo do que mudou e o que foi verificado.
+
+## Back-end (`server/`)
+
+```bash
+cd server && npm install && npm test   # PostgreSQL embutido nos testes
+npm run migrar && npm run seed && npm run dev   # precisa de DATABASE_URL (ver .env.example)
+```
+
+- Rotas em `/api/v1`; autorização por papel e `academia_id` da sessão; erros `{ erro: { codigo, mensagem } }`; dinheiro em centavos.
+- Esquemas zod de PATCH **sem `.default()`** (zod 4 aplica o default sob `.partial()`); defaults no insert com `??`.

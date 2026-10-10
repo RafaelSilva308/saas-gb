@@ -127,6 +127,8 @@ Resolve-se com o [`ROTEIRO_DEMONSTRACAO.md`](./ROTEIRO_DEMONSTRACAO.md): cada pe
 Princípio: **cada fase termina com algo que o professor consegue usar**, e nenhuma fase começa sem que as decisões que a bloqueiam estejam respondidas.
 Esforço estimado para 1 desenvolvedor; ajuste conforme dedicação.
 
+Legenda de andamento: `[x]` feito no servidor (ver [`PROGRESSO.md`](./PROGRESSO.md)); `[~]` parcial (autenticação: falta o envio real de e-mail); `[ ]` não iniciado. Itens de front e de infraestrutura seguem em aberto.
+
 ```
 Fase 0  Desbloquear         ─┐ sem código
 Fase 1  Ajustar o front     ─┘
@@ -172,9 +174,9 @@ Fase 10 Piloto → lançamento
 - [ ] Criar **projetos novos** na Neon e na Railway só para o REDSHIELD (D10). **Dev** e **prod** separados desde o início; na Neon, uma *branch* gratuita serve de ambiente de teste. Escolher a região mais próxima do Brasil e **conferir se a Neon tem São Paulo**.
 - [ ] Banco: criar um papel de aplicação **sem permissão de dono** (a API não roda migração nem altera esquema) e outro papel só para migrações. Usar a conexão **com pool** da Neon e SSL obrigatório.
 - [ ] API Fastify servindo também o front compilado (D9). Segredos nas variáveis da Railway. Definir **alerta e limite de gasto** na Railway, porque o crédito incluído no plano é dividido com o outro projeto da conta.
-- [ ] Aplicar o [`db/schema.sql`](./db/schema.sql) como migração versionada (001) e criar um *seed* equivalente aos dados simulados atuais.
-- [ ] Autenticação real (e-mail + senha; recuperação de senha por e-mail), **incluindo o papel aluno** e o vínculo `usuario.aluno_id` → `aluno`. Sessão com cookie `httpOnly`, `Secure` e `SameSite=Strict`. Escolher a biblioteca de autenticação **verificando se está mantida hoje**; se não houver uma boa, implementar o mínimo (senha com Argon2id, sessão em tabela, recuperação por e-mail com token de uso único).
-- [ ] **Autorização no servidor**, por papel e por `academia_id` — a guarda do front é só navegação. Todo acesso filtra pela academia da sessão; nenhuma rota aceita `academia_id` vindo do cliente.
+- [x] Aplicar o [`db/schema.sql`](./db/schema.sql) como migração versionada (001) e criar um *seed* equivalente aos dados simulados atuais.
+- [~] Autenticação real (e-mail + senha; recuperação de senha por e-mail), **incluindo o papel aluno** e o vínculo `usuario.aluno_id` → `aluno`. Sessão com cookie `httpOnly`, `Secure` e `SameSite=Strict`. Escolher a biblioteca de autenticação **verificando se está mantida hoje**; se não houver uma boa, implementar o mínimo (senha com Argon2id, sessão em tabela, recuperação por e-mail com token de uso único).
+- [x] **Autorização no servidor**, por papel e por `academia_id` — a guarda do front é só navegação. Todo acesso filtra pela academia da sessão; nenhuma rota aceita `academia_id` vindo do cliente.
 - [ ] Camada de API no front: conversão **reais ↔ centavos** na borda (problema 3) e datas em ISO.
 - [ ] CI no GitHub Actions: lint + `tsc` + testes + build. Deploy automático na Railway a partir da `main`. O GitHub Pages atual (demonstração com dados simulados) deixa de ser necessário quando o back-end entrar; decidir se mantém como vitrine.
 - [ ] Monitoramento de erro (Sentry) e de disponibilidade (UptimeRobot), ambos gratuitos.
@@ -184,19 +186,19 @@ Fase 10 Piloto → lançamento
 
 ### Fase 3 — Alunos e planos · ~1 a 2 semanas
 
-- [ ] CRUD de planos (gestor) e de alunos (gestor + professor), com filtros, busca e exportação já existentes no front.
+- [x] CRUD de planos (gestor) e de alunos (gestor + professor), com filtros, busca e exportação já existentes no front.
 - [ ] Ficha do aluno: resumo, histórico de presença e pagamentos (as duas últimas abas ficam vazias até as fases 4 e 5).
-- [ ] Consentimento do responsável gravado com data e autor.
-- [ ] Registro em `log_auditoria` de criação, edição e remoção de aluno.
+- [x] Consentimento do responsável gravado com data e autor.
+- [x] Registro em `log_auditoria` de criação, edição e remoção de aluno.
 
 **Pronto quando:** o professor cadastra, edita e consulta alunos reais; recarregar a página não perde nada.
 
 ### Fase 4 — Turmas, agenda e presença por check-in · ~2 semanas
 
-- [ ] CRUD de turmas, aulas e do vínculo aluno ↔ turma.
-- [ ] **Check-in do aluno** (`POST /aulas/:aulaId/checkin`), com as regras **no servidor**: só a aula do dia; só aluno matriculado na turma; recusado se a aula foi cancelada ou fora do prazo (**E16**); repetir é inofensivo (`on conflict do nothing`); **nunca sobrescreve** uma marcação do professor. `DELETE` só desfaz o que o próprio aluno marcou.
-- [ ] **Correção do professor** (`PUT /chamadas/:aulaId/:data/presencas/:alunoId`): marcar presente, falta (e justificado, se **E17** mantiver), de qualquer aluno, inclusive de dias anteriores. Grava `origem = 'professor'`, uma observação opcional e **uma linha em `log_auditoria`** (antes e depois).
-- [ ] **Cancelar aula** (feriado, aula que não aconteceu): `POST /chamadas/:aulaId/:data/cancelar`. Aula cancelada sai da frequência de todos e recusa check-in (**E11**).
+- [x] CRUD de turmas, aulas e do vínculo aluno ↔ turma.
+- [x] **Check-in do aluno** (`POST /aulas/:aulaId/checkin`), com as regras **no servidor**: só a aula do dia; só aluno matriculado na turma; recusado se a aula foi cancelada ou fora do prazo (**E16**); repetir é inofensivo (`on conflict do nothing`); **nunca sobrescreve** uma marcação do professor. `DELETE` só desfaz o que o próprio aluno marcou.
+- [x] **Correção do professor** (`PUT /chamadas/:aulaId/:data/presencas/:alunoId`): marcar presente, falta (e justificado, se **E17** mantiver), de qualquer aluno, inclusive de dias anteriores. Grava `origem = 'professor'`, uma observação opcional e **uma linha em `log_auditoria`** (antes e depois).
+- [x] **Cancelar aula** (feriado, aula que não aconteceu): `POST /chamadas/:aulaId/:data/cancelar`. Aula cancelada sai da frequência de todos e recusa check-in (**E11**).
 - [ ] Tela do professor: lista da aula com quem fez check-in, quem **não** fez (rotulado como falta) e botões de correção. Mostrar a origem de cada registro ("Check-in do aluno · 18:52") na lista e na ficha do aluno.
 - [ ] **Não** implementar "fechar chamada" nem "marcar todos" (modelo antigo, defeito 10).
 - [ ] Se **E8** disser que falta sinal no tatame: guardar o check-in no navegador e reenviar quando a conexão voltar. O servidor precisa aceitar o horário original do check-in sem permitir backdating arbitrário. Se não, adiar para o pós-lançamento.
