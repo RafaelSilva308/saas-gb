@@ -123,6 +123,12 @@ export async function rotasAlunos(app: FastifyInstance, ctx: Contexto) {
     return rows[0] as Linha | undefined
   }
 
+  async function recusarAnonimizado(id: string) {
+    if ((await db.query('select 1 from aluno where id = $1 and anonimizado_em is not null', [id])).rowCount) {
+      throw conflito('aluno_anonimizado', 'Este cadastro foi anonimizado e não pode mais ser alterado.')
+    }
+  }
+
   app.get('/alunos', { preHandler: equipe }, async (req) => {
     const s = sessaoDe(req)
     const f = validar(filtros, req.query)
@@ -193,6 +199,7 @@ export async function rotasAlunos(app: FastifyInstance, ctx: Contexto) {
     const d = validar(corpoAluno.partial(), req.body)
     const antesLinha = await carregar(db, s.academiaId, id)
     if (!antesLinha) throw naoEncontrado('Aluno')
+    await recusarAnonimizado(id)
     await conferirReferencias(db, s.academiaId, d.planoId, d.turmaIds)
     const dia = await hoje(s)
 
@@ -349,6 +356,7 @@ export async function rotasAlunos(app: FastifyInstance, ctx: Contexto) {
     const { email: emailCorpo } = validar(z.object({ email: z.string().trim().toLowerCase().pipe(z.string().email('E-mail inválido.')).optional() }), req.body ?? {})
     const aluno = await carregar(db, s.academiaId, id)
     if (!aluno) throw naoEncontrado('Aluno')
+    await recusarAnonimizado(id)
     if (aluno.tem_acesso) throw conflito('acesso_existente', 'Este aluno já tem acesso ao sistema.')
     const email = emailCorpo ?? aluno.email
     if (!email) throw invalido('Informe um e-mail para enviar o convite.', { email: 'Informe um e-mail.' })

@@ -11,6 +11,8 @@ import { ErroApi, semPermissao } from './erros.js'
 import { rotasAlunos } from './rotas/alunos.js'
 import { rotasAuth } from './rotas/auth.js'
 import { rotasConfiguracoes } from './rotas/configuracoes.js'
+import { rotasImportacao } from './rotas/importacao.js'
+import { rotasLgpd } from './rotas/lgpd.js'
 import { rotasFinanceiro } from './rotas/financeiro.js'
 import { rotasMetricas } from './rotas/metricas.js'
 import { rotasPlanos } from './rotas/planos.js'
@@ -26,6 +28,20 @@ export interface Deps {
 }
 
 export type Contexto = Required<Deps>
+
+// O front carrega as fontes do Google; qualquer outra origem externa é recusada.
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "img-src 'self' data:",
+  "connect-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join('; ')
 
 const METODOS_QUE_ESCREVEM = new Set(['POST', 'PUT', 'PATCH', 'DELETE'])
 
@@ -63,6 +79,17 @@ export async function construirApp(deps: Deps) {
     req.sessao = await lerSessao(ctx.db, req.cookies[COOKIE])
   })
 
+  app.addHook('onSend', async (req, reply, payload) => {
+    reply.header('x-content-type-options', 'nosniff')
+    reply.header('x-frame-options', 'DENY')
+    reply.header('referrer-policy', 'same-origin')
+    reply.header('permissions-policy', 'camera=(), microphone=(), geolocation=()')
+    reply.header('content-security-policy', CSP)
+    if (config.ambiente === 'production') reply.header('strict-transport-security', 'max-age=15552000; includeSubDomains')
+    if (req.url.startsWith('/api/')) reply.header('cache-control', 'no-store')
+    return payload
+  })
+
   app.setErrorHandler((err: Error & { statusCode?: number; code?: string }, req, reply) => {
     if (err instanceof ErroApi) {
       return reply.status(err.status).send({ erro: { codigo: err.codigo, mensagem: err.message, campos: err.campos } })
@@ -84,11 +111,13 @@ export async function construirApp(deps: Deps) {
       await rotasAuth(api, ctx)
       await rotasPlanos(api, ctx)
       await rotasAlunos(api, ctx)
+      await rotasImportacao(api, ctx)
       await rotasTurmas(api, ctx)
       await rotasPresenca(api, ctx)
       await rotasFinanceiro(api, ctx)
       await rotasMetricas(api, ctx)
       await rotasConfiguracoes(api, ctx)
+      await rotasLgpd(api, ctx)
     },
     { prefix: '/api/v1' },
   )
