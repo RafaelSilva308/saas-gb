@@ -10,6 +10,7 @@ import type { Mailer } from './email.js'
 import { ErroApi, semPermissao } from './erros.js'
 import { rotasAlunos } from './rotas/alunos.js'
 import { rotasAuth } from './rotas/auth.js'
+import { rotasFinanceiro } from './rotas/financeiro.js'
 import { rotasPlanos } from './rotas/planos.js'
 import { rotasPresenca } from './rotas/presenca.js'
 import { rotasTurmas } from './rotas/turmas.js'
@@ -83,6 +84,7 @@ export async function construirApp(deps: Deps) {
       await rotasAlunos(api, ctx)
       await rotasTurmas(api, ctx)
       await rotasPresenca(api, ctx)
+      await rotasFinanceiro(api, ctx)
     },
     { prefix: '/api/v1' },
   )

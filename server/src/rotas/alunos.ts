@@ -42,16 +42,15 @@ const corpoAluno = z.object({
 
 type Linha = Record<string, any>
 
-const SELECT_ALUNO = `
+/** `h` é o placeholder (ex.: `$3`) que carrega o "hoje" no fuso da academia: status de pagamento e frequência dependem dele. */
+const selectAluno = (h: string) => `
   select a.*,
-         pg.status_pagamento,
-         f.frequencia_30d,
+         aluno_status_pagamento(a.id, ${h}::date) as status_pagamento,
+         aluno_frequencia_30d(a.id, ${h}::date) as frequencia_30d,
          coalesce((select array_agg(t.turma_id order by t.turma_id) from aluno_turma t
-                    where t.aluno_id = a.id and (t.ate is null or t.ate >= current_date)), '{}') as turma_ids,
+                    where t.aluno_id = a.id and t.ate is null), '{}') as turma_ids,
          exists (select 1 from usuario u where u.aluno_id = a.id) as tem_acesso
-    from aluno a
-    join v_aluno_pagamento pg on pg.aluno_id = a.id
-    join v_aluno_frequencia_30d f on f.aluno_id = a.id`
+    from aluno a`
 
 export const alunoDto = (a: Linha) => ({
   id: a.id as string,
@@ -74,11 +73,6 @@ export const alunoDto = (a: Linha) => ({
   turmaIds: a.turma_ids as string[],
   temAcesso: a.tem_acesso as boolean,
 })
-
-async function carregar(db: Executor, academiaId: string, id: string) {
-  const { rows } = await db.query(`${SELECT_ALUNO} where a.id = $1 and a.academia_id = $2`, [id, academiaId])
-  return rows[0] as Linha | undefined
-}
 
 /** Garante que plano e turmas pertencem à academia da sessão (ids vêm do cliente). */
 async function conferirReferencias(db: Executor, academiaId: string, planoId?: string | null, turmaIds?: string[]) {
@@ -122,6 +116,13 @@ export async function rotasAlunos(app: FastifyInstance, ctx: Contexto) {
   const fusoDe = async (s: Sessao) => (await db.query('select fuso from academia where id = $1', [s.academiaId])).rows[0].fuso as string
   const hoje = async (s: Sessao) => hojeNoFuso(ctx.agora(), await fusoDe(s))
 
+  async function carregar(executor: Executor, academiaId: string, id: string) {
+    const fuso = (await db.query('select fuso from academia where id = $1', [academiaId])).rows[0]?.fuso as string | undefined
+    const dia = hojeNoFuso(ctx.agora(), fuso ?? 'America/Sao_Paulo')
+    const { rows } = await executor.query(`${selectAluno('$3')} where a.id = $1 and a.academia_id = $2`, [id, academiaId, dia])
+    return rows[0] as Linha | undefined
+  }
+
   app.get('/alunos', { preHandler: equipe }, async (req) => {
     const s = sessaoDe(req)
     const f = validar(filtros, req.query)
@@ -137,12 +138,14 @@ export async function rotasAlunos(app: FastifyInstance, ctx: Contexto) {
     if (f.turma) add('exists (select 1 from aluno_turma t where t.aluno_id = a.id and t.turma_id = ? and t.ate is null)', f.turma)
     if (f.busca) add('(a.nome ilike ? or a.email ilike ?)', `%${f.busca.replace(/[\\%_]/g, '\\$&')}%`)
     const sql = where.join(' and ')
-    params.push(f.limite, (f.pagina - 1) * f.limite)
+    const paramsContagem = [...params]
+    params.push(f.limite, (f.pagina - 1) * f.limite, await hoje(s))
+    const n = params.length
     const { rows } = await db.query(
-      `${SELECT_ALUNO} where ${sql} order by a.nome limit $${params.length - 1} offset $${params.length}`,
+      `${selectAluno(`$${n}`)} where ${sql} order by a.nome limit $${n - 2} offset $${n - 1}`,
       params,
     )
-    const total = (await db.query(`select count(*)::int as n from aluno a where ${sql}`, params.slice(0, params.length - 2))).rows[0].n
+    const total = (await db.query(`select count(*)::int as n from aluno a where ${sql}`, paramsContagem)).rows[0].n
     return { itens: rows.map(alunoDto), total, pagina: f.pagina, limite: f.limite }
   })
 
