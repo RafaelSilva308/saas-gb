@@ -1,6 +1,6 @@
 # CLAUDE.md — contexto do projeto para sessões futuras
 
-SaaS de gestão para academia de jiu-jitsu. **Hoje: só o front-end, com dados simulados.** Não há back-end, banco, login real, e-mail nem testes automatizados.
+Sistema de gestão da academia **REDSHIELD** (jiu-jitsu). **Hoje: só o front-end, com dados simulados.** Não há back-end, banco, login real, e-mail nem testes automatizados.
 Idioma do produto, dos documentos e dos commits: **português do Brasil**.
 
 ## Leia nesta ordem
@@ -30,6 +30,13 @@ Mudar uma delas é decisão do dono do produto. Estão detalhadas no `ROADMAP.md
 - O login só confere o e-mail. **Não é segurança.** A guarda por papel (`ExigePapel`) é só navegação.
 - Valores em **reais** no front; no banco são **centavos** (`integer`). A conversão é na camada de API.
 
+## Nome e marca
+
+- Nome do produto e da academia: **REDSHIELD** (em texto corrido e na interface). Arquivos e pastas em minúsculas: `redshield_*`, pacote `redshield-app`.
+- Demonstração: e-mails `@redshield.com.br` (fictícios), chave de sessão `redshield.sessao` no `localStorage`.
+- A pasta `app/` e `db/` não levam o nome da marca de propósito (são papéis, não marca).
+- **O nome do repositório no GitHub** não pode ser alterado por uma sessão do Claude (as ferramentas não renomeiam repositório). Se ainda for `saas-gb`, renomeie em *Settings → General → Repository name*.
+
 ## Rodar, verificar, publicar
 
 ```bash
@@ -39,7 +46,7 @@ npm run build      # tsc -b && vite build
 npx oxlint         # lint (restam avisos antigos de react/only-export-components e set-state-in-effect)
 ```
 
-- Demonstração: `gestor@gb.com.br`, `professor@gb.com.br`, `aluno@gb.com.br`; senha `treino123`. As linhas em "Acessos de demonstração" preenchem o formulário.
+- Demonstração: `gestor@redshield.com.br`, `professor@redshield.com.br`, `aluno@redshield.com.br`; senha `treino123`. As linhas em "Acessos de demonstração" preenchem o formulário.
 - O aluno de demonstração é `al1` (Pedro Almeida). O quadro simulado **não tem aulas aos domingos**; nesse dia o check-in mostra "Sem aula hoje".
 - Deploy: GitHub Actions (`.github/workflows/deploy.yml`) publica no **GitHub Pages** a cada push na `main`. `HashRouter` e `base: './'` por causa da hospedagem estática.
 - Banco: para validar o schema, `psql` num PostgreSQL 15+ vazio: `psql -v ON_ERROR_STOP=1 -f db/schema.sql`. Há um PostgreSQL 16 instalado no ambiente de nuvem (cluster desligado por padrão).
@@ -47,14 +54,14 @@ npx oxlint         # lint (restam avisos antigos de react/only-export-components
 ## Convenções do código
 
 - React 19 + TypeScript estrito + Vite + Tailwind v4 + React Router (HashRouter). Nomes de domínio em português (`aluno`, `chamada`, `presenca`, `cobranca`).
-- Tokens de marca em `app/src/index.css` (`gb-red`, `gb-blue`, `gb-ink`…). **Nenhum estado depende só de cor**: todo badge tem rótulo.
+- Tokens de marca em `app/src/index.css` (`rs-red`, `rs-blue`, `rs-ink`…; prefixo `rs-` de REDSHIELD). **Nenhum estado depende só de cor**: todo badge tem rótulo.
 - Um botão primário (vermelho) por tela. Evite novas cores e novos componentes se já existe um em `components/ui/`.
 - Toda mutação passa por `store.tsx`; cada função ali corresponde a um endpoint futuro. Páginas não escrevem em `mock.ts`.
 - A data de "hoje" usa fuso **local** (`hojeISO()` em `lib/format.ts`). Não use `toISOString().slice(0,10)`: vira o dia às 21h em Brasília.
 
 ## Pendências críticas antes de qualquer lançamento
 
-- **V1: autorização de uso da marca Gracie Barra.** Os arquivos `graciebarra_*` e o guia visual miram essa identidade. O produto se chama "Tatame Gestão", com marca abstrata própria. Sem autorização, não divulgar nem usar o nome.
+- **V1: nome e identidade.** O nome REDSHIELD está adotado em todo o sistema, mas **não foi verificado** (INPI, domínio). Cores, tipografia e símbolo são provisórios; `referencia_visual_conceitual.png` traz símbolo e fotos que **não** são do REDSHIELD e deve sair do repositório antes de divulgar.
 - Painel do aluno ainda mostra dados da academia inteira, inclusive nomes e frequência de outros alunos (defeito 8). Resolver antes de ter login de aluno real.
 - Todas as pendências E1–E17 dependem de conversa com a academia; ver o roteiro de demonstração.
 

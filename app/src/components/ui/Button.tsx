@@ -12,11 +12,11 @@ type Tamanho = 'sm' | 'md' | 'lg'
    - fantasma  = sem fundo, para ações terciárias */
 const VARIANTES: Record<Variante, string> = {
   primaria:
-    'bg-gb-red-600 text-white hover:bg-gb-red-700 active:bg-gb-red-700 shadow-[0_1px_2px_rgba(212,0,0,0.25)]',
-  secundaria: 'bg-white text-gb-blue-600 border border-gb-blue-600 hover:bg-gb-blue-50',
-  contorno: 'bg-white text-gb-ink border border-gb-gray-300 hover:bg-gb-gray-50 hover:border-gb-gray-500',
-  fantasma: 'bg-transparent text-gb-gray-700 hover:bg-gb-gray-100 hover:text-gb-ink',
-  perigo: 'bg-white text-gb-red-600 border border-gb-red-600 hover:bg-gb-red-50',
+    'bg-rs-red-600 text-white hover:bg-rs-red-700 active:bg-rs-red-700 shadow-[0_1px_2px_rgba(212,0,0,0.25)]',
+  secundaria: 'bg-white text-rs-blue-600 border border-rs-blue-600 hover:bg-rs-blue-50',
+  contorno: 'bg-white text-rs-ink border border-rs-gray-300 hover:bg-rs-gray-50 hover:border-rs-gray-500',
+  fantasma: 'bg-transparent text-rs-gray-700 hover:bg-rs-gray-100 hover:text-rs-ink',
+  perigo: 'bg-white text-rs-red-600 border border-rs-red-600 hover:bg-rs-red-50',
 }
 
 const TAMANHOS: Record<Tamanho, string> = {

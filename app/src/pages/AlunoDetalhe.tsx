@@ -71,7 +71,7 @@ export function AlunoDetalhe() {
     <>
       <Link
         to="/alunos"
-        className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-gb-gray-500 hover:text-gb-blue-600"
+        className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-rs-gray-500 hover:text-rs-blue-600"
       >
         <ArrowLeft className="size-4" />
         Voltar para alunos
@@ -83,11 +83,11 @@ export function AlunoDetalhe() {
           <Avatar nome={aluno.nome} tamanho="xl" />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="gb-title text-3xl text-gb-ink">{aluno.nome}</h1>
+              <h1 className="rs-title text-3xl text-rs-ink">{aluno.nome}</h1>
               <Badge tom={STATUS_ALUNO[aluno.status].tom}>{STATUS_ALUNO[aluno.status].label}</Badge>
               <Badge tom={pag.tom}>{pag.label}</Badge>
             </div>
-            <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm text-gb-gray-500">
+            <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm text-rs-gray-500">
               <FaixaBadge faixa={aluno.faixa} graus={aluno.graus} />
               <span className="inline-flex items-center gap-1.5">
                 <Mail className="size-4" /> {aluno.email}
@@ -100,8 +100,8 @@ export function AlunoDetalhe() {
               </span>
             </div>
             {aluno.responsavel?.nome && (
-              <p className="mt-2 text-sm text-gb-gray-500">
-                Responsável: <span className="font-semibold text-gb-gray-700">{aluno.responsavel.nome}</span> ·{' '}
+              <p className="mt-2 text-sm text-rs-gray-500">
+                Responsável: <span className="font-semibold text-rs-gray-700">{aluno.responsavel.nome}</span> ·{' '}
                 {aluno.responsavel.telefone}
               </p>
             )}
@@ -113,9 +113,9 @@ export function AlunoDetalhe() {
         </div>
 
         {aluno.observacoes && (
-          <div className="border-t border-gb-gray-200 bg-gb-warn-bg px-6 py-3">
-            <p className="gb-label text-gb-warn">Observação de treino</p>
-            <p className="mt-1 text-sm text-gb-gray-700">{aluno.observacoes}</p>
+          <div className="border-t border-rs-gray-200 bg-rs-warn-bg px-6 py-3">
+            <p className="rs-label text-rs-warn">Observação de treino</p>
+            <p className="mt-1 text-sm text-rs-gray-700">{aluno.observacoes}</p>
           </div>
         )}
       </Card>
@@ -128,15 +128,15 @@ export function AlunoDetalhe() {
           { label: 'Plano', valor: plano?.nome ?? '—', nota: plano ? brl(plano.valor) : undefined, Icone: CreditCard },
           { label: 'Aluno desde', valor: dataCurta(aluno.matriculaEm), Icone: User },
         ].map(({ label, valor, nota, Icone }) => (
-          <div key={label} className="rounded-lg border border-gb-gray-200 bg-white p-5 shadow-[var(--shadow-card)]">
+          <div key={label} className="rounded-lg border border-rs-gray-200 bg-white p-5 shadow-[var(--shadow-card)]">
             <div className="flex items-start justify-between gap-3">
-              <p className="gb-label">{label}</p>
-              <span className="grid size-9 shrink-0 place-items-center rounded-md bg-gb-blue-50 text-gb-blue-600">
+              <p className="rs-label">{label}</p>
+              <span className="grid size-9 shrink-0 place-items-center rounded-md bg-rs-blue-50 text-rs-blue-600">
                 <Icone className="size-[18px]" />
               </span>
             </div>
-            <p className="gb-metric mt-3 truncate text-gb-ink">{valor}</p>
-            {nota && <p className="mt-1 text-xs text-gb-gray-500">{nota}</p>}
+            <p className="rs-metric mt-3 truncate text-rs-ink">{valor}</p>
+            {nota && <p className="mt-1 text-xs text-rs-gray-500">{nota}</p>}
           </div>
         ))}
       </div>
@@ -160,14 +160,14 @@ export function AlunoDetalhe() {
             <CardBody className="space-y-5">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="gb-label">Faixa atual</p>
+                  <p className="rs-label">Faixa atual</p>
                   <p className="mt-1">
                     <FaixaBadge faixa={aluno.faixa} graus={aluno.graus} />
                   </p>
                 </div>
                 {proximaFaixa && (
                   <div className="text-right">
-                    <p className="gb-label">Próxima faixa</p>
+                    <p className="rs-label">Próxima faixa</p>
                     <p className="mt-1">
                       <FaixaBadge faixa={proximaFaixa} />
                     </p>
@@ -177,15 +177,15 @@ export function AlunoDetalhe() {
 
               <div>
                 <div className="mb-1.5 flex items-baseline justify-between">
-                  <span className="text-sm font-semibold text-gb-gray-700">Graus na faixa atual</span>
-                  <span className="text-sm text-gb-gray-500">{aluno.graus} de 4</span>
+                  <span className="text-sm font-semibold text-rs-gray-700">Graus na faixa atual</span>
+                  <span className="text-sm text-rs-gray-500">{aluno.graus} de 4</span>
                 </div>
                 <Progress valor={progressoGraduacao} cor={FAIXAS[aluno.faixa].cor === '#e4e8ed' ? '#667085' : FAIXAS[aluno.faixa].cor} altura="h-3" />
               </div>
 
-              <div className="rounded-md border border-gb-blue-100 bg-gb-blue-50 p-4">
-                <p className="text-sm font-semibold text-gb-blue-700">O que falta para o próximo grau</p>
-                <ul className="mt-2 space-y-1 text-sm text-gb-gray-700">
+              <div className="rounded-md border border-rs-blue-100 bg-rs-blue-50 p-4">
+                <p className="text-sm font-semibold text-rs-blue-700">O que falta para o próximo grau</p>
+                <ul className="mt-2 space-y-1 text-sm text-rs-gray-700">
                   <li>· Manter frequência acima de 70% por três meses</li>
                   <li>· Participar de ao menos um exame de graduação</li>
                   <li>· Demonstrar o programa técnico da faixa atual</li>
@@ -203,13 +203,13 @@ export function AlunoDetalhe() {
                 mensagem="As presenças aparecem aqui quando o aluno faz o check-in ou o professor registra."
               />
             ) : (
-              <ul className="divide-y divide-gb-gray-200">
+              <ul className="divide-y divide-rs-gray-200">
                 {historico.slice(0, 8).map((h, i) => (
                   <li key={`${h.data}-${i}`} className="flex items-center gap-4 px-5 py-3">
-                    <span className="w-16 shrink-0 text-xs font-semibold text-gb-gray-500">{dataCurta(h.data)}</span>
+                    <span className="w-16 shrink-0 text-xs font-semibold text-rs-gray-500">{dataCurta(h.data)}</span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-semibold text-gb-ink">{h.aula?.titulo}</span>
-                      <span className="block text-xs text-gb-gray-500">
+                      <span className="block truncate text-sm font-semibold text-rs-ink">{h.aula?.titulo}</span>
+                      <span className="block text-xs text-rs-gray-500">
                         {turmaPorId(h.aula?.turmaId ?? '')?.nome} · {h.aula?.inicio}
                         {h.origem === 'aluno' && ' · check-in do aluno'}
                       </span>
@@ -234,27 +234,27 @@ export function AlunoDetalhe() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[600px] text-left">
                 <thead>
-                  <tr className="border-b border-gb-gray-200">
+                  <tr className="border-b border-rs-gray-200">
                     {['Data', 'Aula', 'Turma', 'Horário', 'Situação', 'Registrado por'].map((h) => (
-                      <th key={h} className="gb-label px-5 py-3">
+                      <th key={h} className="rs-label px-5 py-3">
                         {h}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gb-gray-200">
+                <tbody className="divide-y divide-rs-gray-200">
                   {historico.map((h, i) => (
-                    <tr key={`${h.data}-${i}`} className="hover:bg-gb-gray-50">
-                      <td className="px-5 py-3 text-sm text-gb-gray-700">{dataLonga(h.data)}</td>
-                      <td className="px-5 py-3 text-sm font-semibold text-gb-ink">{h.aula?.titulo}</td>
-                      <td className="px-5 py-3 text-sm text-gb-gray-700">{turmaPorId(h.aula?.turmaId ?? '')?.nome}</td>
-                      <td className="px-5 py-3 font-mono text-sm text-gb-gray-700">{h.aula?.inicio}</td>
+                    <tr key={`${h.data}-${i}`} className="hover:bg-rs-gray-50">
+                      <td className="px-5 py-3 text-sm text-rs-gray-700">{dataLonga(h.data)}</td>
+                      <td className="px-5 py-3 text-sm font-semibold text-rs-ink">{h.aula?.titulo}</td>
+                      <td className="px-5 py-3 text-sm text-rs-gray-700">{turmaPorId(h.aula?.turmaId ?? '')?.nome}</td>
+                      <td className="px-5 py-3 font-mono text-sm text-rs-gray-700">{h.aula?.inicio}</td>
                       <td className="px-5 py-3">
                         <Badge tom={h.status === 'presente' ? 'ok' : h.status === 'justificado' ? 'alerta' : 'neutro'}>
                           {h.status === 'presente' ? 'Presente' : h.status === 'justificado' ? 'Justificado' : 'Falta'}
                         </Badge>
                       </td>
-                      <td className="px-5 py-3 text-sm text-gb-gray-700">
+                      <td className="px-5 py-3 text-sm text-rs-gray-700">
                         {h.origem === 'aluno' ? `Check-in do aluno${h.horario ? ` · ${h.horario}` : ''}` : 'Chamada do professor'}
                       </td>
                     </tr>
@@ -278,21 +278,21 @@ export function AlunoDetalhe() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[600px] text-left">
                 <thead>
-                  <tr className="border-b border-gb-gray-200">
+                  <tr className="border-b border-rs-gray-200">
                     {['Data', 'Descrição', 'Método', 'Valor', 'Situação'].map((h) => (
-                      <th key={h} className="gb-label px-5 py-3">
+                      <th key={h} className="rs-label px-5 py-3">
                         {h}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gb-gray-200">
+                <tbody className="divide-y divide-rs-gray-200">
                   {pagamentos.map((t) => (
-                    <tr key={t.id} className="hover:bg-gb-gray-50">
-                      <td className="px-5 py-3 text-sm text-gb-gray-700">{dataCurta(t.data)}</td>
-                      <td className="px-5 py-3 text-sm font-semibold text-gb-ink">{t.descricao}</td>
-                      <td className="px-5 py-3 text-sm capitalize text-gb-gray-700">{t.metodo}</td>
-                      <td className="px-5 py-3 text-sm font-bold text-gb-ink">{brl(t.valor)}</td>
+                    <tr key={t.id} className="hover:bg-rs-gray-50">
+                      <td className="px-5 py-3 text-sm text-rs-gray-700">{dataCurta(t.data)}</td>
+                      <td className="px-5 py-3 text-sm font-semibold text-rs-ink">{t.descricao}</td>
+                      <td className="px-5 py-3 text-sm capitalize text-rs-gray-700">{t.metodo}</td>
+                      <td className="px-5 py-3 text-sm font-bold text-rs-ink">{brl(t.valor)}</td>
                       <td className="px-5 py-3">
                         <Badge tom={t.conciliada ? 'ok' : 'alerta'}>{t.conciliada ? 'Conciliado' : 'A conferir'}</Badge>
                       </td>

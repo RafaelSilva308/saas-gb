@@ -14,8 +14,8 @@ export function PageHeader({
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
-        <h1 className="gb-title text-[1.75rem] text-gb-ink sm:text-[2rem]">{titulo}</h1>
-        {subtitulo && <p className="mt-1 max-w-2xl text-sm text-gb-gray-500">{subtitulo}</p>}
+        <h1 className="rs-title text-[1.75rem] text-rs-ink sm:text-[2rem]">{titulo}</h1>
+        {subtitulo && <p className="mt-1 max-w-2xl text-sm text-rs-gray-500">{subtitulo}</p>}
       </div>
       {/* No celular as ações ocupam a largura toda e dividem o espaço igualmente */}
       {acoes && (
@@ -30,9 +30,9 @@ export function PageHeader({
 /** Barra de progresso linear simples, com rótulo textual obrigatório fora dela. */
 export function Progress({
   valor,
-  cor = 'var(--color-gb-blue-600)',
+  cor = 'var(--color-rs-blue-600)',
   altura = 'h-2',
-  fundo = 'bg-gb-gray-200',
+  fundo = 'bg-rs-gray-200',
   className,
 }: {
   valor: number
@@ -59,7 +59,7 @@ export function ProgressRing({
   valor,
   tamanho = 132,
   espessura = 14,
-  cor = 'var(--color-gb-blue-600)',
+  cor = 'var(--color-rs-blue-600)',
   centro,
 }: {
   valor: number
@@ -73,7 +73,7 @@ export function ProgressRing({
   return (
     <div className="relative grid shrink-0 place-items-center" style={{ width: tamanho, height: tamanho }}>
       <svg width={tamanho} height={tamanho} className="-rotate-90">
-        <circle cx={tamanho / 2} cy={tamanho / 2} r={r} fill="none" stroke="var(--color-gb-gray-200)" strokeWidth={espessura} />
+        <circle cx={tamanho / 2} cy={tamanho / 2} r={r} fill="none" stroke="var(--color-rs-gray-200)" strokeWidth={espessura} />
         <circle
           cx={tamanho / 2}
           cy={tamanho / 2}
@@ -106,9 +106,9 @@ export function EmptyState({
 }) {
   return (
     <div className="flex flex-col items-center justify-center gap-3 px-6 py-14 text-center">
-      {icone && <span className="grid size-12 place-items-center rounded-full bg-gb-gray-100 text-gb-gray-500">{icone}</span>}
-      <h3 className="gb-title text-lg text-gb-ink">{titulo}</h3>
-      <p className="max-w-sm text-sm text-gb-gray-500">{mensagem}</p>
+      {icone && <span className="grid size-12 place-items-center rounded-full bg-rs-gray-100 text-rs-gray-500">{icone}</span>}
+      <h3 className="rs-title text-lg text-rs-ink">{titulo}</h3>
+      <p className="max-w-sm text-sm text-rs-gray-500">{mensagem}</p>
       {acao && <div className="mt-1">{acao}</div>}
     </div>
   )
@@ -129,8 +129,8 @@ export function AccentBanner({
   return (
     <div
       className={cn(
-        'gb-diagonal relative flex flex-wrap items-center justify-between gap-4 overflow-hidden rounded-lg px-6 py-5 text-white',
-        tom === 'azul' ? 'bg-gb-blue-600' : 'bg-gb-red-600',
+        'rs-diagonal relative flex flex-wrap items-center justify-between gap-4 overflow-hidden rounded-lg px-6 py-5 text-white',
+        tom === 'azul' ? 'bg-rs-blue-600' : 'bg-rs-red-600',
       )}
     >
       {/* geometria diagonal abstrata, como acento editorial */}
@@ -139,7 +139,7 @@ export function AccentBanner({
         <polygon points="200,0 240,0 240,120 140,120" fill="white" opacity="0.6" />
       </svg>
       <div className="relative min-w-0">
-        <h2 className="gb-title text-xl">{titulo}</h2>
+        <h2 className="rs-title text-xl">{titulo}</h2>
         <p className="mt-1 max-w-xl text-sm text-white/85">{texto}</p>
       </div>
       {acao && <div className="relative shrink-0">{acao}</div>}
@@ -160,7 +160,7 @@ export function Tabs<T extends string>({
   return (
     <div
       role="tablist"
-      className="-mx-1 flex gap-1 overflow-x-auto border-b border-gb-gray-200 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      className="-mx-1 flex gap-1 overflow-x-auto border-b border-rs-gray-200 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
       {itens.map((it) => {
         const ativo = it.id === valor
@@ -173,13 +173,13 @@ export function Tabs<T extends string>({
             className={cn(
               '-mb-px cursor-pointer whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-semibold transition-colors',
               ativo
-                ? 'border-gb-red-600 text-gb-ink'
-                : 'border-transparent text-gb-gray-500 hover:border-gb-gray-300 hover:text-gb-ink',
+                ? 'border-rs-red-600 text-rs-ink'
+                : 'border-transparent text-rs-gray-500 hover:border-rs-gray-300 hover:text-rs-ink',
             )}
           >
             {it.label}
             {it.contagem !== undefined && (
-              <span className={cn('ml-1.5 text-xs', ativo ? 'text-gb-gray-500' : 'text-gb-gray-500/80')}>
+              <span className={cn('ml-1.5 text-xs', ativo ? 'text-rs-gray-500' : 'text-rs-gray-500/80')}>
                 {it.contagem}
               </span>
             )}

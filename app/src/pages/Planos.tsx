@@ -90,44 +90,44 @@ export function Planos() {
               <div className="flex-1 p-5">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <h2 className="gb-title text-xl text-gb-ink">{p.nome}</h2>
-                    <p className="mt-1 text-sm leading-relaxed text-gb-gray-500">{p.descricao}</p>
+                    <h2 className="rs-title text-xl text-rs-ink">{p.nome}</h2>
+                    <p className="mt-1 text-sm leading-relaxed text-rs-gray-500">{p.descricao}</p>
                   </div>
                   <Badge tom={p.ativo ? 'ok' : 'neutro'}>{p.ativo ? 'Ativo' : 'Pausado'}</Badge>
                 </div>
 
                 <p className="mt-5 flex items-baseline gap-1">
-                  <span className="gb-metric text-gb-ink">{brl(p.valor)}</span>
-                  <span className="text-sm text-gb-gray-500">{ROTULO_PERIODO[p.periodicidade]}</span>
+                  <span className="rs-metric text-rs-ink">{brl(p.valor)}</span>
+                  <span className="text-sm text-rs-gray-500">{ROTULO_PERIODO[p.periodicidade]}</span>
                 </p>
 
-                <ul className="mt-4 space-y-2 text-sm text-gb-gray-700">
+                <ul className="mt-4 space-y-2 text-sm text-rs-gray-700">
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="size-4 shrink-0 text-gb-blue-600" />
+                    <CheckCircle2 className="size-4 shrink-0 text-rs-blue-600" />
                     {p.aulasPorSemana === 'ilimitado'
                       ? 'Aulas ilimitadas em todas as turmas'
                       : `${p.aulasPorSemana} aulas por semana`}
                   </li>
                   <li className="flex items-center gap-2">
-                    <Users className="size-4 shrink-0 text-gb-blue-600" />
+                    <Users className="size-4 shrink-0 text-rs-blue-600" />
                     {matriculados} aluno{matriculados === 1 ? '' : 's'} matriculado{matriculados === 1 ? '' : 's'}
                   </li>
                   <li className="flex items-center gap-2">
-                    <CreditCard className="size-4 shrink-0 text-gb-blue-600" />
+                    <CreditCard className="size-4 shrink-0 text-rs-blue-600" />
                     Receita estimada {brl(matriculados * p.valor)}
                   </li>
                 </ul>
 
                 <div className="mt-4">
-                  <div className="mb-1.5 flex items-baseline justify-between text-xs text-gb-gray-500">
+                  <div className="mb-1.5 flex items-baseline justify-between text-xs text-rs-gray-500">
                     <span>Participação na base</span>
-                    <span className="font-semibold text-gb-ink">{participacao}%</span>
+                    <span className="font-semibold text-rs-ink">{participacao}%</span>
                   </div>
                   <Progress valor={participacao} />
                 </div>
               </div>
 
-              <footer className="flex items-center gap-2 border-t border-gb-gray-200 bg-gb-gray-50 px-5 py-3">
+              <footer className="flex items-center gap-2 border-t border-rs-gray-200 bg-rs-gray-50 px-5 py-3">
                 <Button variante="contorno" tamanho="sm" onClick={() => abrir(p)}>
                   Editar
                 </Button>
@@ -136,7 +136,7 @@ export function Planos() {
                 </Button>
                 <Link
                   to={`/alunos?plano=${p.id}`}
-                  className="ml-auto text-xs font-semibold uppercase tracking-wider text-gb-blue-600 hover:underline"
+                  className="ml-auto text-xs font-semibold uppercase tracking-wider text-rs-blue-600 hover:underline"
                 >
                   Ver alunos
                 </Link>
@@ -165,10 +165,10 @@ export function Planos() {
                   return s + (p.periodicidade === 'anual' ? p.valor / 12 : p.valor)
                 }, 0)
               return (
-                <div key={dia} className="rounded-md border border-gb-gray-200 p-4">
-                  <p className="gb-label">Dia {dia}</p>
-                  <p className="gb-metric mt-2 text-gb-ink">{qtd}</p>
-                  <p className="mt-1 text-xs text-gb-gray-500">alunos · {brl(receita)}</p>
+                <div key={dia} className="rounded-md border border-rs-gray-200 p-4">
+                  <p className="rs-label">Dia {dia}</p>
+                  <p className="rs-metric mt-2 text-rs-ink">{qtd}</p>
+                  <p className="mt-1 text-xs text-rs-gray-500">alunos · {brl(receita)}</p>
                 </div>
               )
             })}
@@ -245,7 +245,7 @@ export function Planos() {
             </Select>
           </div>
 
-          <div className="border-t border-gb-gray-200 pt-2">
+          <div className="border-t border-rs-gray-200 pt-2">
             <Switch
               checked={dados.ativo}
               onChange={(v) => setDados({ ...dados, ativo: v })}
@@ -255,7 +255,7 @@ export function Planos() {
           </div>
 
           {erro && (
-            <p role="alert" className="rounded-md border border-gb-red-100 bg-gb-red-50 px-3 py-2 text-sm font-medium text-gb-red-700">
+            <p role="alert" className="rounded-md border border-rs-red-100 bg-rs-red-50 px-3 py-2 text-sm font-medium text-rs-red-700">
               {erro}
             </p>
           )}

@@ -42,13 +42,13 @@ import { brl, DIAS_SEMANA } from '@/lib/format'
 function DicaGrafico({ active, payload, label, formatador }: any) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-md border border-gb-gray-200 bg-white px-3 py-2 shadow-[var(--shadow-pop)]">
-      <p className="gb-label mb-1">{label}</p>
+    <div className="rounded-md border border-rs-gray-200 bg-white px-3 py-2 shadow-[var(--shadow-pop)]">
+      <p className="rs-label mb-1">{label}</p>
       {payload.map((p: any) => (
         <p key={p.dataKey} className="flex items-center gap-2 text-sm">
           <span aria-hidden className="size-2 rounded-full" style={{ background: p.color }} />
-          <span className="text-gb-gray-500">{p.name}</span>
-          <span className="ml-auto font-semibold text-gb-ink">
+          <span className="text-rs-gray-500">{p.name}</span>
+          <span className="ml-auto font-semibold text-rs-ink">
             {formatador ? formatador(p.value) : p.value}
           </span>
         </p>
@@ -149,12 +149,12 @@ export function Painel() {
         )}
 
         {/* Único bloco vermelho do painel: a ação de conversão do dia */}
-        <div className="gb-diagonal relative flex flex-col justify-between overflow-hidden rounded-lg bg-gb-red-600 p-5 text-white">
+        <div className="rs-diagonal relative flex flex-col justify-between overflow-hidden rounded-lg bg-rs-red-600 p-5 text-white">
           <div className="relative">
-            <p className="gb-label text-white/75">Próxima aula</p>
+            <p className="rs-label text-white/75">Próxima aula</p>
             {proxima ? (
               <>
-                <p className="gb-title mt-3 text-2xl">
+                <p className="rs-title mt-3 text-2xl">
                   {proxima.hoje ? 'Hoje' : DIAS_SEMANA[proxima.quando.getDay()]}, {proxima.aula.inicio}
                 </p>
                 <p className="mt-1 text-sm text-white/85">{proxima.aula.titulo}</p>
@@ -168,7 +168,7 @@ export function Painel() {
           </div>
           <Link
             to="/agenda"
-            className="relative mt-4 inline-flex h-10 items-center justify-center gap-2 rounded-md bg-white px-4 text-sm font-semibold text-gb-red-600 transition-colors hover:bg-white/90"
+            className="relative mt-4 inline-flex h-10 items-center justify-center gap-2 rounded-md bg-white px-4 text-sm font-semibold text-rs-red-600 transition-colors hover:bg-white/90"
           >
             <CalendarPlus className="size-4" />
             Ver agenda
@@ -180,13 +180,13 @@ export function Painel() {
       {(atrasados.length > 0 || risco.length > 0) && (
         <div className="mt-4 grid gap-4 lg:grid-cols-2">
           {atrasados.length > 0 && ehGestor && (
-            <div className="flex items-start gap-3 rounded-lg border border-gb-red-100 bg-gb-red-50 p-4">
-              <AlertTriangle className="mt-0.5 size-5 shrink-0 text-gb-red-600" />
+            <div className="flex items-start gap-3 rounded-lg border border-rs-red-100 bg-rs-red-50 p-4">
+              <AlertTriangle className="mt-0.5 size-5 shrink-0 text-rs-red-600" />
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-bold text-gb-red-700">
+                <p className="text-sm font-bold text-rs-red-700">
                   {atrasados.length} mensalidades em aberto — {brl(valorEmAberto())}
                 </p>
-                <p className="mt-0.5 text-sm text-gb-gray-700">
+                <p className="mt-0.5 text-sm text-rs-gray-700">
                   Combine uma nova data com esses alunos antes que o atraso vire evasão.
                 </p>
               </div>
@@ -197,13 +197,13 @@ export function Painel() {
           )}
 
           {risco.length > 0 && (
-            <div className="flex items-start gap-3 rounded-lg border border-gb-blue-100 bg-gb-blue-50 p-4">
-              <Users className="mt-0.5 size-5 shrink-0 text-gb-blue-600" />
+            <div className="flex items-start gap-3 rounded-lg border border-rs-blue-100 bg-rs-blue-50 p-4">
+              <Users className="mt-0.5 size-5 shrink-0 text-rs-blue-600" />
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-bold text-gb-blue-700">
+                <p className="text-sm font-bold text-rs-blue-700">
                   {risco.length} alunos sem treinar há 14 dias
                 </p>
-                <p className="mt-0.5 text-sm text-gb-gray-700">
+                <p className="mt-0.5 text-sm text-rs-gray-700">
                   Um convite pessoal costuma trazer o aluno de volta ao tatame.
                 </p>
               </div>
@@ -219,18 +219,18 @@ export function Painel() {
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
         <Card>
           <CardHeader titulo="Alunos" descricao="Maior frequência em 30 dias" linkPara="/alunos" />
-          <ul className="divide-y divide-gb-gray-200">
+          <ul className="divide-y divide-rs-gray-200">
             {destaques.map((a) => (
               <li key={a.id}>
-                <Link to={`/alunos/${a.id}`} className="flex items-center gap-3 px-5 py-3 hover:bg-gb-gray-50">
+                <Link to={`/alunos/${a.id}`} className="flex items-center gap-3 px-5 py-3 hover:bg-rs-gray-50">
                   <Avatar nome={a.nome} />
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-semibold text-gb-ink">{a.nome}</span>
+                    <span className="block truncate text-sm font-semibold text-rs-ink">{a.nome}</span>
                     <FaixaBadge faixa={a.faixa} compacto />
                   </span>
                   <span className="shrink-0 text-right">
-                    <span className="gb-title block text-lg text-gb-ink">{a.frequencia30d}%</span>
-                    <span className="block text-[10px] uppercase tracking-wider text-gb-gray-500">presença</span>
+                    <span className="rs-title block text-lg text-rs-ink">{a.frequencia30d}%</span>
+                    <span className="block text-[10px] uppercase tracking-wider text-rs-gray-500">presença</span>
                   </span>
                 </Link>
               </li>
@@ -240,17 +240,17 @@ export function Painel() {
 
         <Card>
           <CardHeader titulo="Agenda" descricao="Próximos três dias" linkPara="/agenda" />
-          <div className="divide-y divide-gb-gray-200">
+          <div className="divide-y divide-rs-gray-200">
             {proximosDias.map(({ data, aulas }) => (
               <div key={data.toISOString()} className="flex gap-4 px-5 py-3">
                 <div className="w-10 shrink-0 pt-0.5 text-center">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-gb-gray-500">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-rs-gray-500">
                     {DIAS_SEMANA[data.getDay()]}
                   </p>
-                  <p className="gb-title text-xl text-gb-ink">{String(data.getDate()).padStart(2, '0')}</p>
+                  <p className="rs-title text-xl text-rs-ink">{String(data.getDate()).padStart(2, '0')}</p>
                 </div>
                 <ul className="min-w-0 flex-1 space-y-1">
-                  {aulas.length === 0 && <li className="py-2 text-sm text-gb-gray-500">Sem aulas neste dia.</li>}
+                  {aulas.length === 0 && <li className="py-2 text-sm text-rs-gray-500">Sem aulas neste dia.</li>}
                   {aulas.map((aula) => {
                     const ehProxima = proxima?.aula.id === aula.id && proxima.quando.getDate() === data.getDate()
                     return (
@@ -258,13 +258,13 @@ export function Painel() {
                         key={aula.id}
                         className={
                           'flex items-center gap-3 rounded px-2 py-1.5 ' +
-                          (ehProxima ? 'bg-gb-blue-50 ring-1 ring-gb-blue-100' : '')
+                          (ehProxima ? 'bg-rs-blue-50 ring-1 ring-rs-blue-100' : '')
                         }
                       >
-                        <span className="w-11 shrink-0 font-mono text-xs font-semibold text-gb-gray-700">
+                        <span className="w-11 shrink-0 font-mono text-xs font-semibold text-rs-gray-700">
                           {aula.inicio}
                         </span>
-                        <span className="min-w-0 flex-1 truncate text-sm text-gb-ink">{aula.titulo}</span>
+                        <span className="min-w-0 flex-1 truncate text-sm text-rs-ink">{aula.titulo}</span>
                         {ehProxima && (
                           <Badge tom="azul" className="shrink-0">
                             Próxima
@@ -286,11 +286,11 @@ export function Painel() {
               valor={faixas.filter((f) => f.faixa !== 'branca').reduce((s, f) => s + f.pct, 0)}
               centro={
                 <div>
-                  <p className="gb-title text-3xl text-gb-ink">
+                  <p className="rs-title text-3xl text-rs-ink">
                     {faixas.filter((f) => f.faixa !== 'branca').reduce((s, f) => s + f.pct, 0)}
                     <span className="text-lg">%</span>
                   </p>
-                  <p className="text-[10px] uppercase tracking-wider text-gb-gray-500">graduados</p>
+                  <p className="text-[10px] uppercase tracking-wider text-rs-gray-500">graduados</p>
                 </div>
               }
             />
@@ -298,8 +298,8 @@ export function Painel() {
               {faixas.slice(0, 6).map((f) => (
                 <li key={f.faixa} className="flex items-center gap-2.5">
                   <span aria-hidden className="size-3 shrink-0 rounded-full border border-black/15" style={{ background: f.cor }} />
-                  <span className="min-w-0 flex-1 truncate text-sm text-gb-gray-700">{f.label}</span>
-                  <span className="shrink-0 text-sm font-bold text-gb-ink">{f.pct}%</span>
+                  <span className="min-w-0 flex-1 truncate text-sm text-rs-gray-700">{f.label}</span>
+                  <span className="shrink-0 text-sm font-bold text-rs-ink">{f.pct}%</span>
                 </li>
               ))}
             </ul>
@@ -382,15 +382,15 @@ export function Painel() {
             {ocupacaoTurmas().map((t) => (
               <div key={t.turma}>
                 <div className="mb-1.5 flex items-baseline justify-between gap-2">
-                  <span className="truncate text-sm font-semibold text-gb-ink">{t.turma}</span>
-                  <span className="shrink-0 text-xs text-gb-gray-500">
+                  <span className="truncate text-sm font-semibold text-rs-ink">{t.turma}</span>
+                  <span className="shrink-0 text-xs text-rs-gray-500">
                     {t.mediaPresentes}/{t.capacidade} · {t.ocupacao}%
                   </span>
                 </div>
                 <Progress valor={t.ocupacao} cor={t.cor} />
               </div>
             ))}
-            <p className="pt-1 text-xs leading-relaxed text-gb-gray-500">
+            <p className="pt-1 text-xs leading-relaxed text-rs-gray-500">
               Turmas acima de 85% pedem uma segunda sessão no horário. Abaixo de 35%, vale rever o horário
               ou reforçar o convite.
             </p>
@@ -411,14 +411,14 @@ export function Painel() {
               <Link
                 key={to + label}
                 to={to}
-                className="group flex items-start gap-3 rounded-md border border-gb-gray-200 p-4 transition-colors hover:border-gb-blue-300 hover:bg-gb-blue-50"
+                className="group flex items-start gap-3 rounded-md border border-rs-gray-200 p-4 transition-colors hover:border-rs-blue-300 hover:bg-rs-blue-50"
               >
-                <span className="grid size-9 shrink-0 place-items-center rounded-md bg-gb-blue-50 text-gb-blue-600 group-hover:bg-white">
+                <span className="grid size-9 shrink-0 place-items-center rounded-md bg-rs-blue-50 text-rs-blue-600 group-hover:bg-white">
                   <Icone className="size-[18px]" />
                 </span>
                 <span className="min-w-0">
-                  <span className="block text-sm font-bold text-gb-ink">{label}</span>
-                  <span className="block text-xs text-gb-gray-500">{desc}</span>
+                  <span className="block text-sm font-bold text-rs-ink">{label}</span>
+                  <span className="block text-xs text-rs-gray-500">{desc}</span>
                 </span>
               </Link>
             ))}
@@ -427,8 +427,8 @@ export function Painel() {
       )}
 
       {/* Turmas ativas — contexto de rodapé */}
-      <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-gb-gray-500">
-        <span className="gb-label">Turmas ativas</span>
+      <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-rs-gray-500">
+        <span className="rs-label">Turmas ativas</span>
         {TURMAS.map((t) => (
           <Badge key={t.id} tom="neutro">
             <span aria-hidden className="size-2 rounded-full" style={{ background: t.cor }} />

@@ -22,7 +22,7 @@ export function Avatar({
     <span
       aria-hidden
       className={cn(
-        'inline-flex shrink-0 items-center justify-center rounded-full border border-gb-gray-200 bg-gb-gray-100 font-bold tracking-wide text-gb-gray-700',
+        'inline-flex shrink-0 items-center justify-center rounded-full border border-rs-gray-200 bg-rs-gray-100 font-bold tracking-wide text-rs-gray-700',
         TAM[tamanho],
         className,
       )}

@@ -28,12 +28,12 @@ export function StatCard({
   const conteudo = (
     <>
       <div className="flex items-start justify-between gap-3">
-        <p className={cn('gb-label', destaque && 'text-white/75')}>{label}</p>
+        <p className={cn('rs-label', destaque && 'text-white/75')}>{label}</p>
         {icone && (
           <span
             className={cn(
               'grid size-9 shrink-0 place-items-center rounded-md',
-              destaque ? 'bg-white/15 text-white' : 'bg-gb-blue-50 text-gb-blue-600',
+              destaque ? 'bg-white/15 text-white' : 'bg-rs-blue-50 text-rs-blue-600',
             )}
           >
             {icone}
@@ -41,7 +41,7 @@ export function StatCard({
         )}
       </div>
 
-      <p className={cn('gb-metric mt-3', destaque ? 'text-white' : 'text-gb-ink')}>
+      <p className={cn('rs-metric mt-3', destaque ? 'text-white' : 'text-rs-ink')}>
         {valor}
         {sufixo && <span className="text-2xl">{sufixo}</span>}
       </p>
@@ -51,7 +51,7 @@ export function StatCard({
           <span
             className={cn(
               'inline-flex items-center gap-1 text-xs font-semibold',
-              destaque ? 'text-white' : positiva ? 'text-gb-success' : 'text-gb-red-600',
+              destaque ? 'text-white' : positiva ? 'text-rs-success' : 'text-rs-red-600',
             )}
           >
             {positiva ? <TrendingUp className="size-3.5" /> : <TrendingDown className="size-3.5" />}
@@ -59,14 +59,14 @@ export function StatCard({
             {variacao.toFixed(0)}%
           </span>
         )}
-        {nota && <span className={cn('text-xs', destaque ? 'text-white/80' : 'text-gb-gray-500')}>{nota}</span>}
+        {nota && <span className={cn('text-xs', destaque ? 'text-white/80' : 'text-rs-gray-500')}>{nota}</span>}
       </div>
     </>
   )
 
   const classe = cn(
     'block rounded-lg border p-5 shadow-[var(--shadow-card)] transition-shadow',
-    destaque ? 'border-transparent bg-gb-red-600' : 'border-gb-gray-200 bg-white',
+    destaque ? 'border-transparent bg-rs-red-600' : 'border-rs-gray-200 bg-white',
     para && 'hover:shadow-[0_4px_14px_rgba(17,17,17,0.10)]',
   )
 
@@ -77,7 +77,7 @@ export function StatCard({
         <span
           className={cn(
             'mt-3 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider',
-            destaque ? 'text-white' : 'text-gb-blue-600',
+            destaque ? 'text-white' : 'text-rs-blue-600',
           )}
         >
           Ver detalhes

@@ -1,6 +1,6 @@
-# SaaS de gestão para academia de jiu-jitsu
+# REDSHIELD — sistema de gestão da academia
 
-Sistema de gestão para academias de jiu-jitsu brasileiro: alunos, planos, presença, agenda,
+Sistema de gestão da academia REDSHIELD (jiu-jitsu brasileiro): alunos, planos, presença, agenda,
 progresso de faixas e financeiro em um só lugar.
 
 **Este repositório contém a Fase 1 — o front-end completo, navegável, com dados simulados.**
@@ -33,9 +33,9 @@ Senha `treino123` para todos.
 
 | E-mail | Papel | Enxerga |
 |---|---|---|
-| `gestor@gb.com.br` | Gestor | Tudo, incluindo Financeiro e Planos |
-| `professor@gb.com.br` | Professor | Alunos, Agenda, Presença, Progresso |
-| `aluno@gb.com.br` | Aluno | Painel, Agenda, Progresso, Check-in |
+| `gestor@redshield.com.br` | Gestor | Tudo, incluindo Financeiro e Planos |
+| `professor@redshield.com.br` | Professor | Alunos, Agenda, Presença, Progresso |
+| `aluno@redshield.com.br` | Aluno | Painel, Agenda, Progresso, Check-in |
 
 ## O que já está pronto
 
@@ -71,13 +71,12 @@ React 19 · TypeScript (strict) · Vite 8 · Tailwind CSS v4 · React Router · 
 │       ├── pages/       uma pasta por bloco do MVP
 │       └── types/       contrato de domínio
 ├── PLANO_DESENVOLVIMENTO.md                    # plano completo, front e back
-├── graciebarra_saas_guia_identidade_visual.md  # guia de direção visual
-└── graciebarra_saas_direcao_visual.png         # referência conceitual
+├── redshield_guia_identidade_visual.md         # guia de direção visual (provisório)
+└── referencia_visual_conceitual.png            # referência conceitual (não é do REDSHIELD)
 ```
 
 ## Sobre a marca
 
-As cores e a tipografia seguem o guia de direção visual do projeto e são **aproximações para
-prototipação**, não especificação oficial de nenhuma rede. O sistema usa uma **marca abstrata
-própria** e não reproduz monograma, escudo, selo ou logotipo de terceiros. Antes de publicar em
-produção, confirme arquivos de marca e permissões de uso com a liderança responsável.
+O nome do produto e da academia é **REDSHIELD**. As cores, a tipografia e o símbolo (um escudo simples) são **provisórios**, usados para prototipar.
+Se o REDSHIELD tiver identidade visual própria, ela substitui a atual. A imagem `referencia_visual_conceitual.png` é uma direção conceitual inicial e traz um símbolo
+e fotos que **não** são do REDSHIELD; não a publique. Antes de divulgar, confirme a disponibilidade do nome e do domínio.

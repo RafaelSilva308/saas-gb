@@ -42,7 +42,7 @@ export function Modal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
-      <div className="absolute inset-0 bg-gb-ink/45 backdrop-blur-[2px]" onClick={aoFechar} aria-hidden />
+      <div className="absolute inset-0 bg-rs-ink/45 backdrop-blur-[2px]" onClick={aoFechar} aria-hidden />
       <div
         ref={painel}
         role="dialog"
@@ -54,15 +54,15 @@ export function Modal({
           larguras[largura],
         )}
       >
-        <header className="flex items-start justify-between gap-4 border-b border-gb-gray-200 px-4 py-4 sm:px-6">
+        <header className="flex items-start justify-between gap-4 border-b border-rs-gray-200 px-4 py-4 sm:px-6">
           <div className="min-w-0">
-            <h2 className="gb-title text-xl text-gb-ink">{titulo}</h2>
-            {descricao && <p className="mt-1 text-sm text-gb-gray-500">{descricao}</p>}
+            <h2 className="rs-title text-xl text-rs-ink">{titulo}</h2>
+            {descricao && <p className="mt-1 text-sm text-rs-gray-500">{descricao}</p>}
           </div>
           <button
             onClick={aoFechar}
             aria-label="Fechar"
-            className="-mr-1 grid size-8 shrink-0 cursor-pointer place-items-center rounded-md text-gb-gray-500 hover:bg-gb-gray-100 hover:text-gb-ink"
+            className="-mr-1 grid size-8 shrink-0 cursor-pointer place-items-center rounded-md text-rs-gray-500 hover:bg-rs-gray-100 hover:text-rs-ink"
           >
             <X className="size-5" />
           </button>
@@ -71,7 +71,7 @@ export function Modal({
         <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5 sm:px-6">{children}</div>
 
         {rodape && (
-          <footer className="flex flex-wrap items-center justify-end gap-2 border-t border-gb-gray-200 bg-gb-gray-50 px-4 py-4 sm:px-6">
+          <footer className="flex flex-wrap items-center justify-end gap-2 border-t border-rs-gray-200 bg-rs-gray-50 px-4 py-4 sm:px-6">
             {rodape}
           </footer>
         )}
@@ -119,7 +119,7 @@ export function ConfirmDialog({
         </>
       }
     >
-      <p className="text-sm leading-relaxed text-gb-gray-700">{mensagem}</p>
+      <p className="text-sm leading-relaxed text-rs-gray-700">{mensagem}</p>
     </Modal>
   )
 }

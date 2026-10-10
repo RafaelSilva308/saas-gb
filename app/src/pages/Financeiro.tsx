@@ -123,7 +123,7 @@ export function Financeiro() {
             </option>
           ))}
         </Select>
-        <p className="text-sm text-gb-gray-500">{doMes.length} lançamentos no período</p>
+        <p className="text-sm text-rs-gray-500">{doMes.length} lançamentos no período</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -187,8 +187,8 @@ export function Financeiro() {
                   {porCategoria.slice(0, 6).map((c, i) => (
                     <li key={c.nome} className="flex items-center gap-2.5 text-sm">
                       <span aria-hidden className="size-2.5 shrink-0 rounded-full" style={{ background: PALETA_DESPESA[i % PALETA_DESPESA.length] }} />
-                      <span className="min-w-0 flex-1 truncate text-gb-gray-700">{c.nome}</span>
-                      <span className="shrink-0 font-semibold text-gb-ink">{brl(c.valor)}</span>
+                      <span className="min-w-0 flex-1 truncate text-rs-gray-700">{c.nome}</span>
+                      <span className="shrink-0 font-semibold text-rs-ink">{brl(c.valor)}</span>
                     </li>
                   ))}
                 </ul>
@@ -227,35 +227,35 @@ export function Financeiro() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[760px] text-left">
               <thead>
-                <tr className="border-b border-gb-gray-200">
+                <tr className="border-b border-rs-gray-200">
                   {['Data', 'Descrição', 'Categoria', 'Método', 'Valor', 'Situação', ''].map((h) => (
-                    <th key={h} className="gb-label px-5 py-3">
+                    <th key={h} className="rs-label px-5 py-3">
                       {h}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gb-gray-200">
+              <tbody className="divide-y divide-rs-gray-200">
                 {listadas.map((t) => (
-                  <tr key={t.id} className="group hover:bg-gb-gray-50">
-                    <td className="px-5 py-3 text-sm text-gb-gray-700">{dataCurta(t.data)}</td>
+                  <tr key={t.id} className="group hover:bg-rs-gray-50">
+                    <td className="px-5 py-3 text-sm text-rs-gray-700">{dataCurta(t.data)}</td>
                     <td className="px-5 py-3">
                       <span className="flex items-center gap-2">
                         <span
                           aria-hidden
                           className={cn(
                             'grid size-6 shrink-0 place-items-center rounded-full',
-                            t.tipo === 'receita' ? 'bg-gb-success-bg text-gb-success' : 'bg-gb-gray-100 text-gb-gray-700',
+                            t.tipo === 'receita' ? 'bg-rs-success-bg text-rs-success' : 'bg-rs-gray-100 text-rs-gray-700',
                           )}
                         >
                           {t.tipo === 'receita' ? <ArrowUpRight className="size-3.5" /> : <ArrowDownRight className="size-3.5" />}
                         </span>
-                        <span className="min-w-0 truncate text-sm font-semibold text-gb-ink">{t.descricao}</span>
+                        <span className="min-w-0 truncate text-sm font-semibold text-rs-ink">{t.descricao}</span>
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-sm text-gb-gray-700">{t.categoria}</td>
-                    <td className="px-5 py-3 text-sm capitalize text-gb-gray-700">{t.metodo}</td>
-                    <td className={cn('px-5 py-3 text-sm font-bold', t.tipo === 'receita' ? 'text-gb-success' : 'text-gb-ink')}>
+                    <td className="px-5 py-3 text-sm text-rs-gray-700">{t.categoria}</td>
+                    <td className="px-5 py-3 text-sm capitalize text-rs-gray-700">{t.metodo}</td>
+                    <td className={cn('px-5 py-3 text-sm font-bold', t.tipo === 'receita' ? 'text-rs-success' : 'text-rs-ink')}>
                       {t.tipo === 'receita' ? '+' : '−'} {brl(t.valor)}
                     </td>
                     <td className="px-5 py-3">
@@ -265,7 +265,7 @@ export function Financeiro() {
                       <button
                         onClick={() => removerTransacao(t.id)}
                         aria-label={`Remover ${t.descricao}`}
-                        className="cursor-pointer rounded-md p-2 text-gb-gray-500 opacity-0 transition-opacity hover:bg-gb-red-50 hover:text-gb-red-600 focus-visible:opacity-100 group-hover:opacity-100"
+                        className="cursor-pointer rounded-md p-2 text-rs-gray-500 opacity-0 transition-opacity hover:bg-rs-red-50 hover:text-rs-red-600 focus-visible:opacity-100 group-hover:opacity-100"
                       >
                         <Trash2 className="size-4" />
                       </button>
@@ -349,7 +349,7 @@ export function Financeiro() {
           )}
 
           {erro && (
-            <p role="alert" className="rounded-md border border-gb-red-100 bg-gb-red-50 px-3 py-2 text-sm font-medium text-gb-red-700">
+            <p role="alert" className="rounded-md border border-rs-red-100 bg-rs-red-50 px-3 py-2 text-sm font-medium text-rs-red-700">
               {erro}
             </p>
           )}

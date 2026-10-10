@@ -8,7 +8,7 @@ export function Card({ className, children }: { className?: string; children: Re
   return (
     <section
       className={cn(
-        'rounded-lg border border-gb-gray-200 bg-white shadow-[var(--shadow-card)] overflow-hidden',
+        'rounded-lg border border-rs-gray-200 bg-white shadow-[var(--shadow-card)] overflow-hidden',
         className,
       )}
     >
@@ -31,16 +31,16 @@ export function CardHeader({
   linkPara?: string
 }) {
   return (
-    <header className="flex items-start justify-between gap-4 border-b border-gb-gray-200 px-4 py-4 sm:px-5">
+    <header className="flex items-start justify-between gap-4 border-b border-rs-gray-200 px-4 py-4 sm:px-5">
       <div className="min-w-0">
-        <h2 className="gb-title text-lg text-gb-ink">{titulo}</h2>
-        {descricao && <p className="mt-0.5 text-sm text-gb-gray-500">{descricao}</p>}
+        <h2 className="rs-title text-lg text-rs-ink">{titulo}</h2>
+        {descricao && <p className="mt-0.5 text-sm text-rs-gray-500">{descricao}</p>}
       </div>
       {acao}
       {linkPara && (
         <Link
           to={linkPara}
-          className="shrink-0 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-gb-blue-600 hover:text-gb-blue-700 hover:underline"
+          className="shrink-0 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-rs-blue-600 hover:text-rs-blue-700 hover:underline"
         >
           {linkTexto ?? 'Ver tudo'}
           <ChevronRight className="size-3.5" />

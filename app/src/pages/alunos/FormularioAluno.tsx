@@ -105,7 +105,7 @@ export function FormularioAluno({
         className="space-y-6"
       >
         <fieldset className="space-y-4">
-          <legend className="gb-label mb-2">Dados pessoais</legend>
+          <legend className="rs-label mb-2">Dados pessoais</legend>
           <div className="grid gap-4 sm:grid-cols-2">
             <Input
               label="Nome completo"
@@ -147,7 +147,7 @@ export function FormularioAluno({
         </fieldset>
 
         <fieldset className="space-y-4">
-          <legend className="gb-label mb-2">Graduação e situação</legend>
+          <legend className="rs-label mb-2">Graduação e situação</legend>
           <div className="grid gap-4 sm:grid-cols-3">
             <Select label="Faixa" value={dados.faixa} onChange={(e) => set('faixa', e.target.value as Faixa)}>
               {Object.entries(FAIXAS).map(([k, v]) => (
@@ -176,7 +176,7 @@ export function FormularioAluno({
         </fieldset>
 
         <fieldset className="space-y-4">
-          <legend className="gb-label mb-2">Plano e cobrança</legend>
+          <legend className="rs-label mb-2">Plano e cobrança</legend>
           <div className="grid gap-4 sm:grid-cols-3">
             <Select label="Plano" value={dados.planoId} onChange={(e) => set('planoId', e.target.value)}>
               {planos
@@ -211,13 +211,13 @@ export function FormularioAluno({
         </fieldset>
 
         <fieldset className="space-y-4">
-          <legend className="gb-label mb-2">Responsável</legend>
-          <label className="flex cursor-pointer items-center gap-2 text-sm text-gb-gray-700">
+          <legend className="rs-label mb-2">Responsável</legend>
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-rs-gray-700">
             <input
               type="checkbox"
               checked={temResponsavel}
               onChange={(e) => setTemResponsavel(e.target.checked)}
-              className="size-4 cursor-pointer accent-gb-blue-600"
+              className="size-4 cursor-pointer accent-rs-blue-600"
             />
             Aluno menor de idade com responsável
           </label>
