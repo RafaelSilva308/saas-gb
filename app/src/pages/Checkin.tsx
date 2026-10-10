@@ -71,7 +71,7 @@ export function Checkin() {
       />
 
       {erro && (
-        <div role="alert" className="mb-4 rounded-lg border border-gb-red-100 bg-gb-red-50 px-4 py-3 text-sm text-gb-red-700">
+        <div role="alert" className="mb-4 rounded-lg border border-rs-red-100 bg-rs-red-50 px-4 py-3 text-sm text-rs-red-700">
           {erro}
         </div>
       )}
@@ -101,9 +101,9 @@ export function Checkin() {
                 <Card className="h-full">
                   <div className="flex h-full flex-col gap-4 p-5">
                     <div>
-                      <p className="gb-label">{turmaPorId(aula.turmaId)?.nome}</p>
-                      <h2 className="gb-title mt-1 text-xl text-gb-ink">{aula.titulo}</h2>
-                      <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gb-gray-500">
+                      <p className="rs-label">{turmaPorId(aula.turmaId)?.nome}</p>
+                      <h2 className="rs-title mt-1 text-xl text-rs-ink">{aula.titulo}</h2>
+                      <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-rs-gray-500">
                         <span className="inline-flex items-center gap-1.5">
                           <Clock className="size-4" /> {aula.inicio} – {aula.fim}
                         </span>
@@ -170,13 +170,13 @@ export function Checkin() {
             mensagem="Faça o check-in na próxima aula e ela aparece aqui."
           />
         ) : (
-          <ul className="divide-y divide-gb-gray-200">
+          <ul className="divide-y divide-rs-gray-200">
             {historico.map((h) => {
               const aula = aulas.find((a) => a.id === h.aulaId)
               return (
                 <li key={`${h.data}-${h.aulaId}`} className="flex items-center gap-4 px-5 py-3">
-                  <span className="w-16 shrink-0 text-xs font-semibold text-gb-gray-500">{dataCurta(h.data)}</span>
-                  <span className="min-w-0 flex-1 truncate text-sm font-semibold text-gb-ink">{aula?.titulo}</span>
+                  <span className="w-16 shrink-0 text-xs font-semibold text-rs-gray-500">{dataCurta(h.data)}</span>
+                  <span className="min-w-0 flex-1 truncate text-sm font-semibold text-rs-ink">{aula?.titulo}</span>
                   <Badge tom={h.registro.status === 'presente' ? 'ok' : h.registro.status === 'justificado' ? 'alerta' : 'neutro'}>
                     {h.registro.status === 'presente' ? 'Presente' : h.registro.status === 'justificado' ? 'Justificado' : 'Falta'}
                   </Badge>

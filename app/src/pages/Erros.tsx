@@ -13,9 +13,9 @@ function Aviso({
 }) {
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center">
-      <span className="grid size-14 place-items-center rounded-full bg-gb-gray-100 text-gb-gray-500">{icone}</span>
-      <h1 className="gb-title text-3xl text-gb-ink">{titulo}</h1>
-      <p className="max-w-md text-sm text-gb-gray-500">{mensagem}</p>
+      <span className="grid size-14 place-items-center rounded-full bg-rs-gray-100 text-rs-gray-500">{icone}</span>
+      <h1 className="rs-title text-3xl text-rs-ink">{titulo}</h1>
+      <p className="max-w-md text-sm text-rs-gray-500">{mensagem}</p>
       <Link to="/painel">
         <Button variante="secundaria">Voltar ao painel</Button>
       </Link>

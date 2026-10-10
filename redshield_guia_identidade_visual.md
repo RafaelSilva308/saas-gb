@@ -1,18 +1,24 @@
-# Guia de direção visual para SaaS de academia de jiu-jitsu
+# REDSHIELD — guia de direção visual do sistema de gestão
 
 ## Escopo e observação importante
 
-Este guia foi elaborado a partir da observação do [site oficial brasileiro da Gracie Barra][1] e de uma página oficial internacional sobre padronização de comunicação da rede [2]. Ele descreve a linguagem visual observada e a traduz para um produto digital de uma academia afiliada. As cores apresentadas abaixo são **aproximações visuais para prototipação**, não uma especificação oficial de valores HEX. Antes de publicar o produto, confirme os arquivos de marca, permissões de uso e regras específicas da franquia com a liderança responsável.
+Este guia descreve a linguagem visual **provisória** do sistema de gestão do REDSHIELD. Ela foi prototipada a partir de uma direção conceitual de mercado
+(academias de jiu-jitsu de tradição institucional): vermelho para ação, azul para estrutura, tipografia condensada em caixa alta e diagonais como acento.
+As cores abaixo são **aproximações para prototipação**, **não** a identidade oficial do REDSHIELD.
 
-A imagem de referência anexa é uma **direção conceitual para o SaaS**. Ela não deve ser tratada como reprodução do logotipo ou como material corporativo oficial da Gracie Barra.
+**Se o REDSHIELD tiver identidade própria** (logotipo, cores, tipografia, manual de marca), ela substitui este guia. O símbolo atual do sistema
+(`app/src/components/Logo.tsx`) é um escudo simples e provisório.
+
+O arquivo [`referencia_visual_conceitual.png`](./referencia_visual_conceitual.png) é uma **direção conceitual** usada no início do projeto. Ele traz um símbolo e uma
+fotografia que **não são do REDSHIELD** e não devem ser publicados, reproduzidos nem tratados como material da academia.
 
 ## Essência da identidade
 
-A marca comunica uma combinação de **legado, disciplina, comunidade, método, progresso e excelência**. O tom não é agressivo nem excessivamente “fitness”; é institucional, humano e orientado à jornada de longo prazo do aluno. A promessa visual é de uma organização consistente, acolhedora e profissional, na qual cada pessoa sabe onde está e qual é o próximo passo.
+A identidade deve comunicar uma combinação de **legado, disciplina, comunidade, método, progresso e excelência**. O tom não é agressivo nem excessivamente “fitness”; é institucional, humano e orientado à jornada de longo prazo do aluno. A promessa visual é de uma organização consistente, acolhedora e profissional, na qual cada pessoa sabe onde está e qual é o próximo passo.
 
 > Princípio de produto: transformar a experiência da academia em uma jornada clara de evolução, pertencimento e organização.
 
-## Paleta visual observada
+## Paleta visual provisória
 
 | Função | Cor aproximada | Uso recomendado no SaaS |
 |---|---|---|
@@ -72,16 +78,10 @@ Para alunos e responsáveis, o produto pode enfatizar calendário, presença, ev
 | Usar vermelho e azul como sistema funcional de prioridade | Transformar toda a interface em vermelho e azul saturados |
 | Criar uma hierarquia forte e previsível | Encher o dashboard com widgets sem prioridade |
 | Usar fotos humanas, reais e respeitosas | Usar clichês agressivos de combate |
-| Aplicar diagonais como detalhe editorial | Reproduzir símbolos ou layouts proprietários |
+| Aplicar diagonais como detalhe editorial | Reproduzir símbolos ou layouts de terceiros |
 | Manter CTAs curtos e orientados a ação | Usar slogans longos em cada tela |
 | Garantir contraste e foco visível | Depender apenas de cor para indicar estado |
 
 ## Síntese executiva
 
-A direção recomendada é **institucional, esportiva e humana**: superfícies brancas, navegação azul, ações vermelhas, tipografia sans-serif forte, fotografia documental com baixa saturação e geometria diagonal usada com moderação. O resultado deve parecer uma ferramenta confiável para uma comunidade disciplinada, não um aplicativo de academia genérico.
-
-## Referências
-
-[1]: https://graciebarra.com.br/ "Gracie Barra Brasil — site oficial"
-
-[2]: https://graciebarra.com/news/gb-studio-simplifying-branding-marketing-and-communication-for-gracie-barra-schools/ "GB Studio: Simplifying Branding, Marketing, and Communication for Gracie Barra Schools — Gracie Barra"
+A direção adotada é **institucional, esportiva e humana**: superfícies brancas, navegação azul, ações vermelhas, tipografia sans-serif forte, fotografia documental com baixa saturação e geometria diagonal usada com moderação. O resultado deve parecer uma ferramenta confiável para uma comunidade disciplinada, não um aplicativo de academia genérico.

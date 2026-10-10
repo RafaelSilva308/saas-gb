@@ -36,7 +36,7 @@ export function Topbar({ aoAbrirMenu }: { aoAbrirMenu: () => void }) {
   }, [])
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-gb-blue-700/40 bg-gb-blue-600 px-4 sm:px-6">
+    <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-rs-blue-700/40 bg-rs-blue-600 px-4 sm:px-6">
       <button
         onClick={aoAbrirMenu}
         aria-label="Abrir menu"
@@ -56,17 +56,17 @@ export function Topbar({ aoAbrirMenu }: { aoAbrirMenu: () => void }) {
           className="h-9 w-full rounded-md border border-white/20 bg-white/10 pl-9 pr-3 text-sm text-white placeholder:text-white/55 focus:border-white/40 focus:bg-white/15 focus:outline-none"
         />
         {resultados.length > 0 && (
-          <ul className="absolute left-0 right-0 top-11 z-30 overflow-hidden rounded-md border border-gb-gray-200 bg-white py-1 shadow-[var(--shadow-pop)]">
+          <ul className="absolute left-0 right-0 top-11 z-30 overflow-hidden rounded-md border border-rs-gray-200 bg-white py-1 shadow-[var(--shadow-pop)]">
             {resultados.map((a) => (
               <li key={a.id}>
                 <Link
                   to={`/alunos/${a.id}`}
                   onClick={() => setBusca('')}
-                  className="flex items-center gap-3 px-3 py-2 hover:bg-gb-gray-50"
+                  className="flex items-center gap-3 px-3 py-2 hover:bg-rs-gray-50"
                 >
                   <Avatar nome={a.nome} tamanho="sm" />
                   <span className="min-w-0">
-                    <span className="block truncate text-sm font-semibold text-gb-ink">{a.nome}</span>
+                    <span className="block truncate text-sm font-semibold text-rs-ink">{a.nome}</span>
                     <FaixaBadge faixa={a.faixa} compacto />
                   </span>
                 </Link>
@@ -89,27 +89,27 @@ export function Topbar({ aoAbrirMenu }: { aoAbrirMenu: () => void }) {
           >
             <Bell className="size-5" />
             {pendencias > 0 && (
-              <span className="absolute right-1 top-1 grid min-w-4 place-items-center rounded-full bg-gb-red-500 px-1 text-[10px] font-bold leading-4 text-white">
+              <span className="absolute right-1 top-1 grid min-w-4 place-items-center rounded-full bg-rs-red-500 px-1 text-[10px] font-bold leading-4 text-white">
                 {pendencias}
               </span>
             )}
           </button>
 
           {notifAberta && (
-            <div className="absolute right-0 top-11 w-80 overflow-hidden rounded-md border border-gb-gray-200 bg-white shadow-[var(--shadow-pop)]">
-              <p className="gb-label border-b border-gb-gray-200 px-4 py-3">Pendências</p>
-              <ul className="max-h-72 divide-y divide-gb-gray-200 overflow-y-auto">
+            <div className="absolute right-0 top-11 w-80 overflow-hidden rounded-md border border-rs-gray-200 bg-white shadow-[var(--shadow-pop)]">
+              <p className="rs-label border-b border-rs-gray-200 px-4 py-3">Pendências</p>
+              <ul className="max-h-72 divide-y divide-rs-gray-200 overflow-y-auto">
                 {inadimplentes().slice(0, 5).map((a) => (
                   <li key={a.id}>
                     <Link
                       to={`/alunos/${a.id}`}
                       onClick={() => setNotifAberta(false)}
-                      className="flex items-start gap-3 px-4 py-3 hover:bg-gb-gray-50"
+                      className="flex items-start gap-3 px-4 py-3 hover:bg-rs-gray-50"
                     >
-                      <span aria-hidden className="mt-1.5 size-2 shrink-0 rounded-full bg-gb-red-600" />
+                      <span aria-hidden className="mt-1.5 size-2 shrink-0 rounded-full bg-rs-red-600" />
                       <span className="min-w-0">
-                        <span className="block text-sm font-semibold text-gb-ink">{a.nome}</span>
-                        <span className="block text-xs text-gb-gray-500">
+                        <span className="block text-sm font-semibold text-rs-ink">{a.nome}</span>
+                        <span className="block text-xs text-rs-gray-500">
                           Mensalidade em aberto — vencimento dia {a.vencimentoDia}
                         </span>
                       </span>
@@ -120,7 +120,7 @@ export function Topbar({ aoAbrirMenu }: { aoAbrirMenu: () => void }) {
               <Link
                 to="/financeiro"
                 onClick={() => setNotifAberta(false)}
-                className="block border-t border-gb-gray-200 px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gb-blue-600 hover:bg-gb-gray-50"
+                className="block border-t border-rs-gray-200 px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-rs-blue-600 hover:bg-rs-gray-50"
               >
                 Ver financeiro
               </Link>
@@ -148,15 +148,15 @@ export function Topbar({ aoAbrirMenu }: { aoAbrirMenu: () => void }) {
           </button>
 
           {menuAberto && (
-            <div className="absolute right-0 top-12 w-56 overflow-hidden rounded-md border border-gb-gray-200 bg-white py-1 shadow-[var(--shadow-pop)]">
-              <div className="border-b border-gb-gray-200 px-4 py-3">
-                <p className="truncate text-sm font-semibold text-gb-ink">{usuario?.nome}</p>
-                <p className="truncate text-xs text-gb-gray-500">{usuario?.email}</p>
+            <div className="absolute right-0 top-12 w-56 overflow-hidden rounded-md border border-rs-gray-200 bg-white py-1 shadow-[var(--shadow-pop)]">
+              <div className="border-b border-rs-gray-200 px-4 py-3">
+                <p className="truncate text-sm font-semibold text-rs-ink">{usuario?.nome}</p>
+                <p className="truncate text-xs text-rs-gray-500">{usuario?.email}</p>
               </div>
               <Link
                 to="/configuracoes"
                 onClick={() => setMenuAberto(false)}
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gb-gray-700 hover:bg-gb-gray-50"
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-rs-gray-700 hover:bg-rs-gray-50"
               >
                 <UserCog className="size-4" /> Configurações
               </Link>
@@ -165,7 +165,7 @@ export function Topbar({ aoAbrirMenu }: { aoAbrirMenu: () => void }) {
                   sair()
                   navigate('/entrar')
                 }}
-                className="flex w-full cursor-pointer items-center gap-2.5 px-4 py-2.5 text-sm text-gb-red-600 hover:bg-gb-red-50"
+                className="flex w-full cursor-pointer items-center gap-2.5 px-4 py-2.5 text-sm text-rs-red-600 hover:bg-rs-red-50"
               >
                 <LogOut className="size-4" /> Sair
               </button>

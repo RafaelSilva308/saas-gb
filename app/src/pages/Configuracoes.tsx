@@ -47,11 +47,11 @@ export function Configuracoes() {
           <Card className="lg:col-span-2">
             <CardHeader titulo="Dados da academia" descricao="Aparecem em recibos e relatórios" />
             <CardBody className="grid gap-4 sm:grid-cols-2">
-              <Input label="Nome da academia" defaultValue="Academia de Jiu-Jitsu — Unidade Centro" wrapClass="sm:col-span-2" />
+              <Input label="Nome da academia" defaultValue="REDSHIELD" wrapClass="sm:col-span-2" />
               <Input label="CNPJ" defaultValue="00.000.000/0001-00" />
               <Input label="Telefone" defaultValue="(11) 3000-0000" />
-              <Input label="E-mail de contato" type="email" defaultValue="contato@academia.com.br" />
-              <Input label="Responsável técnico" defaultValue="Prof. Carlos Barra" />
+              <Input label="E-mail de contato" type="email" defaultValue="contato@redshield.com.br" />
+              <Input label="Responsável técnico" defaultValue="Prof. Carlos Vasques" />
               <Input label="Endereço" defaultValue="Rua do Tatame, 100 — Centro" wrapClass="sm:col-span-2" />
               <Select label="Fuso horário" defaultValue="sp">
                 <option value="sp">America/Sao_Paulo (GMT-3)</option>
@@ -61,7 +61,7 @@ export function Configuracoes() {
                 <option value="brl">Real (R$)</option>
               </Select>
             </CardBody>
-            <footer className="flex justify-end gap-2 border-t border-gb-gray-200 bg-gb-gray-50 px-5 py-4">
+            <footer className="flex justify-end gap-2 border-t border-rs-gray-200 bg-rs-gray-50 px-5 py-4">
               <Button variante="fantasma">Descartar</Button>
               <Button variante="primaria">Salvar alterações</Button>
             </footer>
@@ -73,14 +73,14 @@ export function Configuracoes() {
               <div className="flex items-center gap-3">
                 <Avatar nome={usuario?.nome ?? ''} tamanho="lg" />
                 <div className="min-w-0">
-                  <p className="truncate font-bold text-gb-ink">{usuario?.nome}</p>
-                  <p className="truncate text-sm text-gb-gray-500">{usuario?.email}</p>
+                  <p className="truncate font-bold text-rs-ink">{usuario?.nome}</p>
+                  <p className="truncate text-sm text-rs-gray-500">{usuario?.email}</p>
                   <Badge tom="azul" className="mt-1.5">
                     {usuario ? ROTULO_PAPEL[usuario.papel] : ''}
                   </Badge>
                 </div>
               </div>
-              <div className="space-y-3 border-t border-gb-gray-200 pt-4">
+              <div className="space-y-3 border-t border-rs-gray-200 pt-4">
                 <Input label="Nome de exibição" defaultValue={usuario?.nome} />
                 <Input label="E-mail" type="email" defaultValue={usuario?.email} />
                 <Button variante="secundaria" className="w-full">
@@ -102,28 +102,28 @@ export function Configuracoes() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-left">
               <thead>
-                <tr className="border-b border-gb-gray-200">
+                <tr className="border-b border-rs-gray-200">
                   {['Pessoa', 'E-mail', 'Papel', 'Acesso', ''].map((h) => (
-                    <th key={h} className="gb-label px-5 py-3">
+                    <th key={h} className="rs-label px-5 py-3">
                       {h}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gb-gray-200">
+              <tbody className="divide-y divide-rs-gray-200">
                 {USUARIOS.map((u) => (
-                  <tr key={u.id} className="hover:bg-gb-gray-50">
+                  <tr key={u.id} className="hover:bg-rs-gray-50">
                     <td className="px-5 py-3">
                       <span className="flex items-center gap-3">
                         <Avatar nome={u.nome} />
-                        <span className="truncate font-semibold text-gb-ink">{u.nome}</span>
+                        <span className="truncate font-semibold text-rs-ink">{u.nome}</span>
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-sm text-gb-gray-700">{u.email}</td>
+                    <td className="px-5 py-3 text-sm text-rs-gray-700">{u.email}</td>
                     <td className="px-5 py-3">
                       <Badge tom="azul">{ROTULO_PAPEL[u.papel]}</Badge>
                     </td>
-                    <td className="px-5 py-3 text-sm text-gb-gray-500">
+                    <td className="px-5 py-3 text-sm text-rs-gray-500">
                       {u.papel === 'gestor'
                         ? 'Tudo, incluindo financeiro'
                         : u.papel === 'professor'
@@ -141,9 +141,9 @@ export function Configuracoes() {
             </table>
           </div>
 
-          <CardBody className="border-t border-gb-gray-200 bg-gb-gray-50">
-            <h3 className="gb-title mb-3 flex items-center gap-2 text-base text-gb-ink">
-              <ShieldCheck className="size-4 text-gb-blue-600" />
+          <CardBody className="border-t border-rs-gray-200 bg-rs-gray-50">
+            <h3 className="rs-title mb-3 flex items-center gap-2 text-base text-rs-ink">
+              <ShieldCheck className="size-4 text-rs-blue-600" />
               O que cada papel enxerga
             </h3>
             <div className="grid gap-3 sm:grid-cols-3">
@@ -152,12 +152,12 @@ export function Configuracoes() {
                 { Icone: Users, papel: 'Professor', desc: 'Chamada, organização das turmas, observações de treino e acompanhamento individual.' },
                 { Icone: Palette, papel: 'Aluno', desc: 'Calendário, presença, evolução de faixa e próximos objetivos.' },
               ].map(({ Icone, papel, desc }) => (
-                <div key={papel} className="rounded-md border border-gb-gray-200 bg-white p-4">
-                  <p className="flex items-center gap-2 font-bold text-gb-ink">
-                    <Icone className="size-4 text-gb-blue-600" />
+                <div key={papel} className="rounded-md border border-rs-gray-200 bg-white p-4">
+                  <p className="flex items-center gap-2 font-bold text-rs-ink">
+                    <Icone className="size-4 text-rs-blue-600" />
                     {papel}
                   </p>
-                  <p className="mt-1.5 text-xs leading-relaxed text-gb-gray-500">{desc}</p>
+                  <p className="mt-1.5 text-xs leading-relaxed text-rs-gray-500">{desc}</p>
                 </div>
               ))}
             </div>
@@ -168,7 +168,7 @@ export function Configuracoes() {
       {aba === 'notificacoes' && (
         <Card className="max-w-3xl">
           <CardHeader titulo="Avisos automáticos" descricao="O sistema envia esses lembretes sem que você precise lembrar" />
-          <CardBody className="divide-y divide-gb-gray-200">
+          <CardBody className="divide-y divide-rs-gray-200">
             <Switch
               checked={notificacoes.vencimento}
               onChange={(v) => setNotificacoes({ ...notificacoes, vencimento: v })}
@@ -200,7 +200,7 @@ export function Configuracoes() {
               descricao="Presença, novas matrículas e pendências da semana, toda segunda de manhã."
             />
           </CardBody>
-          <footer className="flex justify-end gap-2 border-t border-gb-gray-200 bg-gb-gray-50 px-5 py-4">
+          <footer className="flex justify-end gap-2 border-t border-rs-gray-200 bg-rs-gray-50 px-5 py-4">
             <Button variante="primaria">Salvar preferências</Button>
           </footer>
         </Card>
@@ -219,10 +219,10 @@ export function Configuracoes() {
                   ['Preto', '#111111', 'Títulos e números'],
                 ].map(([nome, hex, uso]) => (
                   <div key={nome}>
-                    <div className="h-20 rounded-md border border-gb-gray-200" style={{ background: hex }} />
-                    <p className="mt-2 text-sm font-bold text-gb-ink">{nome}</p>
-                    <p className="font-mono text-xs text-gb-gray-500">{hex}</p>
-                    <p className="mt-0.5 text-xs text-gb-gray-500">{uso}</p>
+                    <div className="h-20 rounded-md border border-rs-gray-200" style={{ background: hex }} />
+                    <p className="mt-2 text-sm font-bold text-rs-ink">{nome}</p>
+                    <p className="font-mono text-xs text-rs-gray-500">{hex}</p>
+                    <p className="mt-0.5 text-xs text-rs-gray-500">{uso}</p>
                   </div>
                 ))}
               </div>
@@ -233,15 +233,15 @@ export function Configuracoes() {
                   ['Borda', '#e4e8ed'],
                 ].map(([nome, hex]) => (
                   <div key={nome}>
-                    <div className="h-12 rounded-md border border-gb-gray-200" style={{ background: hex }} />
-                    <p className="mt-1.5 text-xs font-semibold text-gb-ink">{nome}</p>
-                    <p className="font-mono text-[10px] text-gb-gray-500">{hex}</p>
+                    <div className="h-12 rounded-md border border-rs-gray-200" style={{ background: hex }} />
+                    <p className="mt-1.5 text-xs font-semibold text-rs-ink">{nome}</p>
+                    <p className="font-mono text-[10px] text-rs-gray-500">{hex}</p>
                   </div>
                 ))}
               </div>
-              <p className="rounded-md border border-gb-blue-100 bg-gb-blue-50 p-3 text-xs leading-relaxed text-gb-gray-700">
-                Estes valores são <strong>aproximações para prototipação</strong>. Antes de publicar, confirme os
-                arquivos oficiais de marca e as regras de uso com a liderança da rede.
+              <p className="rounded-md border border-rs-blue-100 bg-rs-blue-50 p-3 text-xs leading-relaxed text-rs-gray-700">
+                Estes valores são <strong>provisórios</strong>, para prototipação. Se o REDSHIELD tiver identidade
+                visual própria (logotipo, cores, tipografia), ela substitui esta paleta.
               </p>
             </CardBody>
           </Card>
@@ -250,25 +250,25 @@ export function Configuracoes() {
             <CardHeader titulo="Tipografia e faixas" descricao="Títulos condensados, corpo neutro, cores de faixa com legenda" />
             <CardBody className="space-y-6">
               <div>
-                <p className="gb-label mb-2">Título principal</p>
-                <p className="gb-title text-4xl text-gb-ink">Gestão que fortalece</p>
-                <p className="gb-label mt-4 mb-1">Título secundário</p>
-                <p className="gb-title text-xl text-gb-ink">Turmas e horários</p>
-                <p className="gb-label mt-4 mb-1">Texto de apoio</p>
-                <p className="max-w-md text-sm leading-relaxed text-gb-gray-700">
+                <p className="rs-label mb-2">Título principal</p>
+                <p className="rs-title text-4xl text-rs-ink">Gestão que fortalece</p>
+                <p className="rs-label mt-4 mb-1">Título secundário</p>
+                <p className="rs-title text-xl text-rs-ink">Turmas e horários</p>
+                <p className="rs-label mt-4 mb-1">Texto de apoio</p>
+                <p className="max-w-md text-sm leading-relaxed text-rs-gray-700">
                   Texto de parágrafo com boa legibilidade para leitura contínua em telas de escritório e celular.
                 </p>
-                <p className="gb-label mt-4 mb-1">Números e destaques</p>
-                <p className="gb-metric text-gb-blue-600">12345</p>
+                <p className="rs-label mt-4 mb-1">Números e destaques</p>
+                <p className="rs-metric text-rs-blue-600">12345</p>
               </div>
 
-              <div className="border-t border-gb-gray-200 pt-4">
-                <p className="gb-label mb-3">Cores de faixa</p>
+              <div className="border-t border-rs-gray-200 pt-4">
+                <p className="rs-label mb-3">Cores de faixa</p>
                 <div className="flex flex-wrap gap-2">
                   {Object.entries(FAIXAS).map(([k, f]) => (
                     <span
                       key={k}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-gb-gray-200 px-2.5 py-1 text-xs font-semibold"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-rs-gray-200 px-2.5 py-1 text-xs font-semibold"
                     >
                       <span aria-hidden className="size-3 rounded-full border border-black/15" style={{ background: f.cor }} />
                       {f.label}

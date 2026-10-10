@@ -74,10 +74,10 @@ Sem estas respostas, algumas fases não começam. A coluna **Bloqueia** diz qual
 
 | ID | Pergunta | Por que importa | Bloqueia | Padrão sugerido |
 |---|---|---|---|---|
-| V1 | **Você tem autorização para usar a marca Gracie Barra?** Os arquivos do repositório se chamam `graciebarra_*` e o guia visual mira essa identidade. Hoje o produto se chama "Tatame Gestão" com marca abstrata | Se a rede é franqueadora, o uso do nome, das cores e do material pode violar contrato de franquia. É o único risco que pode obrigar a refazer a identidade | Publicar para qualquer pessoa fora do círculo (Fase 0) | Tratar como produto independente "Tatame Gestão"; renomear os arquivos `graciebarra_*`; só usar a marca com autorização escrita |
+| V1 | **O nome REDSHIELD está livre para uso, e a academia tem identidade visual própria?** O nome já foi adotado no sistema. Cores, tipografia e o símbolo (um escudo simples) são **provisórios**: foram prototipados a partir de uma direção de mercado, e a imagem `referencia_visual_conceitual.png` traz símbolo e fotos que **não** são do REDSHIELD | Nome parecido com marca registrada de outra empresa no mesmo ramo pode gerar notificação e obrigar a trocar nome, domínio e material. Divulgar uma identidade que lembre outra rede é o mesmo risco | Publicar para qualquer pessoa fora do círculo (Fase 0) | Consultar o INPI (classes de ensino esportivo e de software) e o registro do domínio; pedir à academia o logotipo e o manual de marca, se existirem; remover `referencia_visual_conceitual.png` do repositório antes de divulgar |
 | V2 | **Quem é o cliente?** Uma academia só (a sua / do professor) ou você pretende vender para várias? | Define se multi-tenant, cadastro de academia, cobrança do SaaS, termos de uso e suporte entram no escopo | Fase 2 (escopo de auth e tenant) | Uma academia na v1. O banco já tem `academia_id`, então abrir para várias depois não exige migração |
 | V3 | **Quem paga a infraestrutura e quanto pode custar por mês?** | Decide entre o plano gratuito (R$ ~4/mês, sem backup automático) e o recomendado (~R$ 145/mês) — ver [seção 4](#4-infraestrutura-e-custos) | Fase 2 | Gratuito até o piloto; decidir antes do go-live |
-| V4 | **Domínio:** qual nome e quem registra? (ex.: `tatamegestao.com.br`) | Necessário para e-mail com boa entrega (SPF/DKIM) e para o endereço definitivo. ~R$ 40/ano | Fase 7 | Registrar no seu CPF/CNPJ já agora, para garantir o nome |
+| V4 | **Domínio:** qual nome e quem registra? (ex.: `redshield.com.br`; verificar disponibilidade no registro.br) | Necessário para e-mail com boa entrega (SPF/DKIM) e para o endereço definitivo. ~R$ 40/ano | Fase 7 | Registrar no seu CPF/CNPJ já agora, para garantir o nome |
 | ~~V5~~ | ~~Papel "aluno" entra na v1?~~ **Decidido: sim**, por causa do check-in. O aluno acessa Painel, Agenda, Progresso e Check-in | Cada papel multiplica as regras de acesso e os testes: login de aluno, recuperação de senha e isolamento entre alunos entram na v1 | Fase 2 | — (aumenta o escopo da Fase 2 e da Fase 8; estimativa ajustada) |
 | V6 | **Cobrança automática (Pix/boleto/cartão com baixa automática) entra na v1 ou depois?** | É a maior dor financeira e o maior custo de desenvolvimento e de taxa. Sem ela, o Financeiro é registro manual | Fase 5 | Depois. v1 gera a cobrança e o professor dá baixa manualmente; Pix automático vira a primeira entrega pós-lançamento |
 | V7 | **Prazo e data-alvo de lançamento?** | Estimativas abaixo assumem 1 desenvolvedor | Planejamento | — |
@@ -130,7 +130,7 @@ Fase 10 Piloto → lançamento
 
 ### Fase 0 — Desbloquear (sem código) · ~1 semana
 
-- [ ] Resolver **V1** (marca). Se não houver autorização, renomear os arquivos `graciebarra_*` antes de qualquer divulgação.
+- [ ] Resolver **V1**: verificar disponibilidade do nome REDSHIELD (INPI e domínio), obter a identidade visual da academia e remover `referencia_visual_conceitual.png` antes de divulgar.
 - [ ] Responder **V2 e V6** (escopo da v1) — são as que mais mudam o tamanho do trabalho. A V5 já foi decidida (aluno entra, por causa do check-in).
 - [ ] Rodar a sessão com o professor usando o [`ROTEIRO_DEMONSTRACAO.md`](./ROTEIRO_DEMONSTRACAO.md) e registrar as respostas **E1–E13**.
 - [ ] Registrar o domínio (**V4**).

@@ -69,7 +69,7 @@ export function Agenda() {
         subtitulo={`Quadro de horários semanal · ${totalSemanal} aulas por semana`}
         acoes={
           <>
-            <div className="flex overflow-hidden rounded-md border border-gb-gray-300">
+            <div className="flex overflow-hidden rounded-md border border-rs-gray-300">
               {(
                 [
                   ['semana', 'Semana', LayoutGrid],
@@ -82,7 +82,7 @@ export function Agenda() {
                   aria-pressed={visao === id}
                   className={cn(
                     'inline-flex h-10 cursor-pointer items-center gap-1.5 px-3 text-sm font-semibold transition-colors',
-                    visao === id ? 'bg-gb-blue-600 text-white' : 'bg-white text-gb-gray-700 hover:bg-gb-gray-50',
+                    visao === id ? 'bg-rs-blue-600 text-white' : 'bg-white text-rs-gray-700 hover:bg-rs-gray-50',
                   )}
                 >
                   <Icone className="size-4" />
@@ -109,7 +109,7 @@ export function Agenda() {
         </Select>
         <div className="flex flex-wrap items-center gap-2">
           {TURMAS.map((t) => (
-            <span key={t.id} className="inline-flex items-center gap-1.5 text-xs text-gb-gray-500">
+            <span key={t.id} className="inline-flex items-center gap-1.5 text-xs text-rs-gray-500">
               <span aria-hidden className="size-2.5 rounded-full" style={{ background: t.cor }} />
               {t.nome}
             </span>
@@ -125,24 +125,24 @@ export function Agenda() {
               key={dia}
               className={cn(
                 'flex flex-col rounded-lg border bg-white shadow-[var(--shadow-card)]',
-                dia === hoje ? 'border-gb-blue-300 ring-1 ring-gb-blue-100' : 'border-gb-gray-200',
+                dia === hoje ? 'border-rs-blue-300 ring-1 ring-rs-blue-100' : 'border-rs-gray-200',
               )}
             >
               <header
                 className={cn(
                   'flex items-center justify-between gap-2 rounded-t-lg px-3 py-2.5',
-                  dia === hoje ? 'bg-gb-blue-600 text-white' : 'bg-gb-gray-50',
+                  dia === hoje ? 'bg-rs-blue-600 text-white' : 'bg-rs-gray-50',
                 )}
               >
-                <span className="gb-title text-sm tracking-wider">{DIAS_SEMANA_LONGO[dia].replace('-feira', '')}</span>
-                <span className={cn('text-xs font-semibold', dia === hoje ? 'text-white/75' : 'text-gb-gray-500')}>
+                <span className="rs-title text-sm tracking-wider">{DIAS_SEMANA_LONGO[dia].replace('-feira', '')}</span>
+                <span className={cn('text-xs font-semibold', dia === hoje ? 'text-white/75' : 'text-rs-gray-500')}>
                   {doDia.length}
                 </span>
               </header>
 
               <ul className="flex-1 space-y-2 p-2.5">
                 {doDia.length === 0 && (
-                  <li className="px-1 py-3 text-center text-xs text-gb-gray-500">Sem aulas</li>
+                  <li className="px-1 py-3 text-center text-xs text-rs-gray-500">Sem aulas</li>
                 )}
                 {doDia.map((aula) => {
                   const turma = turmaPorId(aula.turmaId)
@@ -150,16 +150,16 @@ export function Agenda() {
                     <li key={aula.id}>
                       <button
                         onClick={() => abrir(aula)}
-                        className="w-full cursor-pointer rounded-md border-l-[3px] bg-gb-gray-50 p-2.5 text-left transition-colors hover:bg-gb-blue-50"
+                        className="w-full cursor-pointer rounded-md border-l-[3px] bg-rs-gray-50 p-2.5 text-left transition-colors hover:bg-rs-blue-50"
                         style={{ borderLeftColor: turma?.cor }}
                       >
-                        <span className="block font-mono text-xs font-bold text-gb-gray-700">
+                        <span className="block font-mono text-xs font-bold text-rs-gray-700">
                           {aula.inicio}–{aula.fim}
                         </span>
-                        <span className="mt-0.5 block text-sm font-semibold leading-tight text-gb-ink">
+                        <span className="mt-0.5 block text-sm font-semibold leading-tight text-rs-ink">
                           {aula.titulo}
                         </span>
-                        <span className="mt-1 block truncate text-xs text-gb-gray-500">{turma?.nome}</span>
+                        <span className="mt-1 block truncate text-xs text-rs-gray-500">{turma?.nome}</span>
                       </button>
                     </li>
                   )
@@ -167,7 +167,7 @@ export function Agenda() {
                 <li>
                   <button
                     onClick={() => abrir(null, dia as DiaSemana)}
-                    className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-md border border-dashed border-gb-gray-300 py-2 text-xs font-semibold text-gb-gray-500 transition-colors hover:border-gb-blue-300 hover:text-gb-blue-600"
+                    className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-md border border-dashed border-rs-gray-300 py-2 text-xs font-semibold text-rs-gray-500 transition-colors hover:border-rs-blue-300 hover:text-rs-blue-600"
                   >
                     <Plus className="size-3.5" />
                     Adicionar
@@ -196,48 +196,48 @@ export function Agenda() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[720px] text-left">
                 <thead>
-                  <tr className="border-b border-gb-gray-200">
+                  <tr className="border-b border-rs-gray-200">
                     {['Dia', 'Horário', 'Aula', 'Turma', 'Local', 'Capacidade', ''].map((h) => (
-                      <th key={h} className="gb-label px-5 py-3">
+                      <th key={h} className="rs-label px-5 py-3">
                         {h}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gb-gray-200">
+                <tbody className="divide-y divide-rs-gray-200">
                   {[...filtradas]
                     .sort((a, b) => a.diaSemana - b.diaSemana || a.inicio.localeCompare(b.inicio))
                     .map((aula) => {
                       const turma = turmaPorId(aula.turmaId)
                       return (
-                        <tr key={aula.id} className="group hover:bg-gb-gray-50">
+                        <tr key={aula.id} className="group hover:bg-rs-gray-50">
                           <td className="px-5 py-3">
-                            <span className="inline-flex items-center gap-2 text-sm font-semibold text-gb-ink">
+                            <span className="inline-flex items-center gap-2 text-sm font-semibold text-rs-ink">
                               {DIAS_SEMANA[aula.diaSemana]}
                               {aula.diaSemana === hoje && <Badge tom="azul">Hoje</Badge>}
                             </span>
                           </td>
-                          <td className="px-5 py-3 font-mono text-sm text-gb-gray-700">
+                          <td className="px-5 py-3 font-mono text-sm text-rs-gray-700">
                             {aula.inicio}–{aula.fim}
                           </td>
                           <td className="px-5 py-3">
-                            <button onClick={() => abrir(aula)} className="cursor-pointer text-sm font-semibold text-gb-ink hover:text-gb-blue-600">
+                            <button onClick={() => abrir(aula)} className="cursor-pointer text-sm font-semibold text-rs-ink hover:text-rs-blue-600">
                               {aula.titulo}
                             </button>
                           </td>
                           <td className="px-5 py-3">
-                            <span className="inline-flex items-center gap-1.5 text-sm text-gb-gray-700">
+                            <span className="inline-flex items-center gap-1.5 text-sm text-rs-gray-700">
                               <span aria-hidden className="size-2.5 rounded-full" style={{ background: turma?.cor }} />
                               {turma?.nome}
                             </span>
                           </td>
-                          <td className="px-5 py-3 text-sm text-gb-gray-700">{aula.local}</td>
-                          <td className="px-5 py-3 text-sm text-gb-gray-700">{aula.capacidade} vagas</td>
+                          <td className="px-5 py-3 text-sm text-rs-gray-700">{aula.local}</td>
+                          <td className="px-5 py-3 text-sm text-rs-gray-700">{aula.capacidade} vagas</td>
                           <td className="px-5 py-3 text-right">
                             <button
                               onClick={() => removerAula(aula.id)}
                               aria-label={`Remover ${aula.titulo}`}
-                              className="cursor-pointer rounded-md p-2 text-gb-gray-500 opacity-0 transition-opacity hover:bg-gb-red-50 hover:text-gb-red-600 focus-visible:opacity-100 group-hover:opacity-100"
+                              className="cursor-pointer rounded-md p-2 text-rs-gray-500 opacity-0 transition-opacity hover:bg-rs-red-50 hover:text-rs-red-600 focus-visible:opacity-100 group-hover:opacity-100"
                             >
                               <Trash2 className="size-4" />
                             </button>
@@ -259,23 +259,23 @@ export function Agenda() {
           {TURMAS.map((t) => {
             const qtd = aulas.filter((a) => a.turmaId === t.id).length
             return (
-              <div key={t.id} className="rounded-md border-l-[3px] border border-gb-gray-200 p-4" style={{ borderLeftColor: t.cor }}>
-                <h3 className="gb-title text-base text-gb-ink">{t.nome}</h3>
-                <p className="mt-1 text-xs text-gb-gray-500">{t.professor}</p>
-                <ul className="mt-3 space-y-1 text-xs text-gb-gray-700">
+              <div key={t.id} className="rounded-md border-l-[3px] border border-rs-gray-200 p-4" style={{ borderLeftColor: t.cor }}>
+                <h3 className="rs-title text-base text-rs-ink">{t.nome}</h3>
+                <p className="mt-1 text-xs text-rs-gray-500">{t.professor}</p>
+                <ul className="mt-3 space-y-1 text-xs text-rs-gray-700">
                   <li className="flex items-center gap-1.5">
-                    <Users className="size-3.5 text-gb-gray-500" /> {t.faixaEtaria}
+                    <Users className="size-3.5 text-rs-gray-500" /> {t.faixaEtaria}
                   </li>
                   <li className="flex items-center gap-1.5">
-                    <Clock className="size-3.5 text-gb-gray-500" /> {qtd} aula{qtd === 1 ? '' : 's'} por semana
+                    <Clock className="size-3.5 text-rs-gray-500" /> {qtd} aula{qtd === 1 ? '' : 's'} por semana
                   </li>
                   <li className="flex items-center gap-1.5">
-                    <MapPin className="size-3.5 text-gb-gray-500" /> {t.nivel}
+                    <MapPin className="size-3.5 text-rs-gray-500" /> {t.nivel}
                   </li>
                 </ul>
                 <Link
                   to="/presenca"
-                  className="mt-3 inline-block text-xs font-semibold uppercase tracking-wider text-gb-blue-600 hover:underline"
+                  className="mt-3 inline-block text-xs font-semibold uppercase tracking-wider text-rs-blue-600 hover:underline"
                 >
                   Ver presenças
                 </Link>
@@ -354,7 +354,7 @@ export function Agenda() {
           </div>
 
           {erro && (
-            <p role="alert" className="rounded-md border border-gb-red-100 bg-gb-red-50 px-3 py-2 text-sm font-medium text-gb-red-700">
+            <p role="alert" className="rounded-md border border-rs-red-100 bg-rs-red-50 px-3 py-2 text-sm font-medium text-rs-red-700">
               {erro}
             </p>
           )}

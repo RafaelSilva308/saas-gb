@@ -84,28 +84,28 @@ export function Progresso() {
                   tamanho={148}
                   centro={
                     <div>
-                      <p className="gb-title text-4xl text-gb-ink">
+                      <p className="rs-title text-4xl text-rs-ink">
                         {pctGraduados}
                         <span className="text-xl">%</span>
                       </p>
-                      <p className="text-[10px] uppercase tracking-wider text-gb-gray-500">da base</p>
+                      <p className="text-[10px] uppercase tracking-wider text-rs-gray-500">da base</p>
                     </div>
                   }
                 />
                 <div className="space-y-3">
                   <div>
-                    <p className="gb-label">Graduados</p>
-                    <p className="gb-title text-2xl text-gb-ink">{graduados}</p>
+                    <p className="rs-label">Graduados</p>
+                    <p className="rs-title text-2xl text-rs-ink">{graduados}</p>
                   </div>
                   <div>
-                    <p className="gb-label">Faixa branca</p>
-                    <p className="gb-title text-2xl text-gb-ink">{ativos.length - graduados}</p>
+                    <p className="rs-label">Faixa branca</p>
+                    <p className="rs-title text-2xl text-rs-ink">{ativos.length - graduados}</p>
                   </div>
                   <div>
-                    <p className="gb-label">Tempo médio</p>
-                    <p className="gb-title text-2xl text-gb-ink">
+                    <p className="rs-label">Tempo médio</p>
+                    <p className="rs-title text-2xl text-rs-ink">
                       {tempoMedio}
-                      <span className="text-sm text-gb-gray-500"> meses</span>
+                      <span className="text-sm text-rs-gray-500"> meses</span>
                     </p>
                   </div>
                 </div>
@@ -140,13 +140,13 @@ export function Progresso() {
             <CardHeader titulo="Legenda das faixas" descricao="Cor, rótulo e participação — a cor nunca aparece sozinha" />
             <CardBody className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {distribuicao.map((d) => (
-                <div key={d.faixa} className="rounded-md border border-gb-gray-200 p-4">
+                <div key={d.faixa} className="rounded-md border border-rs-gray-200 p-4">
                   <div className="flex items-center justify-between gap-3">
                     <FaixaBadge faixa={d.faixa} />
-                    <span className="gb-title text-xl text-gb-ink">{d.qtd}</span>
+                    <span className="rs-title text-xl text-rs-ink">{d.qtd}</span>
                   </div>
                   <Barra valor={d.pct} cor={d.cor} className="mt-3" />
-                  <p className="mt-1.5 text-xs text-gb-gray-500">{d.pct}% dos alunos ativos</p>
+                  <p className="mt-1.5 text-xs text-rs-gray-500">{d.pct}% dos alunos ativos</p>
                 </div>
               ))}
             </CardBody>
@@ -168,43 +168,43 @@ export function Progresso() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[720px] text-left">
                 <thead>
-                  <tr className="border-b border-gb-gray-200">
+                  <tr className="border-b border-rs-gray-200">
                     {['Aluno', 'Faixa atual', 'Tempo de treino', 'Frequência', 'Próxima faixa', ''].map((h) => (
-                      <th key={h} className="gb-label px-5 py-3">
+                      <th key={h} className="rs-label px-5 py-3">
                         {h}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gb-gray-200">
+                <tbody className="divide-y divide-rs-gray-200">
                   {elegiveis.map((a) => {
                     const idx = ORDEM.indexOf(a.faixa)
                     const proxima = idx < ORDEM.length - 1 ? ORDEM[idx + 1] : null
                     const meses = mesesNaAcademia(a.matriculaEm)
                     return (
-                      <tr key={a.id} className="hover:bg-gb-gray-50">
+                      <tr key={a.id} className="hover:bg-rs-gray-50">
                         <td className="px-5 py-3">
                           <Link to={`/alunos/${a.id}`} className="flex items-center gap-3">
                             <Avatar nome={a.nome} />
                             <span className="min-w-0">
-                              <span className="block truncate font-semibold text-gb-ink">{a.nome}</span>
-                              <span className="block text-xs text-gb-gray-500">desde {dataCurta(a.matriculaEm)}</span>
+                              <span className="block truncate font-semibold text-rs-ink">{a.nome}</span>
+                              <span className="block text-xs text-rs-gray-500">desde {dataCurta(a.matriculaEm)}</span>
                             </span>
                           </Link>
                         </td>
                         <td className="px-5 py-3">
                           <FaixaBadge faixa={a.faixa} graus={a.graus} compacto />
                         </td>
-                        <td className="px-5 py-3 text-sm text-gb-gray-700">
+                        <td className="px-5 py-3 text-sm text-rs-gray-700">
                           {meses} {meses === 1 ? 'mês' : 'meses'}
                         </td>
                         <td className="px-5 py-3">
-                          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gb-success">
+                          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-rs-success">
                             <TrendingUp className="size-4" />
                             {a.frequencia30d}%
                           </span>
                         </td>
-                        <td className="px-5 py-3">{proxima ? <FaixaBadge faixa={proxima} compacto /> : <span className="text-sm text-gb-gray-500">—</span>}</td>
+                        <td className="px-5 py-3">{proxima ? <FaixaBadge faixa={proxima} compacto /> : <span className="text-sm text-rs-gray-500">—</span>}</td>
                         <td className="px-5 py-3 text-right">
                           <Badge tom="azul">
                             <Award className="size-3.5" />

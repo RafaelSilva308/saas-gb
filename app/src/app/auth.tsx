@@ -6,7 +6,7 @@ import type { Papel, Usuario } from '@/types'
    Na Fase 2 isto vira: POST /auth/login, token em cookie httpOnly e refresh.
    Nenhuma decisão de segurança real depende deste arquivo. */
 
-const CHAVE = 'gb.sessao'
+const CHAVE = 'redshield.sessao'
 
 interface Ctx {
   usuario: Usuario | null

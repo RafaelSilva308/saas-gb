@@ -15,9 +15,9 @@ import type { StatusPresenca } from '@/types'
 import { cn } from '@/lib/cn'
 
 const OPCOES: { id: StatusPresenca; label: string; Icone: typeof Check; classe: string }[] = [
-  { id: 'presente', label: 'Presente', Icone: Check, classe: 'bg-gb-success text-white border-gb-success' },
-  { id: 'justificado', label: 'Justificado', Icone: Minus, classe: 'bg-gb-warn text-white border-gb-warn' },
-  { id: 'ausente', label: 'Falta', Icone: X, classe: 'bg-gb-red-600 text-white border-gb-red-600' },
+  { id: 'presente', label: 'Presente', Icone: Check, classe: 'bg-rs-success text-white border-rs-success' },
+  { id: 'justificado', label: 'Justificado', Icone: Minus, classe: 'bg-rs-warn text-white border-rs-warn' },
+  { id: 'ausente', label: 'Falta', Icone: X, classe: 'bg-rs-red-600 text-white border-rs-red-600' },
 ]
 
 export function Presenca() {
@@ -121,40 +121,40 @@ export function Presenca() {
             <CardHeader titulo="Resumo" descricao={dataLonga(data)} />
             <CardBody className="space-y-4">
               <div>
-                <p className="gb-label">{aulaSelecionada.titulo}</p>
-                <p className="mt-1 text-sm text-gb-gray-700">
+                <p className="rs-label">{aulaSelecionada.titulo}</p>
+                <p className="mt-1 text-sm text-rs-gray-700">
                   {turmaPorId(aulaSelecionada.turmaId)?.nome} · {aulaSelecionada.inicio}–{aulaSelecionada.fim}
                 </p>
-                <p className="text-sm text-gb-gray-500">{aulaSelecionada.local}</p>
+                <p className="text-sm text-rs-gray-500">{aulaSelecionada.local}</p>
               </div>
 
-              <div className="border-t border-gb-gray-200 pt-4">
-                <p className="gb-metric text-gb-ink">
+              <div className="border-t border-rs-gray-200 pt-4">
+                <p className="rs-metric text-rs-ink">
                   {presentes}
-                  <span className="text-lg text-gb-gray-500">/{aulaSelecionada.capacidade}</span>
+                  <span className="text-lg text-rs-gray-500">/{aulaSelecionada.capacidade}</span>
                 </p>
-                <p className="mt-1 text-xs text-gb-gray-500">presentes · {ocupacao}% da capacidade</p>
+                <p className="mt-1 text-xs text-rs-gray-500">presentes · {ocupacao}% da capacidade</p>
                 <Progress
                   valor={ocupacao}
                   className="mt-2"
-                  cor={ocupacao > 90 ? 'var(--color-gb-red-600)' : 'var(--color-gb-blue-600)'}
+                  cor={ocupacao > 90 ? 'var(--color-rs-red-600)' : 'var(--color-rs-blue-600)'}
                 />
               </div>
 
-              <dl className="grid grid-cols-3 gap-2 border-t border-gb-gray-200 pt-4 text-center">
+              <dl className="grid grid-cols-3 gap-2 border-t border-rs-gray-200 pt-4 text-center">
                 {[
                   ['Presentes', presentes],
                   ['Justificados', elegiveis.filter((a) => statusDe(a.id) === 'justificado').length],
                   ['Faltas', elegiveis.length - presentes - elegiveis.filter((a) => statusDe(a.id) === 'justificado').length],
                 ].map(([label, n]) => (
                   <div key={label as string}>
-                    <dt className="text-[10px] font-semibold uppercase tracking-normal text-gb-gray-500">{label}</dt>
-                    <dd className="gb-title text-xl text-gb-ink">{n}</dd>
+                    <dt className="text-[10px] font-semibold uppercase tracking-normal text-rs-gray-500">{label}</dt>
+                    <dd className="rs-title text-xl text-rs-ink">{n}</dd>
                   </div>
                 ))}
               </dl>
 
-              <p className="text-xs leading-relaxed text-gb-gray-500">
+              <p className="text-xs leading-relaxed text-rs-gray-500">
                 {semCheckin} de {elegiveis.length} alunos sem check-in contam como falta. Toque em Presente ou
                 Justificado para corrigir.
               </p>
@@ -170,7 +170,7 @@ export function Presenca() {
             {elegiveis.length === 0 ? (
               <EmptyState icone={<Search className="size-6" />} titulo="Nenhum aluno" mensagem="Ajuste a busca ou verifique os cadastros da turma." />
             ) : (
-              <ul className="divide-y divide-gb-gray-200">
+              <ul className="divide-y divide-rs-gray-200">
                 {elegiveis.map((a) => {
                   const st = statusDe(a.id)
                   return (
@@ -178,13 +178,13 @@ export function Presenca() {
                       key={a.id}
                       className={cn(
                         'flex flex-wrap items-center gap-3 px-4 py-3 transition-colors sm:px-5',
-                        st === 'presente' && 'bg-gb-success-bg/40',
-                        st === 'ausente' && 'bg-gb-red-50/50',
+                        st === 'presente' && 'bg-rs-success-bg/40',
+                        st === 'ausente' && 'bg-rs-red-50/50',
                       )}
                     >
                       <Avatar nome={a.nome} />
                       <Link to={`/alunos/${a.id}`} className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-semibold text-gb-ink hover:text-gb-blue-600">
+                        <span className="block truncate text-sm font-semibold text-rs-ink hover:text-rs-blue-600">
                           {a.nome}
                         </span>
                         <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -199,7 +199,7 @@ export function Presenca() {
                         </span>
                       </Link>
 
-                      <span className="hidden shrink-0 text-xs text-gb-gray-500 sm:block">
+                      <span className="hidden shrink-0 text-xs text-rs-gray-500 sm:block">
                         {a.frequencia30d}% em 30d
                       </span>
 
@@ -215,7 +215,7 @@ export function Presenca() {
                               aria-label={`${label}: ${a.nome}`}
                               className={cn(
                                 'inline-flex h-10 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-md border px-3 text-xs font-semibold transition-colors sm:flex-none',
-                                ativo ? classe : 'border-gb-gray-300 bg-white text-gb-gray-500 hover:border-gb-gray-500 hover:text-gb-ink',
+                                ativo ? classe : 'border-rs-gray-300 bg-white text-rs-gray-500 hover:border-rs-gray-500 hover:text-rs-ink',
                               )}
                             >
                               <Icone className="size-4" />

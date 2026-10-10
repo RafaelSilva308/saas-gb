@@ -127,7 +127,7 @@ export function Alunos() {
         </div>
 
         {/* Filtros */}
-        <div className="flex flex-wrap items-end gap-3 border-b border-gb-gray-200 bg-gb-gray-50 px-4 py-4 sm:px-5">
+        <div className="flex flex-wrap items-end gap-3 border-b border-rs-gray-200 bg-rs-gray-50 px-4 py-4 sm:px-5">
           <Input
             placeholder="Buscar por nome ou e-mail"
             value={busca}
@@ -172,7 +172,7 @@ export function Alunos() {
             <option value="frequencia">Maior frequência</option>
             <option value="matricula">Matrícula recente</option>
           </Select>
-          <span className="flex items-center gap-1.5 text-sm text-gb-gray-500 sm:ml-auto sm:pb-2.5">
+          <span className="flex items-center gap-1.5 text-sm text-rs-gray-500 sm:ml-auto sm:pb-2.5">
             <SlidersHorizontal className="size-4" />
             {filtrados.length} de {alunos.length}
           </span>
@@ -194,28 +194,28 @@ export function Alunos() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[900px] border-collapse text-left">
               <thead>
-                <tr className="border-b border-gb-gray-200 bg-white">
+                <tr className="border-b border-rs-gray-200 bg-white">
                   {['Aluno', 'Faixa', 'Plano', 'Vencimento', 'Pagamento', 'Frequência', 'Situação', ''].map((h) => (
-                    <th key={h} className="gb-label px-5 py-3 font-semibold">
+                    <th key={h} className="rs-label px-5 py-3 font-semibold">
                       {h}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gb-gray-200">
+              <tbody className="divide-y divide-rs-gray-200">
                 {filtrados.map((a) => {
                   const p = planos.find((x) => x.id === a.planoId)
                   const pag = STATUS_PAGAMENTO[a.statusPagamento]
                   return (
-                    <tr key={a.id} className="group transition-colors hover:bg-gb-gray-50">
+                    <tr key={a.id} className="group transition-colors hover:bg-rs-gray-50">
                       <td className="px-5 py-3">
                         <Link to={`/alunos/${a.id}`} className="flex items-center gap-3">
                           <Avatar nome={a.nome} />
                           <span className="min-w-0">
-                            <span className="block truncate font-semibold text-gb-ink group-hover:text-gb-blue-600">
+                            <span className="block truncate font-semibold text-rs-ink group-hover:text-rs-blue-600">
                               {a.nome}
                             </span>
-                            <span className="block truncate text-xs text-gb-gray-500">
+                            <span className="block truncate text-xs text-rs-gray-500">
                               {idade(a.nascimento)} anos · desde {dataCurta(a.matriculaEm)}
                             </span>
                           </span>
@@ -224,23 +224,23 @@ export function Alunos() {
                       <td className="px-5 py-3">
                         <FaixaBadge faixa={a.faixa} graus={a.graus} compacto />
                       </td>
-                      <td className="px-5 py-3 text-sm text-gb-gray-700">{p?.nome ?? '—'}</td>
-                      <td className="px-5 py-3 text-sm text-gb-gray-700">Dia {a.vencimentoDia}</td>
+                      <td className="px-5 py-3 text-sm text-rs-gray-700">{p?.nome ?? '—'}</td>
+                      <td className="px-5 py-3 text-sm text-rs-gray-700">Dia {a.vencimentoDia}</td>
                       <td className="px-5 py-3">
                         <Badge tom={pag.tom}>{pag.label}</Badge>
                       </td>
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-2">
-                          <div className="h-1.5 w-16 overflow-hidden rounded-full bg-gb-gray-200">
+                          <div className="h-1.5 w-16 overflow-hidden rounded-full bg-rs-gray-200">
                             <div
                               className={cn(
                                 'h-full rounded-full',
-                                a.frequencia30d >= 70 ? 'bg-gb-success' : a.frequencia30d >= 40 ? 'bg-gb-warn' : 'bg-gb-red-600',
+                                a.frequencia30d >= 70 ? 'bg-rs-success' : a.frequencia30d >= 40 ? 'bg-rs-warn' : 'bg-rs-red-600',
                               )}
                               style={{ width: `${a.frequencia30d}%` }}
                             />
                           </div>
-                          <span className="text-sm font-semibold text-gb-ink">{a.frequencia30d}%</span>
+                          <span className="text-sm font-semibold text-rs-ink">{a.frequencia30d}%</span>
                         </div>
                       </td>
                       <td className="px-5 py-3">
@@ -253,7 +253,7 @@ export function Alunos() {
                             setFormAberto(true)
                           }}
                           aria-label={`Editar ${a.nome}`}
-                          className="cursor-pointer rounded-md p-2 text-gb-gray-500 opacity-0 transition-opacity hover:bg-gb-gray-100 hover:text-gb-ink focus-visible:opacity-100 group-hover:opacity-100"
+                          className="cursor-pointer rounded-md p-2 text-rs-gray-500 opacity-0 transition-opacity hover:bg-rs-gray-100 hover:text-rs-ink focus-visible:opacity-100 group-hover:opacity-100"
                         >
                           <Pencil className="size-4" />
                         </button>

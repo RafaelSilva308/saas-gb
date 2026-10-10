@@ -7,11 +7,11 @@ type Tom = 'neutro' | 'azul' | 'ok' | 'alerta' | 'urgente'
 
 /* Cada tom carrega cor + texto. Nunca depender só da cor: o rótulo sempre aparece. */
 const TONS: Record<Tom, string> = {
-  neutro: 'bg-gb-gray-100 text-gb-gray-700 border-gb-gray-200',
-  azul: 'bg-gb-blue-50 text-gb-blue-700 border-gb-blue-100',
-  ok: 'bg-gb-success-bg text-gb-success border-transparent',
-  alerta: 'bg-gb-warn-bg text-gb-warn border-transparent',
-  urgente: 'bg-gb-red-50 text-gb-red-700 border-gb-red-100',
+  neutro: 'bg-rs-gray-100 text-rs-gray-700 border-rs-gray-200',
+  azul: 'bg-rs-blue-50 text-rs-blue-700 border-rs-blue-100',
+  ok: 'bg-rs-success-bg text-rs-success border-transparent',
+  alerta: 'bg-rs-warn-bg text-rs-warn border-transparent',
+  urgente: 'bg-rs-red-50 text-rs-red-700 border-rs-red-100',
 }
 
 export function Badge({ tom = 'neutro', children, className }: { tom?: Tom; children: ReactNode; className?: string }) {
@@ -42,7 +42,7 @@ export function FaixaBadge({ faixa, graus, compacto }: { faixa: Faixa; graus?: n
         {compacto ? f.label : `Faixa ${f.label}`}
       </span>
       {graus !== undefined && graus > 0 && (
-        <span className="text-xs text-gb-gray-500">
+        <span className="text-xs text-rs-gray-500">
           {graus}º grau{graus > 1 ? 's' : ''}
         </span>
       )}

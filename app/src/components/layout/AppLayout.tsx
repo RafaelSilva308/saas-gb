@@ -13,7 +13,7 @@ export function AppLayout() {
   if (!usuario) return <Navigate to="/entrar" state={{ de: local.pathname }} replace />
 
   return (
-    <div className="min-h-screen bg-gb-gray-100">
+    <div className="min-h-screen bg-rs-gray-100">
       <Sidebar aberta={menuAberto} aoFechar={() => setMenuAberto(false)} />
       <div className="lg:pl-64">
         <Topbar aoAbrirMenu={() => setMenuAberto(true)} />

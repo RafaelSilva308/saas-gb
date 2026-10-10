@@ -1,4 +1,4 @@
-# Plano de desenvolvimento — SaaS de gestão para academia de jiu-jitsu
+# Plano de desenvolvimento — REDSHIELD, gestão da academia
 
 > **Ordem de execução, decisões pendentes, modelo do banco e custos:** veja [`ROADMAP.md`](./ROADMAP.md).
 > Onde este documento e o `ROADMAP.md` divergirem, vale o `ROADMAP.md`.
@@ -83,40 +83,39 @@ relatórios fiscais e emissão de nota.
 
 ## 3. Identidade visual aplicada
 
-Base: `graciebarra_saas_guia_identidade_visual.md` + `graciebarra_saas_direcao_visual.png`.
+Base: `redshield_guia_identidade_visual.md` + `referencia_visual_conceitual.png`.
 
-> ⚠️ **Aviso de marca.** As cores são **aproximações para prototipação**, não especificação
-> oficial. Antes de publicar, confirme arquivos de marca, permissões de uso e regras da franquia
-> com a liderança responsável. O sistema **não reproduz** o monograma, escudo, selo ou logotipo
-> oficial da rede — usa uma marca abstrata própria (`src/components/Logo.tsx`) construída apenas
-> com a geometria diagonal descrita no guia.
+> ⚠️ **Identidade visual provisória.** As cores, a tipografia e o símbolo atuais são aproximações para prototipação,
+> **não** a identidade oficial do REDSHIELD. Se a academia tiver logotipo e manual de marca, eles substituem o que está aqui.
+> O símbolo atual (`src/components/Logo.tsx`) é um escudo simples e provisório. A imagem `referencia_visual_conceitual.png`
+> traz um símbolo e fotos que **não** são do REDSHIELD e não devem ser publicados.
 
 ### 3.1 Sistema de cor (funcional, não decorativo)
 
 | Papel | Token | Valor | Uso |
 |---|---|---|---|
-| Ação / urgência | `gb-red-600` | `#d40000` | CTA principal, alertas críticos. **Um por tela.** |
-| Estrutura / confiança | `gb-blue-600` | `#1764a8` | Navegação, cabeçalho, links, estados ativos |
-| Superfície | `white` / `gb-gray-100` | `#ffffff` / `#f2f4f6` | Cartões sobre fundo cinza claro |
-| Texto forte | `gb-ink` | `#111111` | Títulos, números, ícones fortes |
-| Texto auxiliar | `gb-gray-500` | `#667085` | Metadados, labels, informação secundária |
-| Confirmação | `gb-success` | `#12805c` | Presença registrada, pagamento em dia |
-| Atenção | `gb-warn` | `#b25e09` | Vence em breve, justificado |
+| Ação / urgência | `rs-red-600` | `#d40000` | CTA principal, alertas críticos. **Um por tela.** |
+| Estrutura / confiança | `rs-blue-600` | `#1764a8` | Navegação, cabeçalho, links, estados ativos |
+| Superfície | `white` / `rs-gray-100` | `#ffffff` / `#f2f4f6` | Cartões sobre fundo cinza claro |
+| Texto forte | `rs-ink` | `#111111` | Títulos, números, ícones fortes |
+| Texto auxiliar | `rs-gray-500` | `#667085` | Metadados, labels, informação secundária |
+| Confirmação | `rs-success` | `#12805c` | Presença registrada, pagamento em dia |
+| Atenção | `rs-warn` | `#b25e09` | Vence em breve, justificado |
 
 Regra que o código segue: **nenhum estado depende só de cor**. Todo badge carrega rótulo textual,
 toda faixa tem legenda, todo gráfico tem eixo e tooltip.
 
 ### 3.2 Tipografia
 
-- **Títulos:** Barlow Condensed 700, caixa alta — classe `.gb-title`.
+- **Títulos:** Barlow Condensed 700, caixa alta — classe `.rs-title`.
 - **Corpo:** Inter 400/500/600.
-- **Números de métrica:** `.gb-metric` (condensada, 2.5rem).
-- **Labels:** `.gb-label` (11px, caixa alta, tracking largo, cinza médio).
+- **Números de métrica:** `.rs-metric` (condensada, 2.5rem).
+- **Labels:** `.rs-label` (11px, caixa alta, tracking largo, cinza médio).
 
 ### 3.3 Geometria diagonal
 
 Usada **só em momentos de destaque**: painel institucional do login, cartão da próxima aula
-e destaques de graduação. Classe `.gb-diagonal` + polígonos SVG abstratos. O resto do produto é limpo.
+e destaques de graduação. Classe `.rs-diagonal` + polígonos SVG abstratos. O resto do produto é limpo.
 
 ---
 
@@ -143,7 +142,7 @@ app/
     │   ├── auth.tsx           # sessão simulada + papéis (troca por API na Fase 2)
     │   └── store.tsx          # estado em memória; cada função = 1 endpoint futuro
     ├── components/
-    │   ├── Logo.tsx           # marca abstrata própria
+    │   ├── Logo.tsx           # símbolo provisório (escudo)
     │   ├── layout/            # Sidebar, Topbar, AppLayout, guarda por papel
     │   └── ui/                # Button, Card, Badge, Field, Modal, StatCard, Misc
     ├── data/
@@ -195,9 +194,9 @@ npm run preview  # serve o build
 
 | E-mail | Papel | Enxerga |
 |---|---|---|
-| `gestor@gb.com.br` | Gestor | Tudo, incluindo Financeiro e Planos |
-| `professor@gb.com.br` | Professor | Alunos, Agenda, Presença, Progresso |
-| `aluno@gb.com.br` | Aluno | Painel, Agenda, Progresso, Check-in |
+| `gestor@redshield.com.br` | Gestor | Tudo, incluindo Financeiro e Planos |
+| `professor@redshield.com.br` | Professor | Alunos, Agenda, Presença, Progresso |
+| `aluno@redshield.com.br` | Aluno | Painel, Agenda, Progresso, Check-in |
 
 ---
 
@@ -507,7 +506,7 @@ Em ordem de valor percebido:
 
 | Risco | Impacto | Mitigação |
 |---|---|---|
-| Uso da marca da rede sem autorização | Alto — jurídico | Validar com a liderança antes de publicar; hoje o sistema usa marca abstrata própria |
+| Nome REDSHIELD sem registro/disponibilidade verificados, ou identidade visual que lembre outra marca | Médio — jurídico | Consultar INPI e domínio antes de divulgar; usar a identidade oficial da academia quando existir |
 | Professor não adotar e voltar para a planilha | Alto — projeto morre | Piloto em paralelo (sprint 8); ele precisa sentir ganho antes do corte |
 | Dados de menores sem consentimento | Alto — LGPD | Consentimento do responsável no cadastro, obrigatório |
 | Escopo crescer durante a Fase 2 | Médio — atraso | Lista "fora do MVP" da seção 2 é o contrato |
@@ -540,6 +539,5 @@ Em ordem de valor percebido:
 
 ## 14. Referências
 
-- `graciebarra_saas_guia_identidade_visual.md` — guia de direção visual do projeto
-- `graciebarra_saas_direcao_visual.png` — referência conceitual do painel
-- [Site oficial brasileiro da rede](https://graciebarra.com.br/)
+- `redshield_guia_identidade_visual.md` — guia de direção visual provisório do sistema
+- `referencia_visual_conceitual.png` — referência conceitual do painel (símbolo e fotos **não** são do REDSHIELD)

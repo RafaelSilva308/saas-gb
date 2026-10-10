@@ -9,7 +9,7 @@ Entregue o celular ou o notebook e peça para ele fazer tarefas reais. Observe o
 ## Antes de começar (10 minutos de preparação)
 
 - [ ] Abrir o sistema **no celular do professor** e também em um notebook. O check-in do aluno é o fluxo mais importante e é usado de pé, com o dedo.
-- [ ] Testar o login de antemão. Entrar como `gestor@gb.com.br` / `treino123` (clique em uma linha de "Acessos de demonstração" — ela preenche e-mail e senha).
+- [ ] Testar o login de antemão. Entrar como `gestor@redshield.com.br` / `treino123` (clique em uma linha de "Acessos de demonstração" — ela preenche e-mail e senha).
 - [ ] Ter este arquivo aberto para anotar as respostas (tabela no final).
 - [ ] Levar uma folha/ planilha dele de verdade (mensalidades, lista de chamada) para comparar com a tela.
 
@@ -61,8 +61,8 @@ Quem não faz check-in **tem falta**. O professor pode corrigir qualquer registr
 Nesse caso, inclua uma aula para hoje em **Agenda** antes de começar. Faça o fluxo **sem recarregar a página** (o que foi feito fica só na memória do navegador).
 
 **Tarefa, passo a passo (o professor mexe, você observa):**
-1. Entre como **`aluno@gb.com.br`** → **Check-in** → **Fazer check-in**. Mostre o **Desfazer**.
-2. Saia (menu no canto superior direito → **Sair**) e entre como **`professor@gb.com.br`** → **Presença** → mesma aula. O aluno aparece como presente, com **"Check-in do aluno · hora"**. Quem não fez check-in aparece como **"Sem check-in · conta como falta"**.
+1. Entre como **`aluno@redshield.com.br`** → **Check-in** → **Fazer check-in**. Mostre o **Desfazer**.
+2. Saia (menu no canto superior direito → **Sair**) e entre como **`professor@redshield.com.br`** → **Presença** → mesma aula. O aluno aparece como presente, com **"Check-in do aluno · hora"**. Quem não fez check-in aparece como **"Sem check-in · conta como falta"**.
 3. Peça: *"O Fulano chegou, mas esqueceu o celular. Corrija."* (**Presente**). Depois: *"O Pedro fez check-in e foi embora. Corrija."* (**Falta**).
 4. Volte como **aluno**: ele vê a falta marcada pelo professor e já não consegue desfazer.
 5. Abra a **ficha do aluno** (aba Presença): a coluna "Registrado por" mostra check-in do aluno ou professor.
@@ -112,7 +112,7 @@ Nesse caso, inclua uma aula para hoje em **Agenda** antes de começar. Faça o f
 
 ### 6. Visão de cada papel (3 min)
 
-Saia e entre como **`professor@gb.com.br`**. Mostre que Financeiro e Planos somem. (O acesso do aluno você já mostrou no bloco 2.)
+Saia e entre como **`professor@redshield.com.br`**. Mostre que Financeiro e Planos somem. (O acesso do aluno você já mostrou no bloco 2.)
 
 **Perguntas:**
 - Quem mais da academia vai usar? Recepção? Outros professores? Eles podem ver o financeiro?

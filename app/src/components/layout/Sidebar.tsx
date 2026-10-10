@@ -66,7 +66,7 @@ export function Sidebar({ aberta, aoFechar }: { aberta: boolean; aoFechar: () =>
                 <span
                   aria-hidden
                   className={cn(
-                    'absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-gb-red-500 transition-opacity',
+                    'absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-rs-red-500 transition-opacity',
                     isActive ? 'opacity-100' : 'opacity-0',
                   )}
                 />
@@ -90,11 +90,11 @@ export function Sidebar({ aberta, aoFechar }: { aberta: boolean; aoFechar: () =>
   return (
     <>
       {/* overlay mobile */}
-      {aberta && <div className="fixed inset-0 z-30 bg-gb-ink/45 lg:hidden" onClick={aoFechar} aria-hidden />}
+      {aberta && <div className="fixed inset-0 z-30 bg-rs-ink/45 lg:hidden" onClick={aoFechar} aria-hidden />}
 
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-gb-blue-600 transition-transform duration-200 lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-rs-blue-600 transition-transform duration-200 lg:translate-x-0',
           aberta ? 'translate-x-0' : '-translate-x-full',
         )}
       >

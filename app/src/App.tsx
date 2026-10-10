@@ -24,8 +24,8 @@ const Configuracoes = lazy(() => import('@/pages/Configuracoes').then((m) => ({ 
 function Carregando() {
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3" role="status" aria-live="polite">
-      <LogoMark className="size-10 animate-pulse text-gb-red-600" />
-      <p className="text-sm text-gb-gray-500">Carregando…</p>
+      <LogoMark className="size-10 animate-pulse text-rs-red-600" />
+      <p className="text-sm text-rs-gray-500">Carregando…</p>
     </div>
   )
 }

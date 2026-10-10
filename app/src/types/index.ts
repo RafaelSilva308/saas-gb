@@ -1,5 +1,5 @@
 /* =========================================================================
-   Modelo de domínio do GB SaaS.
+   Modelo de domínio do REDSHIELD.
    Estes tipos são o contrato que o back-end deverá honrar na Fase 2.
    ========================================================================= */
 
