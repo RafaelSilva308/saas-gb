@@ -30,6 +30,13 @@ Mudar uma delas é decisão do dono do produto. Estão detalhadas no `ROADMAP.md
 - O login só confere o e-mail. **Não é segurança.** A guarda por papel (`ExigePapel`) é só navegação.
 - Valores em **reais** no front; no banco são **centavos** (`integer`). A conversão é na camada de API.
 
+## Infraestrutura decidida
+
+- **Neon** (PostgreSQL, hoje no plano gratuito) + **Fastify na Railway** (plano de US$ 5, já assinado) + **Resend** para e-mail. O front será **servido pela própria API** (mesma origem).
+- A autorização fica **em código na API**, não em políticas de banco. A autenticação é própria (Argon2id, sessão `httpOnly`).
+- **Não usar a Vercel em produção:** o plano gratuito proíbe uso comercial. Criar projetos **novos e isolados** na Neon e na Railway; nunca compartilhar banco com outro sistema.
+- O plano gratuito da Neon **não tem backup**: o `pg_dump` agendado e testado é obrigatório. Detalhes, limites e custos em `ROADMAP.md`, seção 4.
+
 ## Nome e marca
 
 - Nome do produto e da academia: **REDSHIELD** (em texto corrido e na interface). Arquivos e pastas em minúsculas: `redshield_*`, pacote `redshield-app`.

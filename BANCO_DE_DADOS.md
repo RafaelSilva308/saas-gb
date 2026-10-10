@@ -91,7 +91,8 @@ erDiagram
       sem esse critério, um feriado esquecido geraria falta para a turma inteira. O custo: uma aula em que **ninguém** usa o check-in e o professor não corrige conta como não realizada.
     - **Em aberto:** prazo para o aluno fazer check-in e para o professor corrigir (hoje o schema não impõe nenhum; a API precisa decidir, ver pendência **E16**),
       e se "justificado" continua existindo (**E17**). Hoje a justificada sai do cálculo de frequência (nem presença, nem falta).
-14. **`usuario` sem senha.** Com Supabase Auth, `usuario.id` é o id do `auth.users`. Com autenticação própria, adicionar `senha_hash` (Argon2id).
+14. **`usuario` sem senha neste arquivo.** A autenticação é própria (decisão D8, Neon + Fastify). As credenciais (hash Argon2id), as sessões e os tokens de recuperação de senha
+    ficam em tabelas que a Fase 2 define conforme a biblioteca de autenticação escolhida, ligadas a `usuario.id`. Não guarde senha em `usuario`.
     A unicidade do e-mail é por academia e ignora maiúsculas.
 
 ## O que ainda depende de resposta da academia
@@ -112,7 +113,7 @@ As IDs (E1…E13) referem-se ao [`ROADMAP.md`](./ROADMAP.md#22-para-ver-com-a-ac
 ## Ordem de criação (migrações)
 
 Mesma ordem em que o produto é construído (veja o roadmap). O arquivo `schema.sql` já traz tudo; ao adotar uma ferramenta de migração
-(Prisma, Drizzle, Supabase CLI), divida assim:
+(Prisma ou Drizzle), divida assim:
 
 | Migração | Conteúdo | Fase |
 |---|---|---|
@@ -139,5 +140,5 @@ Mesma ordem em que o produto é construído (veja o roadmap). O arquivo `schema.
 - O schema foi validado com um cenário (aula cancelada com presente, aula sem ninguém, justificada, falta por omissão): as quatro situações deram o resultado esperado.
 - A view percorre `chamada` e `presenca` por aluno. Para centenas de alunos é instantâneo; se o volume crescer muito, vira *materialized view* ou cache.
 - Não há tabela de **feriados / aulas canceladas**, nem de **regras de graduação** configuráveis. Entram quando E1 e E11 forem respondidas.
-- Políticas de acesso por linha (RLS, se a opção A do roadmap for escolhida) **não** estão neste arquivo: dependem de como a autenticação for ligada
-  e devem ser escritas e testadas na Fase 2/8.
+- A autorização por papel e por `academia_id` fica **na API** (D8), não no banco: nenhuma política de acesso por linha (RLS) está definida aqui. O papel de aplicação do banco não deve ter permissão de dono.
+- Para a Neon: usar a conexão **com pool**, SSL obrigatório, e papéis separados para a aplicação e para as migrações.
