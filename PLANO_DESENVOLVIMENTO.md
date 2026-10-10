@@ -235,7 +235,7 @@ Antes de escrever uma linha de back-end, percorrer com o professor:
 | Testes | Vitest + Supertest | Mesmo runner do front |
 | Observabilidade | Pino + Sentry | Log estruturado, erro rastreado |
 
-> **Alternativa mais barata para começar:** Supabase (Postgres + Auth + Storage gerenciados).
+> **Decisão atual (ver `ROADMAP.md`, D8–D10):** Neon (PostgreSQL) + Fastify na Railway, com o front servido pela API. A Supabase fica como alternativa.
 > Reduz muito o tempo até o primeiro deploy. O custo é ficar mais acoplado ao fornecedor — aceitável
 > para uma academia, revisável se o produto virar rede.
 
@@ -433,8 +433,8 @@ O sistema guarda dados pessoais de menores de idade. Isso não é opcional.
 | Ambiente | Front | API | Banco |
 |---|---|---|---|
 | Desenvolvimento | `localhost:5173` | `localhost:3333` | Postgres em Docker |
-| Staging | Vercel (preview) | Railway / Fly.io | Neon (branch) |
-| Produção | Vercel | Railway / Fly.io | Neon / Supabase |
+| Staging | servido pela API | Railway (ambiente de teste) | Neon (branch gratuita) |
+| Produção | servido pela API (mesma origem) | Railway | Neon |
 
 **Demonstração atual:** o front está publicado em **GitHub Pages** a partir da pasta `app/dist`.
 Como não há servidor para reescrever rotas, o app usa `HashRouter` e `base: './'` no Vite —

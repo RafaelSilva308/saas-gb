@@ -39,6 +39,19 @@ Registradas aqui para qualquer sessão futura. Mudar uma delas é decisão do do
 | D6 | O **risco de fraude é aceito** na v1 (marcar de casa, ou por um colega) | Mitigação futura em ordem de custo: janela de horário, QR no tatame, geolocalização, confirmação do professor. A origem de cada presença já é gravada |
 | D7 | Uma aula só entra na frequência se foi **realizada**: não cancelada e com ao menos um presente | Sem chamada do professor não há outro sinal de que a aula aconteceu. Custo: aula em que ninguém fez check-in conta como não realizada |
 
+### Decisões técnicas já tomadas
+
+Tomadas pelo dono do produto com base na seção 4. Mudar uma delas muda custo, segurança e esforço.
+
+| # | Decisão | Consequência |
+|---|---|---|
+| D8 | **Banco: Neon (PostgreSQL). API: Node + Fastify na Railway.** A Railway já é paga (plano de US$ 5); a Neon está no plano gratuito. A Vercel (plano gratuito) **não** será usada em produção | O login e a **autorização ficam em código** (testável), não em políticas de banco. A autenticação é nossa (senha com Argon2id, recuperação por e-mail, sessão) |
+| D9 | **O front é servido pela própria API**, na mesma origem | Sem CORS; cookie de sessão `httpOnly` e `SameSite=Strict`; um só serviço para publicar. Alternativa se algum dia separar: Cloudflare Pages |
+| D10 | **Projetos novos e isolados** na Neon e na Railway só para o REDSHIELD; nenhum banco compartilhado com outro sistema | Dados de menores e financeiros não se misturam com outro projeto. Segredos só nas variáveis da Railway, nunca no repositório |
+| D11 | **E-mail: Resend** (plano gratuito) com domínio próprio | Limite de 100 e-mails por dia; ver seção 4.3 |
+
+**Por que não a Vercel:** o plano gratuito (Hobby) não permite uso comercial, segundo as [diretrizes de uso justo da Vercel](https://vercel.com/docs/limits/fair-use-guidelines). O sistema de uma academia que cobra mensalidade se enquadra. O plano Pro custa cerca de US$ 20 por mês, sem ganho aqui.
+
 **Efeito prático sobre a frequência (e a graduação):** como falta é o padrão, o aluno que esquece o celular, fica sem sinal ou não tem login perde presença.
 Alunos **sem celular ou sem login (crianças, em especial)** só terão presença se o professor marcar. Na prática, para esse grupo, o professor continua fazendo a chamada.
 Isso é inerente a D1+D3 e precisa ser validado com a academia (**E14, E15**).
@@ -76,7 +89,7 @@ Sem estas respostas, algumas fases não começam. A coluna **Bloqueia** diz qual
 |---|---|---|---|---|
 | V1 | **O nome REDSHIELD está livre para uso, e a academia tem identidade visual própria?** O nome já foi adotado no sistema. Cores, tipografia e o símbolo (um escudo simples) são **provisórios**: foram prototipados a partir de uma direção de mercado, e a imagem `referencia_visual_conceitual.png` traz símbolo e fotos que **não** são do REDSHIELD | Nome parecido com marca registrada de outra empresa no mesmo ramo pode gerar notificação e obrigar a trocar nome, domínio e material. Divulgar uma identidade que lembre outra rede é o mesmo risco | Publicar para qualquer pessoa fora do círculo (Fase 0) | Consultar o INPI (classes de ensino esportivo e de software) e o registro do domínio; pedir à academia o logotipo e o manual de marca, se existirem; remover `referencia_visual_conceitual.png` do repositório antes de divulgar |
 | V2 | **Quem é o cliente?** Uma academia só (a sua / do professor) ou você pretende vender para várias? | Define se multi-tenant, cadastro de academia, cobrança do SaaS, termos de uso e suporte entram no escopo | Fase 2 (escopo de auth e tenant) | Uma academia na v1. O banco já tem `academia_id`, então abrir para várias depois não exige migração |
-| V3 | **Quem paga a infraestrutura e quanto pode custar por mês?** | Decide entre o plano gratuito (R$ ~4/mês, sem backup automático) e o recomendado (~R$ 145/mês) — ver [seção 4](#4-infraestrutura-e-custos) | Fase 2 | Gratuito até o piloto; decidir antes do go-live |
+| ~~V3~~ | ~~Quem paga a infraestrutura e quanto pode custar?~~ **Decidido:** a Railway (US$ 5/mês) já é assinada pelo dono do produto; Neon no plano gratuito até o lançamento. Ver D8 e a [seção 4](#4-infraestrutura-e-custos) | O custo adicional previsto é o domínio (~R$ 40/ano). Pendente: decidir, antes do go-live, se a Neon sobe para um plano pago com mais histórico de restauração | Fase 2 | Manter gratuita no piloto; reavaliar antes do go-live |
 | V4 | **Domínio:** qual nome e quem registra? (ex.: `redshield.com.br`; verificar disponibilidade no registro.br) | Necessário para e-mail com boa entrega (SPF/DKIM) e para o endereço definitivo. ~R$ 40/ano | Fase 7 | Registrar no seu CPF/CNPJ já agora, para garantir o nome |
 | ~~V5~~ | ~~Papel "aluno" entra na v1?~~ **Decidido: sim**, por causa do check-in. O aluno acessa Painel, Agenda, Progresso e Check-in | Cada papel multiplica as regras de acesso e os testes: login de aluno, recuperação de senha e isolamento entre alunos entram na v1 | Fase 2 | — (aumenta o escopo da Fase 2 e da Fase 8; estimativa ajustada) |
 | V6 | **Cobrança automática (Pix/boleto/cartão com baixa automática) entra na v1 ou depois?** | É a maior dor financeira e o maior custo de desenvolvimento e de taxa. Sem ela, o Financeiro é registro manual | Fase 5 | Depois. v1 gera a cobrança e o professor dá baixa manualmente; Pix automático vira a primeira entrega pós-lançamento |
@@ -156,14 +169,16 @@ Fase 10 Piloto → lançamento
 
 ### Fase 2 — Fundação · ~1 a 2 semanas
 
-- [ ] Criar o projeto no provedor escolhido (ver seção 4) — ambientes **dev** e **prod** separados desde o início.
+- [ ] Criar **projetos novos** na Neon e na Railway só para o REDSHIELD (D10). **Dev** e **prod** separados desde o início; na Neon, uma *branch* gratuita serve de ambiente de teste. Escolher a região mais próxima do Brasil e **conferir se a Neon tem São Paulo**.
+- [ ] Banco: criar um papel de aplicação **sem permissão de dono** (a API não roda migração nem altera esquema) e outro papel só para migrações. Usar a conexão **com pool** da Neon e SSL obrigatório.
+- [ ] API Fastify servindo também o front compilado (D9). Segredos nas variáveis da Railway. Definir **alerta e limite de gasto** na Railway, porque o crédito incluído no plano é dividido com o outro projeto da conta.
 - [ ] Aplicar o [`db/schema.sql`](./db/schema.sql) como migração versionada (001) e criar um *seed* equivalente aos dados simulados atuais.
-- [ ] Autenticação real (e-mail + senha; recuperação de senha por e-mail), **incluindo o papel aluno** e o vínculo `usuario.aluno_id` → `aluno`. Sessão com cookie `httpOnly` ou o fluxo do provedor.
+- [ ] Autenticação real (e-mail + senha; recuperação de senha por e-mail), **incluindo o papel aluno** e o vínculo `usuario.aluno_id` → `aluno`. Sessão com cookie `httpOnly`, `Secure` e `SameSite=Strict`. Escolher a biblioteca de autenticação **verificando se está mantida hoje**; se não houver uma boa, implementar o mínimo (senha com Argon2id, sessão em tabela, recuperação por e-mail com token de uso único).
 - [ ] **Autorização no servidor**, por papel e por `academia_id` — a guarda do front é só navegação. Todo acesso filtra pela academia da sessão; nenhuma rota aceita `academia_id` vindo do cliente.
 - [ ] Camada de API no front: conversão **reais ↔ centavos** na borda (problema 3) e datas em ISO.
-- [ ] CI no GitHub Actions: lint + `tsc` + testes + build. Deploy automático do front.
+- [ ] CI no GitHub Actions: lint + `tsc` + testes + build. Deploy automático na Railway a partir da `main`. O GitHub Pages atual (demonstração com dados simulados) deixa de ser necessário quando o back-end entrar; decidir se mantém como vitrine.
 - [ ] Monitoramento de erro (Sentry) e de disponibilidade (UptimeRobot), ambos gratuitos.
-- [ ] **Backup:** rotina de `pg_dump` agendada para armazenamento externo, e **um teste de restauração feito de verdade**.
+- [ ] **Backup:** rotina de `pg_dump` agendada (GitHub Actions) para armazenamento externo. A janela de restauração do plano gratuito da Neon é de cerca de 6 horas e **não substitui backup**. Fazer **um teste de restauração de verdade**.
 
 **Pronto quando:** login real funciona em produção; um usuário de uma academia **não consegue** ler dados de outra (teste automatizado); o backup foi restaurado com sucesso em um banco vazio.
 
@@ -257,7 +272,7 @@ Em ordem de valor, sujeita ao que o piloto mostrar:
 5. Relatório de retenção por mês de matrícula.
 6. Multi-unidade; programa técnico por faixa.
 
-**Total estimado até o go-live: ~13 a 19 semanas** de trabalho de 1 desenvolvedor, sem contar a espera pelas respostas da Fase 0.
+**Total estimado até o go-live: ~14 a 20 semanas** (inclui o login próprio da decisão D8) de trabalho de 1 desenvolvedor, sem contar a espera pelas respostas da Fase 0.
 
 ---
 
@@ -266,41 +281,47 @@ Em ordem de valor, sujeita ao que o piloto mostrar:
 > **Preços:** são aproximados, baseados no que eu conheço dos planos de cada serviço, e **mudam**. Confira a página oficial antes de assinar.
 > Conversão usada: US$ 1 ≈ R$ 5,50.
 
-### 4.1 Opções de arquitetura
+### 4.1 Arquitetura adotada (D8–D10) e alternativas
 
-| | **A — Tudo gerenciado** (recomendada) | **B — Servidor próprio** | **C — Meio-termo** |
+> **Preços:** vêm de pesquisa feita na data da decisão e **mudam**. Confira as páginas oficiais antes de assinar ou mudar de plano.
+
+**Adotada:** Neon (banco) + Railway (API Fastify que também serve o front) + Resend (e-mail) + GitHub Actions (CI e backup).
+
+| | **Adotada (C)** | Alternativa A — tudo gerenciado | Alternativa B — servidor próprio |
 |---|---|---|---|
-| Front | Cloudflare Pages | Cloudflare Pages | Cloudflare Pages |
-| Banco | Supabase (Postgres) | Postgres no próprio servidor | Neon (Postgres) |
-| Login | Supabase Auth | Código próprio (JWT + Argon2id) | Código próprio |
-| API / regras | Regras de acesso no banco (RLS) + funções de borda | Node + Fastify | Node + Fastify |
-| Rotinas | `pg_cron` + funções de borda | `node-cron` no servidor | GitHub Actions agendado |
-| Servidor | nenhum | VPS (Hetzner ~€4–5/mês ou Oracle Free) | Railway (~US$ 5/mês) |
-| Custo mínimo | **~R$ 3/mês** (só o domínio) | ~R$ 30/mês | ~R$ 30/mês |
-| Custo para operar sério | **~R$ 145/mês** (Supabase Pro) | ~R$ 30/mês + seu tempo | ~R$ 60/mês |
-| Esforço de desenvolvimento | **menor** | maior | médio |
-| Quem cuida de segurança/atualização | o provedor | **você** | você, parcialmente |
-| Risco principal | regra de acesso (RLS) mal escrita vaza dados entre academias | você vira o suporte do servidor | dois provedores para acompanhar |
-| Portabilidade | o banco é Postgres puro; as regras em RLS precisam ser reescritas se sair | alta | alta |
+| Front | servido pela API (Railway) | Cloudflare Pages | Cloudflare Pages |
+| Banco | **Neon** | Supabase | Postgres no servidor |
+| Login | código próprio | Supabase Auth | código próprio |
+| API / regras | **Fastify; autorização em código** | regras de acesso no banco (RLS) + funções de borda | Node + Fastify |
+| Rotinas | `node-cron` na API | `pg_cron` + funções de borda | `node-cron` |
+| Custo adicional hoje | **~R$ 3/mês** (domínio), pois a Railway já é paga | ~R$ 3/mês | ~R$ 30/mês |
+| Custo para operar sério | Neon pago (uso, poucos dólares) + eventual excedente da Railway | ~R$ 145/mês (Supabase Pro) | ~R$ 30/mês + seu tempo |
+| Esforço de desenvolvimento | médio (login é nosso) | menor | maior |
+| Risco principal | login e sessão mal feitos; custo da Railway passar do crédito incluído | regra de acesso (RLS) mal escrita vaza dados entre alunos | você vira o suporte do servidor |
 
-**Minha recomendação: A.** Para uma academia, com dezenas ou poucas centenas de alunos, o volume de dados é minúsculo (dezenas de MB) e o que
-mais custa é o **tempo** de montar autenticação, recuperação de senha e backup — o que A entrega pronto.
-O custo da escolha é real: a segurança passa a depender de políticas de acesso no banco, e **isso precisa de testes** (Fase 8). Se você
-prefere manter a regra de acesso em código que se lê de cima para baixo, escolha B ou C e aceite o custo de operar.
+**Por que C e não A:** com a Railway já paga, o custo adicional é praticamente o mesmo da opção A. E em C a regra de acesso é código que se lê e se testa,
+e não política de banco, o que reduz o risco de vazar dado de menores entre alunos. O preço é o **esforço de construir o login**, estimado em cerca de uma semana a mais na Fase 2.
+
+**Por que o front vai junto com a API (D9):** mesma origem elimina CORS e simplifica o cookie de sessão, reduzindo superfície de ataque, e é um serviço só para publicar.
+O custo: se a API cair, o front cai junto. Para um sistema que só funciona com a API, isso não muda a experiência.
 
 O modelo em `db/schema.sql` serve para as três opções. O que muda entre elas é onde mora a lógica, não o banco.
 
-### 4.2 Por que não só o plano gratuito para sempre
+### 4.2 Limites e cuidados da combinação adotada
 
-O plano gratuito do Supabase tem três limitações que importam para uma operação real:
+**Neon, plano gratuito:**
+- **Banco suspenso após 5 minutos sem uso**: a primeira requisição depois disso demora mais. O professor ou o aluno vai notar na primeira abertura do dia. Manter o banco acordado com um monitor gasta as horas de computação gratuitas (cerca de 100 por mês), então não vale.
+- **Armazenamento pequeno** (0,5 GB, ou 1 GB segundo fonte mais recente; conferir em [neon.com/pricing](https://neon.com/pricing)). Para centenas de alunos sobra.
+- **Sem backup:** a janela de restauração gratuita é de cerca de 6 horas (fonte de terceiros). O `pg_dump` agendado é obrigatório e a restauração precisa ser testada (Fases 2 e 8).
+- No plano pago o preço é por uso (computação por hora e armazenamento por GB). Para um banco deste tamanho deve custar poucos dólares por mês; **confirmar antes** de assinar.
 
-- **Sem backup automático** (backup diário só nos planos pagos). Mitigação gratuita: `pg_dump` agendado no GitHub Actions para um armazenamento
-  externo (Cloudflare R2 ou Backblaze B2, 10 GB gratuitos). **Só vale se a restauração for testada** (Fases 2 e 8).
-- **Projeto pausa após ~1 semana sem atividade.** Com uso diário isso não acontece, mas férias coletivas ou um recesso podem disparar. Configure o monitor de disponibilidade.
-- **E-mail de autenticação embutido é muito limitado** (poucos por hora). Para recuperação de senha em produção é obrigatório configurar um SMTP próprio (seção 4.3).
+**Railway, plano de US$ 5:**
+- Inclui US$ 5 de uso por mês e **cobra o excedente**. Como a conta já tem outro projeto, o REDSHIELD entra no **mesmo crédito**. Uma API pequena usa pouca memória, mas **monitore o consumo** e defina um limite de gasto.
+- **Confirme a região** da Railway mais próxima do Brasil; latência de outra região é perceptível, mas aceitável para este uso.
 
-O sistema guarda **dados de menores e histórico financeiro**. Minha avaliação: no lançamento, pagar o plano com backup é proporcional ao risco.
-Isso é a decisão **V3** — é sua, e o piloto roda no gratuito de qualquer forma.
+**Vercel:** não usar em produção (ver D8). O projeto que você já tem pode continuar como está.
+
+**LGPD:** o banco e a API ficam em provedores no exterior. Para dados de menores, definir a base legal da transferência internacional e citá-la na política de privacidade (Fase 8). Preferir região em São Paulo na Neon, se existir.
 
 ### 4.3 Envio de e-mail
 
@@ -324,23 +345,24 @@ Não é automação, mas resolve o problema de "como cobrar" sem pagar a API ofi
 
 | Necessidade | Escolha de menor custo | Custo |
 |---|---|---|
-| Hospedagem do front | **Cloudflare Pages** (banda ilimitada, repositório privado permitido). GitHub Pages só funciona de graça em repositório **público** | R$ 0 |
+| Hospedagem do front | **Servido pela própria API na Railway** (D9). Antes disso, o GitHub Pages hospeda a demonstração (grátis só em repositório **público**). Cloudflare Pages é a alternativa, se separar | R$ 0 adicional |
 | Domínio `.com.br` | registro.br | ~R$ 40/ano |
-| Armazenar fotos de aluno (se **E6** pedir) | Supabase Storage (1 GB) ou Cloudflare R2 (10 GB) | R$ 0 |
+| Armazenar fotos de aluno (se **E6** pedir) | Cloudflare R2 (10 GB gratuitos) | R$ 0 |
 | Backup externo | Cloudflare R2 ou Backblaze B2 (10 GB cada) | R$ 0 |
 | Erros em produção | Sentry (plano gratuito, ~5 mil eventos/mês) | R$ 0 |
 | Monitor de disponibilidade | UptimeRobot (plano gratuito) | R$ 0 |
 | Pix automático (pós-lançamento) | Mercado Pago, Asaas ou similar — **cobram taxa por transação** | variável |
 | WhatsApp oficial (pós-lançamento) | API oficial — cobra por conversa | variável |
 
-### 4.5 Custo mensal por etapa (arquitetura A)
+### 4.5 Custo mensal por etapa (arquitetura adotada)
 
-| Etapa | Custo mensal | Observação |
+| Etapa | Custo adicional | Observação |
 |---|---|---|
-| Construção e piloto | **~R$ 3** | Domínio (R$ 40/ano) e tudo nos planos gratuitos. Backup por `pg_dump` |
-| Operação, mínimo absoluto | ~R$ 3 | Igual ao piloto; **sem backup gerenciado**, só o que você montou |
-| Operação recomendada | **~R$ 145** | Supabase Pro (~US$ 25) com backup diário e sem pausa. E-mail ainda gratuito |
-| Se o volume de e-mail crescer | + ~R$ 50 a R$ 110 | Resend/Brevo pago |
+| Construção e piloto | **~R$ 3** | Domínio (~R$ 40/ano). Neon, Resend e GitHub Actions gratuitos. A Railway já é paga; atenção ao crédito compartilhado |
+| Operação, mínimo | ~R$ 3 | Igual ao piloto. **Sem backup gerenciado**: só o `pg_dump` que montamos |
+| Operação recomendada | + poucos dólares | Neon em plano pago por uso (mais histórico de restauração e banco sempre disponível, se configurado). Confirmar preço |
+| Se o volume de e-mail crescer | + ~R$ 50 a R$ 110 | Resend ou Brevo pago |
+| Se a API passar do crédito da Railway | + excedente por uso | Definir alerta e limite de gasto |
 | Pix automático | + taxa por cobrança | Só depois do lançamento e de **V6** |
 
 ---
@@ -369,6 +391,9 @@ O produto está lançado quando **todos** os itens abaixo forem verdadeiros:
 | E-mails caindo no spam / estourando limite | Médio | Domínio com SPF/DKIM/DMARC; vencimentos espalhados; Brevo como reserva |
 | **Fraude no check-in** (marcar de casa ou por um colega), sem confirmação do professor (D6) | Médio — contamina frequência e elegibilidade à graduação | Risco **aceito** para a v1. A origem é gravada; o professor continua podendo corrigir a chamada. Medir no piloto (check-ins fora do horário, check-ins de quem o professor depois marcou ausente) antes de endurecer |
 | **Falta por omissão** (D3): aluno esquece o celular, fica sem sinal ou não tem login e perde presença; o professor passa a corrigir o que o sistema não captou | Médio — frequência injusta, trabalho de correção | Validar com **E14/E15/E16** antes de construir; auditoria das correções; check-in offline se **E8** exigir |
+| Login e sessão implementados do zero com falha (sequestro de sessão, recuperação de senha fraca) | Alto | Biblioteca mantida, ou implementação mínima revisada; cookie `httpOnly`/`Secure`/`SameSite`; limite de tentativas; testes de segurança na Fase 8 |
+| Crédito da Railway estourado por dois projetos na mesma conta | Baixo — custo | Alerta e limite de gasto; avaliar separar contas se crescer |
+| Neon gratuita suspensa por inatividade e sem backup | Médio | `pg_dump` agendado e restauração testada; avaliar plano pago no lançamento |
 | Aluno ver dado de outro aluno (menores) | Alto — LGPD | Painel do aluno só com dados dele (Fase 1) e testes de isolamento (Fase 8) |
 | Escopo crescer (pagamento, WhatsApp, portal do aluno completo) | Médio — atraso | Itens "Depois do lançamento" não entram antes do go-live |
 | Dependência de um único desenvolvedor | Médio | Documentação, migrações versionadas, CI desde a Fase 2 |
