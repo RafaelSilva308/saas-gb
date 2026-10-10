@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react'
-import { ALUNOS, AULAS, CHAMADAS, COMUNICADOS, PLANOS, TRANSACOES } from '@/data/mock'
-import type { Aluno, Aula, ChamadaAula, Comunicado, Plano, StatusPresenca, Transacao } from '@/types'
+import { ALUNOS, AULAS, CHAMADAS, PLANOS, TRANSACOES } from '@/data/mock'
+import type { Aluno, Aula, ChamadaAula, Plano, StatusPresenca, Transacao } from '@/types'
 
 /* Store em memória.
    Cada função aqui corresponde a um endpoint planejado na Fase 2
@@ -13,7 +13,6 @@ interface Store {
   aulas: Aula[]
   chamadas: ChamadaAula[]
   transacoes: Transacao[]
-  comunicados: Comunicado[]
 
   salvarAluno: (a: Aluno) => void
   removerAluno: (id: string) => void
@@ -31,8 +30,6 @@ interface Store {
   salvarTransacao: (t: Transacao) => void
   removerTransacao: (id: string) => void
 
-  salvarComunicado: (c: Comunicado) => void
-  removerComunicado: (id: string) => void
 }
 
 const StoreCtx = createContext<Store | null>(null)
@@ -45,7 +42,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [aulas, setAulas] = useState<Aula[]>(AULAS)
   const [chamadas, setChamadas] = useState<ChamadaAula[]>(CHAMADAS)
   const [transacoes, setTransacoes] = useState<Transacao[]>(TRANSACOES)
-  const [comunicados, setComunicados] = useState<Comunicado[]>(COMUNICADOS)
 
   const upsert = <T extends { id: string }>(lista: T[], item: T) =>
     lista.some((x) => x.id === item.id) ? lista.map((x) => (x.id === item.id ? item : x)) : [item, ...lista]
@@ -108,14 +104,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setTransacoes((atual) => atual.filter((t) => t.id !== id))
   }, [])
 
-  const salvarComunicado = useCallback((c: Comunicado) => {
-    setComunicados((atual) => upsert(atual, c.id ? c : { ...c, id: novoId('c') }))
-  }, [])
-
-  const removerComunicado = useCallback((id: string) => {
-    setComunicados((atual) => atual.filter((c) => c.id !== id))
-  }, [])
-
   const chamadaDe = useCallback(
     (aulaId: string, data: string) => chamadas.find((c) => c.aulaId === aulaId && c.data === data),
     [chamadas],
@@ -123,16 +111,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const valor = useMemo<Store>(
     () => ({
-      alunos, planos, aulas, chamadas, transacoes, comunicados,
+      alunos, planos, aulas, chamadas, transacoes,
       salvarAluno, removerAluno, salvarPlano, alternarPlano, salvarAula, removerAula,
       marcarPresenca, fecharChamada, chamadaDe, salvarTransacao, removerTransacao,
-      salvarComunicado, removerComunicado,
     }),
     [
-      alunos, planos, aulas, chamadas, transacoes, comunicados,
+      alunos, planos, aulas, chamadas, transacoes,
       salvarAluno, removerAluno, salvarPlano, alternarPlano, salvarAula, removerAula,
       marcarPresenca, fecharChamada, chamadaDe, salvarTransacao, removerTransacao,
-      salvarComunicado, removerComunicado,
     ],
   )
 

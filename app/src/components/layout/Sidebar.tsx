@@ -4,7 +4,6 @@ import {
   ClipboardCheck,
   CreditCard,
   LayoutDashboard,
-  Megaphone,
   Settings,
   TrendingUp,
   Users,
@@ -31,7 +30,6 @@ const ITENS: Item[] = [
   { para: '/planos', rotulo: 'Planos', Icone: CreditCard, papeis: ['gestor'] },
   { para: '/financeiro', rotulo: 'Financeiro', Icone: Wallet, papeis: ['gestor'] },
   { para: '/progresso', rotulo: 'Progresso', Icone: TrendingUp, papeis: ['gestor', 'professor', 'aluno'] },
-  { para: '/comunicados', rotulo: 'Comunicados', Icone: Megaphone, papeis: ['gestor', 'professor', 'aluno'] },
 ]
 
 export function Sidebar({ aberta, aoFechar }: { aberta: boolean; aoFechar: () => void }) {

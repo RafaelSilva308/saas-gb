@@ -199,8 +199,8 @@ export function Painel() {
                   Um convite pessoal costuma trazer o aluno de volta ao tatame.
                 </p>
               </div>
-              <ButtonLink to="/comunicados" variante="secundaria" tamanho="sm" className="shrink-0">
-                Enviar convite
+              <ButtonLink to="/alunos" variante="secundaria" tamanho="sm" className="shrink-0">
+                Ver alunos
               </ButtonLink>
             </div>
           )}
@@ -393,12 +393,11 @@ export function Painel() {
       {/* Ações rápidas */}
       <Card className="mt-4">
         <CardHeader titulo="Ações rápidas" descricao="Os caminhos mais curtos do dia a dia" />
-        <CardBody className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <CardBody className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {[
             { to: '/presenca', label: 'Fazer a chamada', desc: 'Registrar quem treinou hoje', Icone: ClipboardCheck },
             { to: '/alunos?novo=1', label: 'Adicionar aluno', desc: 'Cadastrar nova matrícula', Icone: UserPlus },
             { to: '/agenda', label: 'Agendar aula', desc: 'Incluir no quadro de horários', Icone: CalendarPlus },
-            { to: '/comunicados', label: 'Enviar comunicado', desc: 'Avisar alunos e responsáveis', Icone: Users },
           ].map(({ to, label, desc, Icone }) => (
             <Link
               key={to + label}

@@ -2,7 +2,6 @@ import type {
   Aluno,
   Aula,
   ChamadaAula,
-  Comunicado,
   Faixa,
   Plano,
   RegistroPresenca,
@@ -276,52 +275,6 @@ export const TRANSACOES: Transacao[] = (() => {
   }
   return out.sort((a, b) => b.data.localeCompare(a.data))
 })()
-
-// ------------------------------------------------------------- comunicados
-
-export const COMUNICADOS: Comunicado[] = [
-  {
-    id: 'c1',
-    titulo: 'Exame de graduação — inscrições abertas',
-    corpo:
-      'O exame de graduação acontece no dia 12, às 10h, no Tatame 1. Alunos com frequência acima de 70% nos últimos três meses podem se inscrever na recepção até sexta-feira. Traga o kimono oficial e chegue com 30 minutos de antecedência.',
-    autor: 'Prof. Carlos Barra',
-    data: isoDia(somaDias(hoje, -2)),
-    destino: 'todos',
-    fixado: true,
-  },
-  {
-    id: 'c2',
-    titulo: 'Open Mat de sábado muda para 10h',
-    corpo:
-      'A partir deste sábado, o Open Mat passa a começar às 10h e vai até 11h30. O tatame fica liberado para treino livre e drills. Alunos de todas as faixas são bem-vindos.',
-    autor: 'Prof. Léo',
-    data: isoDia(somaDias(hoje, -6)),
-    destino: 'todos',
-    fixado: false,
-  },
-  {
-    id: 'c3',
-    titulo: 'Turma Kids: entrega dos novos uniformes',
-    corpo:
-      'Os uniformes encomendados chegaram. A entrega acontece na próxima terça, ao final da aula, direto com os responsáveis. Quem não puder comparecer pode retirar na recepção durante a semana.',
-    autor: 'Profa. Renata',
-    data: isoDia(somaDias(hoje, -9)),
-    destino: 'turma',
-    turmaId: 't3',
-    fixado: false,
-  },
-  {
-    id: 'c4',
-    titulo: 'Lembrete de mensalidade em aberto',
-    corpo:
-      'Identificamos mensalidades em aberto. Procure a recepção para regularizar ou combinar uma nova data. Estamos à disposição para encontrar a melhor forma de manter seu treino em dia.',
-    autor: 'Renata Moura',
-    data: isoDia(somaDias(hoje, -14)),
-    destino: 'inadimplentes',
-    fixado: false,
-  },
-]
 
 // ---------------------------------------------------------- consultas úteis
 
