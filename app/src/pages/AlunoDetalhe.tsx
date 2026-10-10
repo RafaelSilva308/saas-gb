@@ -31,6 +31,8 @@ export function AlunoDetalhe() {
         data: c.data,
         aula: aulaPorId(c.aulaId),
         status: c.registros.find((r) => r.alunoId === aluno.id)!.status,
+        origem: c.registros.find((r) => r.alunoId === aluno.id)!.origem,
+        horario: c.registros.find((r) => r.alunoId === aluno.id)!.horario,
       }))
       .sort((a, b) => b.data.localeCompare(a.data))
       .slice(0, 30)
@@ -198,7 +200,7 @@ export function AlunoDetalhe() {
               <EmptyState
                 icone={<CalendarDays className="size-6" />}
                 titulo="Nenhum treino registrado"
-                mensagem="As presenças aparecem aqui assim que a chamada for feita."
+                mensagem="As presenças aparecem aqui quando o aluno faz o check-in ou o professor registra."
               />
             ) : (
               <ul className="divide-y divide-gb-gray-200">
@@ -209,10 +211,11 @@ export function AlunoDetalhe() {
                       <span className="block truncate text-sm font-semibold text-gb-ink">{h.aula?.titulo}</span>
                       <span className="block text-xs text-gb-gray-500">
                         {turmaPorId(h.aula?.turmaId ?? '')?.nome} · {h.aula?.inicio}
+                        {h.origem === 'aluno' && ' · check-in do aluno'}
                       </span>
                     </span>
                     <Badge tom={h.status === 'presente' ? 'ok' : h.status === 'justificado' ? 'alerta' : 'neutro'}>
-                      {h.status === 'presente' ? 'Presente' : h.status === 'justificado' ? 'Justificado' : 'Ausente'}
+                      {h.status === 'presente' ? 'Presente' : h.status === 'justificado' ? 'Justificado' : 'Falta'}
                     </Badge>
                   </li>
                 ))}
@@ -226,13 +229,13 @@ export function AlunoDetalhe() {
         <Card>
           <CardHeader titulo="Histórico de presença" descricao="Últimos 30 registros" />
           {historico.length === 0 ? (
-            <EmptyState icone={<CalendarDays className="size-6" />} titulo="Sem registros" mensagem="Nenhuma chamada inclui este aluno ainda." />
+            <EmptyState icone={<CalendarDays className="size-6" />} titulo="Sem registros" mensagem="Nenhum check-in ou registro do professor para este aluno ainda." />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[600px] text-left">
                 <thead>
                   <tr className="border-b border-gb-gray-200">
-                    {['Data', 'Aula', 'Turma', 'Horário', 'Situação'].map((h) => (
+                    {['Data', 'Aula', 'Turma', 'Horário', 'Situação', 'Registrado por'].map((h) => (
                       <th key={h} className="gb-label px-5 py-3">
                         {h}
                       </th>
@@ -248,8 +251,11 @@ export function AlunoDetalhe() {
                       <td className="px-5 py-3 font-mono text-sm text-gb-gray-700">{h.aula?.inicio}</td>
                       <td className="px-5 py-3">
                         <Badge tom={h.status === 'presente' ? 'ok' : h.status === 'justificado' ? 'alerta' : 'neutro'}>
-                          {h.status === 'presente' ? 'Presente' : h.status === 'justificado' ? 'Justificado' : 'Ausente'}
+                          {h.status === 'presente' ? 'Presente' : h.status === 'justificado' ? 'Justificado' : 'Falta'}
                         </Badge>
+                      </td>
+                      <td className="px-5 py-3 text-sm text-gb-gray-700">
+                        {h.origem === 'aluno' ? `Check-in do aluno${h.horario ? ` · ${h.horario}` : ''}` : 'Chamada do professor'}
                       </td>
                     </tr>
                   ))}

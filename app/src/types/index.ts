@@ -10,6 +10,8 @@ export interface Usuario {
   nome: string
   email: string
   papel: Papel
+  /** Só para papel 'aluno': a ficha de aluno que este login representa. */
+  alunoId?: string
   avatar?: string
 }
 
@@ -74,9 +76,14 @@ export interface Aula {
 
 export type StatusPresenca = 'presente' | 'ausente' | 'justificado'
 
+/** Quem registrou a presença: o professor na chamada, ou o próprio aluno pelo check-in. */
+export type OrigemPresenca = 'professor' | 'aluno'
+
 export interface RegistroPresenca {
   alunoId: string
   status: StatusPresenca
+  origem?: OrigemPresenca // ausente nos registros antigos = professor
+  horario?: string // "HH:MM" local, em que o registro foi feito
 }
 
 export interface ChamadaAula {

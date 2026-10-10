@@ -17,6 +17,7 @@ const Agenda = lazy(() => import('@/pages/Agenda').then((m) => ({ default: m.Age
 const Presenca = lazy(() => import('@/pages/Presenca').then((m) => ({ default: m.Presenca })))
 const Planos = lazy(() => import('@/pages/Planos').then((m) => ({ default: m.Planos })))
 const Financeiro = lazy(() => import('@/pages/Financeiro').then((m) => ({ default: m.Financeiro })))
+const Checkin = lazy(() => import('@/pages/Checkin').then((m) => ({ default: m.Checkin })))
 const Progresso = lazy(() => import('@/pages/Progresso').then((m) => ({ default: m.Progresso })))
 const Configuracoes = lazy(() => import('@/pages/Configuracoes').then((m) => ({ default: m.Configuracoes })))
 
@@ -62,6 +63,14 @@ export default function App() {
                 />
 
                 <Route path="/agenda" element={<Agenda />} />
+                <Route
+                  path="/checkin"
+                  element={
+                    <ExigePapel papeis={['aluno']}>
+                      <Checkin />
+                    </ExigePapel>
+                  }
+                />
 
                 <Route
                   path="/presenca"

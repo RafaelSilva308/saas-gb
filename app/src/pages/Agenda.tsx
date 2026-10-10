@@ -277,7 +277,7 @@ export function Agenda() {
                   to="/presenca"
                   className="mt-3 inline-block text-xs font-semibold uppercase tracking-wider text-gb-blue-600 hover:underline"
                 >
-                  Registrar presença
+                  Ver presenças
                 </Link>
               </div>
             )

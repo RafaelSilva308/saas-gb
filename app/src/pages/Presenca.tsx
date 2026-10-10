@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Check, CheckCheck, ClipboardCheck, Lock, Minus, Search, X } from 'lucide-react'
+import { Check, ClipboardCheck, Minus, Search, Smartphone, X } from 'lucide-react'
 import { Card, CardBody, CardHeader } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input, Select } from '@/components/ui/Field'
@@ -9,20 +9,21 @@ import { Avatar } from '@/components/ui/Avatar'
 import { EmptyState, PageHeader, Progress } from '@/components/ui/Misc'
 import { useStore } from '@/app/store'
 import { turmaPorId } from '@/data/mock'
-import { DIAS_SEMANA_LONGO, dataLonga } from '@/lib/format'
+import { alunoNaAula } from '@/data/selectors'
+import { DIAS_SEMANA_LONGO, dataLonga, hojeISO } from '@/lib/format'
 import type { StatusPresenca } from '@/types'
 import { cn } from '@/lib/cn'
 
 const OPCOES: { id: StatusPresenca; label: string; Icone: typeof Check; classe: string }[] = [
   { id: 'presente', label: 'Presente', Icone: Check, classe: 'bg-gb-success text-white border-gb-success' },
   { id: 'justificado', label: 'Justificado', Icone: Minus, classe: 'bg-gb-warn text-white border-gb-warn' },
-  { id: 'ausente', label: 'Ausente', Icone: X, classe: 'bg-gb-red-600 text-white border-gb-red-600' },
+  { id: 'ausente', label: 'Falta', Icone: X, classe: 'bg-gb-red-600 text-white border-gb-red-600' },
 ]
 
 export function Presenca() {
-  const { alunos, aulas, chamadaDe, marcarPresenca, fecharChamada } = useStore()
+  const { alunos, aulas, chamadaDe, marcarPresenca } = useStore()
 
-  const [data, setData] = useState(new Date().toISOString().slice(0, 10))
+  const [data, setData] = useState(hojeISO())
   const [busca, setBusca] = useState('')
 
   const diaSemana = new Date(data + 'T12:00:00').getDay()
@@ -39,51 +40,27 @@ export function Presenca() {
   /* Elegíveis: turmas infantis mostram só alunos com responsável cadastrado. */
   const elegiveis = useMemo(() => {
     if (!aulaSelecionada) return []
-    const infantil = ['t3', 't4'].includes(aulaSelecionada.turmaId)
     const q = busca.trim().toLowerCase()
     return alunos
-      .filter((a) => a.status !== 'inativo')
-      .filter((a) => (infantil ? !!a.responsavel : !a.responsavel))
+      .filter((a) => alunoNaAula(a, aulaSelecionada))
       .filter((a) => !q || a.nome.toLowerCase().includes(q))
       .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
   }, [alunos, aulaSelecionada, busca])
 
   const statusDe = (alunoId: string): StatusPresenca | undefined =>
     chamada?.registros.find((r) => r.alunoId === alunoId)?.status
+  const registroDe = (alunoId: string) => chamada?.registros.find((r) => r.alunoId === alunoId)
 
   const presentes = elegiveis.filter((a) => statusDe(a.id) === 'presente').length
-  const marcados = elegiveis.filter((a) => statusDe(a.id) !== undefined).length
+  // Quem não fez check-in e não foi marcado pelo professor conta como falta.
+  const semCheckin = elegiveis.filter((a) => statusDe(a.id) === undefined).length
   const ocupacao = aulaSelecionada ? Math.round((presentes / aulaSelecionada.capacidade) * 100) : 0
-  const fechada = chamada?.fechada ?? false
-
-  const marcarTodos = (status: StatusPresenca) => {
-    if (!aulaSelecionada || fechada) return
-    for (const a of elegiveis) marcarPresenca(aulaSelecionada.id, data, a.id, status)
-  }
 
   return (
     <>
       <PageHeader
-        titulo="Controle de presença"
-        subtitulo="Faça a chamada da turma. Um toque por aluno — o registro entra no histórico na hora."
-        acoes={
-          aulaSelecionada && !fechada ? (
-            <>
-              <Button variante="contorno" onClick={() => marcarTodos('presente')}>
-                <CheckCheck className="size-4" />
-                Marcar todos
-              </Button>
-              <Button
-                variante="primaria"
-                onClick={() => fecharChamada(aulaSelecionada.id, data)}
-                disabled={marcados === 0}
-              >
-                <Lock className="size-4" />
-                Fechar chamada
-              </Button>
-            </>
-          ) : undefined
-        }
+        titulo="Presenças da aula"
+        subtitulo="Os alunos marcam a própria presença pelo check-in. Quem não marcar conta como falta — e você pode corrigir qualquer registro."
       />
 
       {/* Seleção de dia e aula */}
@@ -168,42 +145,27 @@ export function Presenca() {
                 {[
                   ['Presentes', presentes],
                   ['Justificados', elegiveis.filter((a) => statusDe(a.id) === 'justificado').length],
-                  ['Ausentes', elegiveis.filter((a) => statusDe(a.id) === 'ausente').length],
+                  ['Faltas', elegiveis.length - presentes - elegiveis.filter((a) => statusDe(a.id) === 'justificado').length],
                 ].map(([label, n]) => (
                   <div key={label as string}>
-                    <dt className="text-[10px] font-semibold uppercase tracking-wider text-gb-gray-500">{label}</dt>
+                    <dt className="text-[10px] font-semibold uppercase tracking-normal text-gb-gray-500">{label}</dt>
                     <dd className="gb-title text-xl text-gb-ink">{n}</dd>
                   </div>
                 ))}
               </dl>
 
-              {fechada ? (
-                <Badge tom="ok" className="w-full justify-center py-1.5">
-                  <Lock className="size-3.5" />
-                  Chamada fechada
-                </Badge>
-              ) : (
-                <p className="text-xs leading-relaxed text-gb-gray-500">
-                  {marcados} de {elegiveis.length} alunos marcados. Feche a chamada quando terminar — depois disso
-                  ela entra no histórico.
-                </p>
-              )}
+              <p className="text-xs leading-relaxed text-gb-gray-500">
+                {semCheckin} de {elegiveis.length} alunos sem check-in contam como falta. Toque em Presente ou
+                Justificado para corrigir.
+              </p>
             </CardBody>
           </Card>
 
           {/* Lista de chamada */}
           <Card className="lg:col-span-3 lg:order-1">
             <CardHeader
-              titulo="Chamada"
+              titulo="Presenças"
               descricao={`${elegiveis.length} alunos elegíveis para esta turma`}
-              acao={
-                fechada ? (
-                  <Badge tom="neutro">
-                    <Lock className="size-3.5" />
-                    Somente leitura
-                  </Badge>
-                ) : undefined
-              }
             />
             {elegiveis.length === 0 ? (
               <EmptyState icone={<Search className="size-6" />} titulo="Nenhum aluno" mensagem="Ajuste a busca ou verifique os cadastros da turma." />
@@ -225,7 +187,16 @@ export function Presenca() {
                         <span className="block truncate text-sm font-semibold text-gb-ink hover:text-gb-blue-600">
                           {a.nome}
                         </span>
-                        <FaixaBadge faixa={a.faixa} compacto />
+                        <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                          <FaixaBadge faixa={a.faixa} compacto />
+                          {!registroDe(a.id) && <Badge tom="neutro">Sem check-in · conta como falta</Badge>}
+                          {registroDe(a.id)?.origem === 'aluno' && (
+                            <Badge tom="azul">
+                              <Smartphone className="size-3" />
+                              Check-in do aluno{registroDe(a.id)?.horario ? ` · ${registroDe(a.id)?.horario}` : ''}
+                            </Badge>
+                          )}
+                        </span>
                       </Link>
 
                       <span className="hidden shrink-0 text-xs text-gb-gray-500 sm:block">
@@ -239,14 +210,12 @@ export function Presenca() {
                           return (
                             <button
                               key={id}
-                              onClick={() => !fechada && marcarPresenca(aulaSelecionada.id, data, a.id, id)}
-                              disabled={fechada}
+                              onClick={() => marcarPresenca(aulaSelecionada.id, data, a.id, id)}
                               aria-pressed={ativo}
                               aria-label={`${label}: ${a.nome}`}
                               className={cn(
                                 'inline-flex h-10 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-md border px-3 text-xs font-semibold transition-colors sm:flex-none',
                                 ativo ? classe : 'border-gb-gray-300 bg-white text-gb-gray-500 hover:border-gb-gray-500 hover:text-gb-ink',
-                                fechada && 'cursor-not-allowed opacity-60',
                               )}
                             >
                               <Icone className="size-4" />

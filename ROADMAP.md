@@ -15,11 +15,33 @@ Documentos relacionados: [`BANCO_DE_DADOS.md`](./BANCO_DE_DADOS.md) + [`db/schem
 
 ## 1. Onde estamos
 
-**Feito:** front-end navegável com dados simulados, 9 telas: Login, Painel, Alunos (+ficha), Planos, Financeiro, Presença,
-Agenda, Progresso e Configurações. Publicado no GitHub Pages.
+**Feito:** front-end navegável com dados simulados, 10 telas: Login, Painel, Alunos (+ficha), Planos, Financeiro, Presença,
+Agenda, Progresso, Configurações e **Check-in do aluno**. Publicado no GitHub Pages.
 
-**Removido nesta entrega:** o módulo **Comunicados** inteiro (tela, rota, item de menu, estado, tipos, dados simulados, ação rápida do
-Painel e menções nos documentos). O aviso "alunos sem treinar há 14 dias" no Painel continua, mas agora leva à lista de alunos.
+**Estado do protótipo (front-end com dados simulados) em relação às decisões de presença abaixo:**
+o aluno faz check-in em `/checkin`, o professor vê o registro em `/presenca` e na ficha do aluno e pode corrigir qualquer um (Presente / Justificado / Falta).
+Quem não fez check-in aparece como "Sem check-in · conta como falta". Os botões "Fechar chamada" e "Marcar todos" foram **removidos**.
+Tudo isso é **só interface**: nada persiste, não há login real, e as regras (aula do dia, não sobrescrever o professor) estão no estado em memória, não em servidor.
+O protótipo **ainda não** tem: aula cancelada, prazo de check-in/correção, auditoria das correções, e o cálculo de frequência a partir das presenças (o Painel e o campo
+"% em 30d" leem números simulados fixos).
+
+### Decisões de produto já tomadas
+
+Registradas aqui para qualquer sessão futura. Mudar uma delas é decisão do dono do produto, não detalhe de implementação.
+
+| # | Decisão | Consequência |
+|---|---|---|
+| D1 | **Não existe chamada feita pelo professor.** Quem registra presença é o **aluno**, com check-in na aula do dia, pelo celular | A tela do professor deixa de ser "fazer a chamada" e passa a ser "conferir e corrigir presenças" |
+| D2 | Fez check-in = **presente na hora**. O professor não precisa marcar nem confirmar | Sem etapa de confirmação; sem "fechar chamada" |
+| D3 | **Quem não fez check-in tem falta**: a presença não é computada | A falta é a **ausência do registro**, calculada nas views. Não há rotina que "gere faltas" |
+| D4 | O **professor edita livremente**: marcar presente ou falta (e justificado, se mantido) | A correção do professor prevalece sobre o check-in; o aluno não a altera. Toda correção é auditada |
+| D5 | O **aluno tem login na v1** (papel `aluno`): Painel, Agenda, Progresso e Check-in | Aumenta a Fase 2 (auth) e a Fase 8 (isolamento entre alunos). Estimativa ajustada |
+| D6 | O **risco de fraude é aceito** na v1 (marcar de casa, ou por um colega) | Mitigação futura em ordem de custo: janela de horário, QR no tatame, geolocalização, confirmação do professor. A origem de cada presença já é gravada |
+| D7 | Uma aula só entra na frequência se foi **realizada**: não cancelada e com ao menos um presente | Sem chamada do professor não há outro sinal de que a aula aconteceu. Custo: aula em que ninguém fez check-in conta como não realizada |
+
+**Efeito prático sobre a frequência (e a graduação):** como falta é o padrão, o aluno que esquece o celular, fica sem sinal ou não tem login perde presença.
+Alunos **sem celular ou sem login (crianças, em especial)** só terão presença se o professor marcar. Na prática, para esse grupo, o professor continua fazendo a chamada.
+Isso é inerente a D1+D3 e precisa ser validado com a academia (**E14, E15**).
 
 **Não existe ainda:** back-end, banco, autenticação real, persistência (recarregar a página apaga o que foi cadastrado), e-mail,
 cobrança, testes automatizados.
@@ -37,6 +59,9 @@ Encontrados lendo o código. Cada um já tem destino no roteiro abaixo.
 | 5 | **Login só confere o e-mail;** qualquer senha com 4+ caracteres entra | `app/auth.tsx` | Nenhuma segurança | Fase 2 |
 | 6 | "Esqueci a senha", "Editar" (equipe) e "Salvar" em Configurações **não fazem nada** | `Entrar.tsx`, `Configuracoes.tsx` | Botões que parecem funcionar e não funcionam | Fase 1 (esconder ou implementar) |
 | 7 | Dados de pessoas reais (menores) ainda sem nenhum registro de consentimento | cadastro de aluno | Risco LGPD | Fase 1 (campos) + Fase 8 |
+| 8 | **O Painel do aluno mostra a academia inteira:** total de alunos, taxa de presença geral, lista "Alunos" com nome e frequência de outros alunos (inclusive menores), e links "Ver detalhes" para telas que o aluno não pode abrir. O campo "Buscar aluno" também aparece para ele | `pages/Painel.tsx`, `Topbar.tsx` | Com login de aluno real, vaza dado pessoal de terceiros | Fase 1 (Painel do aluno só com os dados dele) + Fase 8 (testes de acesso) |
+| 9 | **Os indicadores do Painel não reagem a ações feitas no sistema.** Os cálculos (`selectors.ts`) leem os dados simulados fixos, não o estado: um check-in aparece na chamada e na ficha, mas não muda "Presença 30 dias" | `data/selectors.ts` | Só é perceptível no protótipo; some quando as métricas vierem do servidor | Fase 6 |
+| 10 | **O front ainda carrega o modelo antigo de chamada fechada pelo professor** (`store.fecharChamada`, `chamada.fechada`), que não cabe em D1–D3. A tela não oferece mais esses botões, mas o código e os dados simulados continuam | `store.tsx`, `data/mock.ts`, `types/index.ts` | O back-end não deve implementar "fechar chamada" | Fase 1 e Fase 4 |
 
 ---
 
@@ -53,7 +78,7 @@ Sem estas respostas, algumas fases não começam. A coluna **Bloqueia** diz qual
 | V2 | **Quem é o cliente?** Uma academia só (a sua / do professor) ou você pretende vender para várias? | Define se multi-tenant, cadastro de academia, cobrança do SaaS, termos de uso e suporte entram no escopo | Fase 2 (escopo de auth e tenant) | Uma academia na v1. O banco já tem `academia_id`, então abrir para várias depois não exige migração |
 | V3 | **Quem paga a infraestrutura e quanto pode custar por mês?** | Decide entre o plano gratuito (R$ ~4/mês, sem backup automático) e o recomendado (~R$ 145/mês) — ver [seção 4](#4-infraestrutura-e-custos) | Fase 2 | Gratuito até o piloto; decidir antes do go-live |
 | V4 | **Domínio:** qual nome e quem registra? (ex.: `tatamegestao.com.br`) | Necessário para e-mail com boa entrega (SPF/DKIM) e para o endereço definitivo. ~R$ 40/ano | Fase 7 | Registrar no seu CPF/CNPJ já agora, para garantir o nome |
-| V5 | **Papel "aluno" entra na v1?** O front já tem a visão do aluno, mas o plano original coloca o portal do aluno como pós-MVP | Cada papel multiplica as regras de acesso e os testes. Sem aluno logado, a v1 é bem menor | Fase 2 | Sem login de aluno na v1. Gestor e professor apenas |
+| ~~V5~~ | ~~Papel "aluno" entra na v1?~~ **Decidido: sim**, por causa do check-in. O aluno acessa Painel, Agenda, Progresso e Check-in | Cada papel multiplica as regras de acesso e os testes: login de aluno, recuperação de senha e isolamento entre alunos entram na v1 | Fase 2 | — (aumenta o escopo da Fase 2 e da Fase 8; estimativa ajustada) |
 | V6 | **Cobrança automática (Pix/boleto/cartão com baixa automática) entra na v1 ou depois?** | É a maior dor financeira e o maior custo de desenvolvimento e de taxa. Sem ela, o Financeiro é registro manual | Fase 5 | Depois. v1 gera a cobrança e o professor dá baixa manualmente; Pix automático vira a primeira entrega pós-lançamento |
 | V7 | **Prazo e data-alvo de lançamento?** | Estimativas abaixo assumem 1 desenvolvedor | Planejamento | — |
 | V8 | **Quem desenvolve?** Você, eu com você, ou terceiro? | Define o ritmo e quem opera o servidor depois | Fase 2 | — |
@@ -71,12 +96,16 @@ Resolve-se com o [`ROTEIRO_DEMONSTRACAO.md`](./ROTEIRO_DEMONSTRACAO.md): cada pe
 | E5 | **Turmas:** como se decide quem pertence a qual? Um aluno pode estar em mais de uma? Criança só em turma infantil? Quem é professor de qual turma? | Fase 4 (corrige o problema 1) |
 | E6 | **Campos do cadastro:** precisa de CPF? Endereço? Contato de emergência? Atestado médico? Foto? *(atenção: dado de saúde é dado sensível pela LGPD)* | Fase 3 |
 | E7 | **Menores:** quem assina o consentimento, como (papel ou digital), e se há termo de uso de imagem | Fase 1 (campos) e Fase 8 |
-| E8 | **A chamada acontece com internet no tatame?** O professor usa celular próprio ou tablet? | Fase 4 (decide se a v1 precisa funcionar offline) |
+| E8 | **Há internet no tatame?** Se o aluno fizer check-in sem sinal, ele perde a presença (D3). Isso decide se a v1 precisa de check-in offline | Fase 4 |
 | E9 | **Quais avisos por e-mail fazem sentido?** Os alunos têm e-mail? (crianças geralmente não — o aviso iria para o responsável) | Fase 7 |
 | E10 | **A planilha atual:** formato, quantidade de linhas, quem exporta, quanto histórico (anos de presença?) vale migrar | Fase 9 |
-| E11 | **Feriados e aulas canceladas:** como ele trata hoje? | Fase 4 |
+| E11 | **Feriados e aulas canceladas:** como ele trata hoje? Quem cancela no sistema (o professor)? | Fase 4 |
 | E12 | **O que ele faz todo dia?** Qualquer tarefa diária que exija mais de 2 cliques a partir do Painel precisa de ajuste | Fase 1 |
 | E13 | **Disposição para o piloto em paralelo à planilha** por 2 a 4 semanas | Fase 10 |
+| E14 | **O professor aceita não fazer chamada?** Os alunos têm celular e e-mail para criar o login? E as **crianças e quem não tem celular**: o responsável faz o check-in, ou o professor marca por eles? | Fase 2 e Fase 4 |
+| E15 | **Falta por omissão é aceitável?** Aluno que esquece o celular, fica sem sinal ou não tem login tem falta e pode perder elegibilidade à graduação. O professor corrige — com que frequência ele topa fazer isso? | Fase 4 e Fase 6 |
+| E16 | **Prazos:** até quando o aluno pode fazer check-in (só durante a aula? até X horas depois?) e até quando o professor pode corrigir (no dia? numa semana? sem limite)? Correção de dia antigo exige justificativa? | Fase 4 |
+| E17 | **"Justificado" continua existindo?** O professor falou em "presente ou faltou". Hoje a falta justificada sai do cálculo de frequência (nem presença, nem falta) | Fase 4 |
 
 ---
 
@@ -90,7 +119,7 @@ Fase 0  Desbloquear         ─┐ sem código
 Fase 1  Ajustar o front     ─┘
 Fase 2  Fundação             ─ banco, auth, deploy
 Fase 3  Alunos e planos      ┐
-Fase 4  Turmas e chamada     ├ núcleo do produto
+Fase 4  Turmas e presença     ├ núcleo do produto
 Fase 5  Cobranças e caixa    ┘
 Fase 6  Painel e graduações
 Fase 7  E-mail e rotinas
@@ -102,17 +131,20 @@ Fase 10 Piloto → lançamento
 ### Fase 0 — Desbloquear (sem código) · ~1 semana
 
 - [ ] Resolver **V1** (marca). Se não houver autorização, renomear os arquivos `graciebarra_*` antes de qualquer divulgação.
-- [ ] Responder **V2, V5, V6** (escopo da v1) — são as três que mais mudam o tamanho do trabalho.
+- [ ] Responder **V2 e V6** (escopo da v1) — são as que mais mudam o tamanho do trabalho. A V5 já foi decidida (aluno entra, por causa do check-in).
 - [ ] Rodar a sessão com o professor usando o [`ROTEIRO_DEMONSTRACAO.md`](./ROTEIRO_DEMONSTRACAO.md) e registrar as respostas **E1–E13**.
 - [ ] Registrar o domínio (**V4**).
 - [ ] Repositório: deixar privado até V1 estar resolvido (GitHub Pages em repositório privado exige plano pago; ver seção 4 para a alternativa gratuita).
 
-**Pronto quando:** V1, V2, V5, V6 respondidas e o checklist da seção 5 do `PLANO_DESENVOLVIMENTO.md` marcado com o professor.
+**Pronto quando:** V1, V2, V6 respondidas e o checklist da seção 5 do `PLANO_DESENVOLVIMENTO.md` marcado com o professor.
 
 ### Fase 1 — Ajustar o front conforme a validação · ~1 semana
 
+- [ ] **Painel do aluno** (problema 8): só os dados dele (próxima aula, check-in, frequência, faixa). Sem lista de outros alunos, sem indicadores da academia, sem link para tela bloqueada, sem busca de alunos.
+- [ ] **Alinhar o protótipo a D1–D7:** retirar do front o resto do modelo antigo (`fechada`, `fecharChamada`), mostrar **aula cancelada**, e calcular frequência a partir das presenças (hoje é número simulado).
+- [ ] Check-in da criança: definir com **E14** quem faz (o responsável, com o login dele?) antes de liberar para turmas infantis.
 - [ ] Corrigir os problemas 1, 2 e 6 da [tabela da seção 1](#defeitos-e-lacunas-do-protótipo-que-o-back-end-não-pode-herdar):
-  - vínculo **aluno ↔ turma** no cadastro e na chamada (remove os ids fixos);
+  - vínculo **aluno ↔ turma** no cadastro e na tela de presença (remove os ids fixos);
   - regra de graduação conforme **E1**;
   - esconder ou implementar botões inertes ("Esqueci a senha", "Editar" da equipe, "Salvar" de Configurações).
 - [ ] Campos de consentimento do responsável no cadastro de aluno (**E7**), e ajustar os campos do cadastro conforme **E6**.
@@ -120,13 +152,13 @@ Fase 10 Piloto → lançamento
 - [ ] Decidir o destino dos "Avisos automáticos" (Configurações): manter só os que **E9** confirmar.
 - [ ] Preparar o front para a API: `src/lib/api.ts`, TanStack Query, estados de carregamento/erro por tela. `store.tsx` continua sendo o único ponto de costura.
 
-**Pronto quando:** o professor percorre o fluxo diário (chamada, cadastro, ver quem deve) sem pedir ajuste de layout ou texto.
+**Pronto quando:** o professor percorre o fluxo diário (conferir presenças, corrigir, cadastro, ver quem deve) e um aluno faz check-in, sem pedirem ajuste de layout ou texto.
 
 ### Fase 2 — Fundação · ~1 a 2 semanas
 
 - [ ] Criar o projeto no provedor escolhido (ver seção 4) — ambientes **dev** e **prod** separados desde o início.
 - [ ] Aplicar o [`db/schema.sql`](./db/schema.sql) como migração versionada (001) e criar um *seed* equivalente aos dados simulados atuais.
-- [ ] Autenticação real (e-mail + senha; recuperação de senha por e-mail). Sessão com cookie `httpOnly` ou o fluxo do provedor.
+- [ ] Autenticação real (e-mail + senha; recuperação de senha por e-mail), **incluindo o papel aluno** e o vínculo `usuario.aluno_id` → `aluno`. Sessão com cookie `httpOnly` ou o fluxo do provedor.
 - [ ] **Autorização no servidor**, por papel e por `academia_id` — a guarda do front é só navegação. Todo acesso filtra pela academia da sessão; nenhuma rota aceita `academia_id` vindo do cliente.
 - [ ] Camada de API no front: conversão **reais ↔ centavos** na borda (problema 3) e datas em ISO.
 - [ ] CI no GitHub Actions: lint + `tsc` + testes + build. Deploy automático do front.
@@ -144,14 +176,18 @@ Fase 10 Piloto → lançamento
 
 **Pronto quando:** o professor cadastra, edita e consulta alunos reais; recarregar a página não perde nada.
 
-### Fase 4 — Turmas, agenda e chamada · ~2 semanas
+### Fase 4 — Turmas, agenda e presença por check-in · ~2 semanas
 
 - [ ] CRUD de turmas, aulas e do vínculo aluno ↔ turma.
-- [ ] Chamada: `PUT /chamadas/:aula/:data/presencas` **idempotente**, recebendo o estado inteiro (reenviar é seguro; enviar só mudanças não é). Fechamento da chamada.
-- [ ] Se **E8** disser que falta sinal no tatame: fila local no navegador que reenvia quando a conexão voltar. Se não, adiar para o pós-lançamento.
-- [ ] Tratamento de feriado/aula cancelada (**E11**).
+- [ ] **Check-in do aluno** (`POST /aulas/:aulaId/checkin`), com as regras **no servidor**: só a aula do dia; só aluno matriculado na turma; recusado se a aula foi cancelada ou fora do prazo (**E16**); repetir é inofensivo (`on conflict do nothing`); **nunca sobrescreve** uma marcação do professor. `DELETE` só desfaz o que o próprio aluno marcou.
+- [ ] **Correção do professor** (`PUT /chamadas/:aulaId/:data/presencas/:alunoId`): marcar presente, falta (e justificado, se **E17** mantiver), de qualquer aluno, inclusive de dias anteriores. Grava `origem = 'professor'`, uma observação opcional e **uma linha em `log_auditoria`** (antes e depois).
+- [ ] **Cancelar aula** (feriado, aula que não aconteceu): `POST /chamadas/:aulaId/:data/cancelar`. Aula cancelada sai da frequência de todos e recusa check-in (**E11**).
+- [ ] Tela do professor: lista da aula com quem fez check-in, quem **não** fez (rotulado como falta) e botões de correção. Mostrar a origem de cada registro ("Check-in do aluno · 18:52") na lista e na ficha do aluno.
+- [ ] **Não** implementar "fechar chamada" nem "marcar todos" (modelo antigo, defeito 10).
+- [ ] Se **E8** disser que falta sinal no tatame: guardar o check-in no navegador e reenviar quando a conexão voltar. O servidor precisa aceitar o horário original do check-in sem permitir backdating arbitrário. Se não, adiar para o pós-lançamento.
+- [ ] Para quem não tem celular ou login (**E14**): o professor marca presente na mesma tela. Definir se isso precisa de um atalho.
 
-**Pronto quando:** o professor faz a chamada de uma aula real pelo celular, fecha, e o histórico do aluno mostra a presença.
+**Pronto quando:** um aluno de teste faz check-in pelo celular, o professor vê o registro sem recarregar, corrige para falta, e o aluno não consegue desfazer nem refazer; uma aula cancelada recusa check-in e some do cálculo de frequência.
 
 ### Fase 5 — Cobranças e financeiro · ~2 semanas
 
@@ -183,7 +219,7 @@ Fase 10 Piloto → lançamento
 
 ### Fase 8 — Segurança, LGPD e testes · ~1 a 2 semanas
 
-- [ ] Testes de ponta a ponta nos 5 fluxos que não podem quebrar: chamada, cadastro com cobrança, baixa de pagamento, **professor não abre Financeiro**, **um aluno/academia não vê dados de outro**.
+- [ ] Testes de ponta a ponta nos fluxos que não podem quebrar: **check-in do aluno**, **correção do professor**, cadastro com cobrança, baixa de pagamento, **professor não abre Financeiro**, **um aluno não vê a ficha, os dados ou o check-in de outro aluno**, **uma academia não vê dados de outra**.
 - [ ] Rate limit no login; HTTPS e HSTS; senhas com Argon2id ou o equivalente do provedor.
 - [ ] Política de privacidade acessível no sistema; exportação e exclusão/anonimização de dados de um titular sob pedido.
 - [ ] Revisão de segurança do código e das regras de acesso do banco.
@@ -213,14 +249,15 @@ Fase 10 Piloto → lançamento
 
 Em ordem de valor, sujeita ao que o piloto mostrar:
 
+0. **Endurecer o check-in**, em ordem de custo, só se o piloto mostrar abuso: (a) janela de horário (ex.: de 15 min antes a 15 min depois da aula); (b) QR code no tatame, trocado a cada aula; (c) geolocalização; (d) confirmação do professor para quem fizer check-in fora da janela. A coluna `presenca.origem` já separa o que o aluno marcou do que o professor marcou.
 1. Pix com cobrança automática e baixa automática (Asaas, Mercado Pago ou similar).
-2. Chamada offline (PWA instalável) — sobe de prioridade se **E8** indicar sinal ruim.
-3. Portal do aluno (se **V5** adiou).
+2. Check-in offline (PWA instalável) — sobe de prioridade se **E8** indicar sinal ruim, já que aqui sem sinal significa falta.
+3. Portal do aluno completo (hoje o aluno só tem Painel, Agenda, Progresso e Check-in).
 4. Envio por WhatsApp via API oficial (tem custo por conversa).
 5. Relatório de retenção por mês de matrícula.
-6. Check-in por QR code; multi-unidade; programa técnico por faixa.
+6. Multi-unidade; programa técnico por faixa.
 
-**Total estimado até o go-live: ~12 a 17 semanas** de trabalho de 1 desenvolvedor, sem contar a espera pelas respostas da Fase 0.
+**Total estimado até o go-live: ~13 a 19 semanas** de trabalho de 1 desenvolvedor, sem contar a espera pelas respostas da Fase 0.
 
 ---
 
@@ -330,5 +367,8 @@ O produto está lançado quando **todos** os itens abaixo forem verdadeiros:
 | Falha de regra de acesso expõe dados entre academias ou de menores | Alto — LGPD | Testes automáticos de acesso (Fase 8), revisão de segurança |
 | Perda de dados sem backup restaurável | Alto | Backup testado desde a Fase 2 |
 | E-mails caindo no spam / estourando limite | Médio | Domínio com SPF/DKIM/DMARC; vencimentos espalhados; Brevo como reserva |
-| Escopo crescer (pagamento, WhatsApp, portal do aluno) | Médio — atraso | Itens "Depois do lançamento" não entram antes do go-live |
+| **Fraude no check-in** (marcar de casa ou por um colega), sem confirmação do professor (D6) | Médio — contamina frequência e elegibilidade à graduação | Risco **aceito** para a v1. A origem é gravada; o professor continua podendo corrigir a chamada. Medir no piloto (check-ins fora do horário, check-ins de quem o professor depois marcou ausente) antes de endurecer |
+| **Falta por omissão** (D3): aluno esquece o celular, fica sem sinal ou não tem login e perde presença; o professor passa a corrigir o que o sistema não captou | Médio — frequência injusta, trabalho de correção | Validar com **E14/E15/E16** antes de construir; auditoria das correções; check-in offline se **E8** exigir |
+| Aluno ver dado de outro aluno (menores) | Alto — LGPD | Painel do aluno só com dados dele (Fase 1) e testes de isolamento (Fase 8) |
+| Escopo crescer (pagamento, WhatsApp, portal do aluno completo) | Médio — atraso | Itens "Depois do lançamento" não entram antes do go-live |
 | Dependência de um único desenvolvedor | Médio | Documentação, migrações versionadas, CI desde a Fase 2 |
