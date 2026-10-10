@@ -200,7 +200,7 @@ export function AlunoDetalhe() {
               <EmptyState
                 icone={<CalendarDays className="size-6" />}
                 titulo="Nenhum treino registrado"
-                mensagem="As presenças aparecem aqui assim que a chamada for feita."
+                mensagem="As presenças aparecem aqui quando o aluno faz o check-in ou o professor registra."
               />
             ) : (
               <ul className="divide-y divide-gb-gray-200">
@@ -215,7 +215,7 @@ export function AlunoDetalhe() {
                       </span>
                     </span>
                     <Badge tom={h.status === 'presente' ? 'ok' : h.status === 'justificado' ? 'alerta' : 'neutro'}>
-                      {h.status === 'presente' ? 'Presente' : h.status === 'justificado' ? 'Justificado' : 'Ausente'}
+                      {h.status === 'presente' ? 'Presente' : h.status === 'justificado' ? 'Justificado' : 'Falta'}
                     </Badge>
                   </li>
                 ))}
@@ -229,7 +229,7 @@ export function AlunoDetalhe() {
         <Card>
           <CardHeader titulo="Histórico de presença" descricao="Últimos 30 registros" />
           {historico.length === 0 ? (
-            <EmptyState icone={<CalendarDays className="size-6" />} titulo="Sem registros" mensagem="Nenhuma chamada inclui este aluno ainda." />
+            <EmptyState icone={<CalendarDays className="size-6" />} titulo="Sem registros" mensagem="Nenhum check-in ou registro do professor para este aluno ainda." />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[600px] text-left">
@@ -251,7 +251,7 @@ export function AlunoDetalhe() {
                       <td className="px-5 py-3 font-mono text-sm text-gb-gray-700">{h.aula?.inicio}</td>
                       <td className="px-5 py-3">
                         <Badge tom={h.status === 'presente' ? 'ok' : h.status === 'justificado' ? 'alerta' : 'neutro'}>
-                          {h.status === 'presente' ? 'Presente' : h.status === 'justificado' ? 'Justificado' : 'Ausente'}
+                          {h.status === 'presente' ? 'Presente' : h.status === 'justificado' ? 'Justificado' : 'Falta'}
                         </Badge>
                       </td>
                       <td className="px-5 py-3 text-sm text-gb-gray-700">

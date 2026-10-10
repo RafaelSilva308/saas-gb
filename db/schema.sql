@@ -5,7 +5,7 @@
 -- Decisões que sustentam este arquivo (explicadas em BANCO_DE_DADOS.md):
 --   * dinheiro em centavos (integer), nunca float;
 --   * academia_id em toda tabela de negócio (multi-tenant desde o dia 1);
---   * dado derivado NÃO é gravado (inadimplência, frequência, faixa etária);
+--   * dado derivado NÃO é gravado (inadimplência, frequência, faltas, faixa etária);
 --   * histórico é append-only (graduação, auditoria, envio de e-mail).
 -- =============================================================================
 
@@ -150,28 +150,35 @@ create index aula_academia_dia_idx on aula (academia_id, dia_semana);
 
 -- ------------------------------------------------------ chamada/presença ----
 
+-- Ocorrência concreta de uma aula em uma data. Não há "chamada do professor": a linha nasce no primeiro check-in
+-- (ou quando o professor cancela a aula / corrige alguém). Quem não fez check-in e não foi marcado conta como falta.
 create table chamada (
-  id           uuid primary key default gen_random_uuid(),
-  academia_id  uuid not null references academia(id),
-  aula_id      uuid not null references aula(id),
-  data         date not null,
-  fechada      boolean not null default false,
-  fechada_em   timestamptz,
-  fechada_por  uuid references usuario(id),
+  id             uuid primary key default gen_random_uuid(),
+  academia_id    uuid not null references academia(id),
+  aula_id        uuid not null references aula(id),
+  data           date not null,
+  -- Feriado ou aula que não aconteceu: não entra no cálculo de frequência de ninguém e recusa check-in.
+  cancelada      boolean not null default false,
+  cancelada_por  uuid references usuario(id),
+  motivo         text,
+  criado_em      timestamptz not null default now(),
   unique (aula_id, data),
-  check (fechada = (fechada_em is not null))
+  check (cancelada or cancelada_por is null)
 );
 create index chamada_academia_data_idx on chamada (academia_id, data);
 
+-- Só existe linha quando alguém agiu: o aluno (check-in = presente) ou o professor (corrigindo para qualquer status).
+-- AUSÊNCIA PADRÃO = falta de linha. Para o aluno de uma aula realizada sem linha, a falta é calculada, não gravada.
 create table presenca (
   chamada_id     uuid not null references chamada(id) on delete cascade,
   aluno_id       uuid not null references aluno(id),
   status         status_presenca not null,
-  -- Check-in do aluno vale na hora, sem confirmação (decisão de produto da v1). A origem fica registrada
-  -- para que dê para filtrar, auditar e, no futuro, exigir confirmação sem perder o histórico.
+  -- 'aluno' = check-in feito pelo próprio aluno, vale na hora, sem confirmação (decisão de produto da v1).
+  -- 'professor' = o professor criou ou corrigiu o registro; a partir daí o aluno não mexe mais nele.
   origem         origem_presenca not null default 'professor',
   registrado_em  timestamptz not null default now(),
-  registrado_por uuid references usuario(id),             -- quem gravou: o professor, ou o próprio aluno
+  registrado_por uuid references usuario(id),             -- quem gravou: o próprio aluno, ou o professor
+  observacao     text,                                    -- motivo de uma correção do professor
   primary key (chamada_id, aluno_id)
 );
 create index presenca_aluno_idx on presenca (aluno_id);
@@ -304,14 +311,31 @@ select a.id as aluno_id,
        end as status_pagamento
   from aluno a;
 
--- Frequência dos últimos 30 dias: presentes / chamadas FECHADAS das turmas do aluno.
+-- Aula REALIZADA = não cancelada e com pelo menos um presente (evidência de que aconteceu). Sem a chamada do professor
+-- não há outro sinal: uma aula em que ninguém fez check-in e ninguém foi marcado é tratada como não realizada,
+-- para que um feriado esquecido não gere falta para a turma inteira.
+create view v_aula_realizada as
+select ch.*
+  from chamada ch
+ where not ch.cancelada
+   and exists (select 1 from presenca p where p.chamada_id = ch.id and p.status = 'presente');
+
+-- Frequência dos últimos 30 dias = presentes / (aulas realizadas das turmas do aluno − justificadas).
+-- Sem linha em `presenca` numa aula realizada = falta. Justificada sai do cálculo (nem presença, nem falta).
 create view v_aluno_frequencia_30d as
 select a.id as aluno_id,
-       coalesce(round(100.0 * count(*) filter (where p.status = 'presente') / nullif(count(ch.id), 0)), 0)::int as frequencia_30d
+       coalesce(
+         round(100.0 * count(*) filter (where p.status = 'presente')
+               / nullif(count(ch.id) - count(*) filter (where p.status = 'justificado'), 0)),
+         0)::int as frequencia_30d
   from aluno a
-  left join aluno_turma at on at.aluno_id = a.id and (at.ate is null or at.ate >= current_date - 30)
+  left join aluno_turma at on at.aluno_id = a.id
   left join aula au        on au.turma_id = at.turma_id
-  left join chamada ch     on ch.aula_id = au.id and ch.fechada and ch.data >= current_date - 30 and ch.data >= at.desde
+  left join v_aula_realizada ch
+                           on ch.aula_id = au.id
+                          and ch.data >= current_date - 30
+                          and ch.data >= at.desde
+                          and ch.data <= coalesce(at.ate, current_date)
   left join presenca p     on p.chamada_id = ch.id and p.aluno_id = a.id
  group by a.id;
 

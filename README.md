@@ -7,6 +7,16 @@ progresso de faixas e financeiro em um só lugar.
 O back-end só começa depois que as telas forem validadas. O plano completo está em
 [`PLANO_DESENVOLVIMENTO.md`](./PLANO_DESENVOLVIMENTO.md).
 
+## Documentos
+
+| Arquivo | Para quê |
+|---|---|
+| [`CLAUDE.md`](./CLAUDE.md) | Contexto resumido para quem (ou qual sessão) retomar o projeto |
+| [`ROADMAP.md`](./ROADMAP.md) | **Fonte de verdade:** decisões tomadas, pendências, ordem de execução, custos |
+| [`BANCO_DE_DADOS.md`](./BANCO_DE_DADOS.md), [`db/schema.sql`](./db/schema.sql) | Modelo do banco (PostgreSQL), testado |
+| [`ROTEIRO_DEMONSTRACAO.md`](./ROTEIRO_DEMONSTRACAO.md) | Sessão de validação com o professor |
+| [`PLANO_DESENVOLVIMENTO.md`](./PLANO_DESENVOLVIMENTO.md) | Visão de produto original e contrato de API |
+
 ## Rodando localmente
 
 ```bash
@@ -36,7 +46,7 @@ Senha `treino123` para todos.
 | Cadastro, filtros, ficha e exportação de alunos | `/alunos` |
 | Planos, valores e agenda de vencimentos | `/planos` |
 | Receitas, despesas e resultado do mês | `/financeiro` |
-| Chamada por turma, pensada para uso no tatame | `/presenca` |
+| Presenças da aula: check-ins dos alunos, com correção pelo professor | `/presenca` |
 | Quadro de horários semanal | `/agenda` |
 | Check-in do aluno na aula do dia (vale na hora, sem confirmação) | `/checkin` |
 | Distribuição de faixas e elegíveis à graduação | `/progresso` |

@@ -46,7 +46,7 @@ erDiagram
 | Base | `academia`, `usuario` | `usuario.aluno_id` só existe para o papel `aluno` (restrição no banco) |
 | Alunos e planos | `aluno`, `plano` | Aluno guarda consentimento LGPD e autorização de imagem |
 | Turmas e agenda | `turma`, `aluno_turma`, `aula` | `aula` = horário recorrente. `aluno_turma` **é novo**: o protótipo não tinha esse vínculo |
-| Presença | `chamada`, `presenca` | `chamada` = uma ocorrência concreta de uma `aula` em uma data. `presenca.origem` diz se foi o professor ou o aluno (check-in) |
+| Presença | `chamada`, `presenca` | `chamada` = uma ocorrência concreta de uma `aula` em uma data (nasce no 1º check-in; pode ser cancelada). `presenca` só existe quando alguém agiu; `origem` diz se foi o aluno (check-in) ou o professor (correção). Falta = ausência de linha |
 | Progresso | `graduacao` | Histórico append-only; um *trigger* atualiza a faixa atual do aluno |
 | Financeiro | `categoria_financeira`, `cobranca`, `transacao` | `cobranca` = o que se espera receber; `transacao` = o que entrou ou saiu |
 | E-mail | `config_aviso`, `envio_email` | Interruptores de Configurações + controle de envio |
@@ -61,10 +61,11 @@ erDiagram
    No banco são *views*:
    - `v_aluno_pagamento`: `atrasado` = existe cobrança **aberta com vencimento no passado**; `vence_em_breve` = vence em até 5 dias (o número 5 é suposição minha, o protótipo não define a regra); senão `em_dia`.
      Por isso o enum `status_cobranca` **não tem** "atrasada" — ela é uma consequência da data, e uma rotina que "marca atrasos" poderia falhar e deixar o dado errado.
-   - `v_aluno_frequencia_30d`: presentes ÷ chamadas **fechadas** das turmas do aluno nos últimos 30 dias.
+   - `v_aula_realizada`: aula não cancelada com pelo menos um presente.
+   - `v_aluno_frequencia_30d`: presentes ÷ (aulas **realizadas** das turmas do aluno nos últimos 30 dias − justificadas). Sem linha em `presenca` numa aula realizada = falta.
    - `v_fluxo_mensal`: receita e despesa por mês.
 4. **`chamada` separada de `aula`.** `aula` é "segunda, 19h"; `chamada` é "segunda, dia 13". Sem isso não dá para registrar uma aula extra,
-   cancelada, ou reposição. `unique (aula_id, data)` impede chamada duplicada.
+   cancelada, ou reposição. `unique (aula_id, data)` impede duplicata. Com o check-in, `chamada` deixou de ser uma "lista que o professor preenche" e virou o registro de que a aula aconteceu (ou foi cancelada).
 5. **`cobranca` separada de `transacao`.** Uma é a expectativa, a outra é o fato. Sem essa separação não existe relatório de inadimplência confiável.
    `transacao.cobranca_id` é `unique`: um pagamento quita no máximo uma cobrança. A baixa deve criar a transação e marcar a cobrança **na mesma transação de banco**.
 6. **`cobranca.competencia` é sempre o dia 1 do mês** (`check`), e `unique (aluno_id, competencia)` torna a geração mensal **idempotente**: rodar duas vezes não cobra duas vezes.
@@ -78,14 +79,18 @@ erDiagram
 11. **`categoria_financeira` é tabela, não lista fixa no código.** O professor deve poder criar as categorias que ele usa (pendência **E4**).
 12. **LGPD no cadastro.** `consentimento_em`, `consentimento_por` e `uso_imagem_autorizado`. Aluno **menor de idade exige responsável** — o banco garante que
     nome e telefone do responsável vêm juntos; a regra "menor precisa de responsável" depende da data de hoje e por isso é validada na aplicação.
-13. **Check-in do aluno (`presenca.origem = 'aluno'`).** Vale na hora, sem confirmação, por decisão de produto da v1. O banco guarda a origem para que
-    seja possível medir, auditar e, depois, endurecer a regra sem reescrever o histórico. Regras que a API deve impor, no servidor (o front só espelha):
-    - só na aula **do dia** e só para aluno matriculado na turma (`aluno_turma`);
-    - recusar se a `chamada` já está `fechada`;
-    - `insert ... on conflict (chamada_id, aluno_id) do nothing`: repetir o check-in é inofensivo, e o aluno **não sobrescreve** uma marcação do professor;
-    - "desfazer" só apaga linha com `origem = 'aluno'` e chamada aberta;
-    - quando o professor edita uma linha, ela passa a `origem = 'professor'`.
-    - **Ponto em aberto:** `v_aluno_frequencia_30d` conta todas as presenças, inclusive as de check-in. Se a fraude virar problema, filtre por `origem` ali.
+13. **Presença por check-in; não existe chamada do professor** (decisão de produto, ver [`ROADMAP.md`](./ROADMAP.md#decisões-de-produto-já-tomadas)).
+    - O **aluno** faz check-in na aula do dia: vira uma linha em `presenca` com `status = 'presente'` e `origem = 'aluno'`, válida na hora, sem confirmação.
+    - **Quem não faz check-in e não é marcado pelo professor tem falta, e a falta não é gravada**: é a ausência da linha, calculada nas views. Isso evita que uma rotina "gere faltas" e erre.
+    - O **professor** pode criar ou corrigir qualquer linha (presente, falta ou justificado). A linha passa a `origem = 'professor'` e o aluno não mexe mais nela.
+    - `chamada` nasce no primeiro check-in ou quando o professor cancela a aula. `chamada.cancelada` tira a aula de todos os cálculos e recusa check-in.
+    - Regras que a API deve impor **no servidor** (o front só espelha): só na aula **do dia** e só para aluno matriculado na turma (`aluno_turma`);
+      recusar se `cancelada`; `insert ... on conflict (chamada_id, aluno_id) do nothing` (repetir é inofensivo e o aluno **nunca sobrescreve** uma marcação do professor);
+      "desfazer" só apaga linha com `origem = 'aluno'`; toda correção do professor vai para `log_auditoria` com `dados_antes` e `dados_depois`.
+    - **O que torna uma aula "realizada"** (`v_aula_realizada`): não cancelada **e** com pelo menos um presente. Sem chamada do professor não há outro sinal de que a aula aconteceu;
+      sem esse critério, um feriado esquecido geraria falta para a turma inteira. O custo: uma aula em que **ninguém** usa o check-in e o professor não corrige conta como não realizada.
+    - **Em aberto:** prazo para o aluno fazer check-in e para o professor corrigir (hoje o schema não impõe nenhum; a API precisa decidir, ver pendência **E16**),
+      e se "justificado" continua existindo (**E17**). Hoje a justificada sai do cálculo de frequência (nem presença, nem falta).
 14. **`usuario` sem senha.** Com Supabase Auth, `usuario.id` é o id do `auth.users`. Com autenticação própria, adicionar `senha_hash` (Argon2id).
     A unicidade do e-mail é por academia e ignora maiúsculas.
 
@@ -124,12 +129,14 @@ Mesma ordem em que o produto é construído (veja o roadmap). O arquivo `schema.
 | `inadimplentes()` | `v_aluno_pagamento where status_pagamento = 'atrasado'` |
 | `vencendoEmBreve()` | `v_aluno_pagamento where status_pagamento = 'vence_em_breve'` |
 | `fluxoDoMes()` / `serieFinanceira()` | `v_fluxo_mensal` |
-| `taxaPresenca()` | média sobre `presenca` das `chamada` fechadas nos últimos 30 dias |
+| `taxaPresenca()` | presentes ÷ (alunos das turmas × aulas realizadas), nos últimos 30 dias, a partir de `v_aula_realizada` e `presenca` |
 | `novasMatriculas()` | `count(*) from aluno where date_trunc('month', matricula_em) = date_trunc('month', current_date)` |
 
 ## Limitações conhecidas desta versão
 
 - `v_aluno_frequencia_30d` calcula sobre as turmas do aluno **no período**; um aluno sem turma vinculada aparece com 0%. A importação da planilha precisa criar os vínculos.
+- Como a falta é a **ausência de linha**, um aluno que esquece o celular perde presença sem que ninguém tenha "marcado falta". É a consequência direta da regra de produto; a mitigação é a correção do professor (e a auditoria dela).
+- O schema foi validado com um cenário (aula cancelada com presente, aula sem ninguém, justificada, falta por omissão): as quatro situações deram o resultado esperado.
 - A view percorre `chamada` e `presenca` por aluno. Para centenas de alunos é instantâneo; se o volume crescer muito, vira *materialized view* ou cache.
 - Não há tabela de **feriados / aulas canceladas**, nem de **regras de graduação** configuráveis. Entram quando E1 e E11 forem respondidas.
 - Políticas de acesso por linha (RLS, se a opção A do roadmap for escolhida) **não** estão neste arquivo: dependem de como a autenticação for ligada

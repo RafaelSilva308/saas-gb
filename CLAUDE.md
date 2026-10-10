@@ -1,0 +1,65 @@
+# CLAUDE.md — contexto do projeto para sessões futuras
+
+SaaS de gestão para academia de jiu-jitsu. **Hoje: só o front-end, com dados simulados.** Não há back-end, banco, login real, e-mail nem testes automatizados.
+Idioma do produto, dos documentos e dos commits: **português do Brasil**.
+
+## Leia nesta ordem
+
+1. [`ROADMAP.md`](./ROADMAP.md): **fonte de verdade.** Decisões de produto já tomadas (D1–D7), pendências (V = dono do produto, E = academia), ordem de execução em 10 fases, infraestrutura e custos, riscos.
+2. [`BANCO_DE_DADOS.md`](./BANCO_DE_DADOS.md) + [`db/schema.sql`](./db/schema.sql): modelo PostgreSQL, **testado** em PG 16.
+3. [`ROTEIRO_DEMONSTRACAO.md`](./ROTEIRO_DEMONSTRACAO.md): sessão de validação com o professor (versão de 15 e de 35 minutos).
+4. [`PLANO_DESENVOLVIMENTO.md`](./PLANO_DESENVOLVIMENTO.md): visão de produto original e contrato de API. **Onde divergir do ROADMAP, vale o ROADMAP.**
+
+## Decisões de produto que não são detalhe de implementação
+
+Mudar uma delas é decisão do dono do produto. Estão detalhadas no `ROADMAP.md`.
+
+- **Não existe chamada feita pelo professor.** O **aluno** faz check-in na aula do dia, pelo celular; vale na hora, sem confirmação.
+- **Quem não faz check-in tem falta.** A falta **não é gravada**: é a ausência da linha em `presenca`, calculada nas views.
+- O **professor edita livremente** (presente/falta, e justificado se mantido). A correção prevalece sobre o check-in e é auditada.
+- O **aluno tem login na v1**: Painel, Agenda, Progresso, Check-in.
+- Risco de fraude no check-in **aceito** na v1. Não adicionar janela de horário, QR, geolocalização ou confirmação sem o dono pedir.
+- **Módulo Comunicados foi removido** por decisão do dono. Não recriar. (Os "Avisos automáticos" de Configurações são e-mails de cobrança, outra coisa.)
+
+## O que o protótipo faz e o que NÃO faz
+
+- Estado **em memória** (`app/src/app/store.tsx`): recarregar a página apaga tudo. Só a sessão de login fica no `localStorage`.
+- Trocar de usuário (Sair → entrar) **não** recarrega a página, então o estado se mantém. Útil para demonstrar aluno → professor.
+- `selectors.ts` lê dados simulados **fixos**, não o estado: o Painel e o campo "% em 30d" **não** reagem a check-ins. Isso some quando as métricas vierem do servidor.
+- O protótipo ainda carrega o modelo antigo (`store.fecharChamada`, `chamada.fechada`) que **não** deve ir para o back-end (defeito 10 do roadmap).
+- O login só confere o e-mail. **Não é segurança.** A guarda por papel (`ExigePapel`) é só navegação.
+- Valores em **reais** no front; no banco são **centavos** (`integer`). A conversão é na camada de API.
+
+## Rodar, verificar, publicar
+
+```bash
+cd app && npm install
+npm run dev        # http://localhost:5173
+npm run build      # tsc -b && vite build
+npx oxlint         # lint (restam avisos antigos de react/only-export-components e set-state-in-effect)
+```
+
+- Demonstração: `gestor@gb.com.br`, `professor@gb.com.br`, `aluno@gb.com.br`; senha `treino123`. As linhas em "Acessos de demonstração" preenchem o formulário.
+- O aluno de demonstração é `al1` (Pedro Almeida). O quadro simulado **não tem aulas aos domingos**; nesse dia o check-in mostra "Sem aula hoje".
+- Deploy: GitHub Actions (`.github/workflows/deploy.yml`) publica no **GitHub Pages** a cada push na `main`. `HashRouter` e `base: './'` por causa da hospedagem estática.
+- Banco: para validar o schema, `psql` num PostgreSQL 15+ vazio: `psql -v ON_ERROR_STOP=1 -f db/schema.sql`. Há um PostgreSQL 16 instalado no ambiente de nuvem (cluster desligado por padrão).
+
+## Convenções do código
+
+- React 19 + TypeScript estrito + Vite + Tailwind v4 + React Router (HashRouter). Nomes de domínio em português (`aluno`, `chamada`, `presenca`, `cobranca`).
+- Tokens de marca em `app/src/index.css` (`gb-red`, `gb-blue`, `gb-ink`…). **Nenhum estado depende só de cor**: todo badge tem rótulo.
+- Um botão primário (vermelho) por tela. Evite novas cores e novos componentes se já existe um em `components/ui/`.
+- Toda mutação passa por `store.tsx`; cada função ali corresponde a um endpoint futuro. Páginas não escrevem em `mock.ts`.
+- A data de "hoje" usa fuso **local** (`hojeISO()` em `lib/format.ts`). Não use `toISOString().slice(0,10)`: vira o dia às 21h em Brasília.
+
+## Pendências críticas antes de qualquer lançamento
+
+- **V1: autorização de uso da marca Gracie Barra.** Os arquivos `graciebarra_*` e o guia visual miram essa identidade. O produto se chama "Tatame Gestão", com marca abstrata própria. Sem autorização, não divulgar nem usar o nome.
+- Painel do aluno ainda mostra dados da academia inteira, inclusive nomes e frequência de outros alunos (defeito 8). Resolver antes de ter login de aluno real.
+- Todas as pendências E1–E17 dependem de conversa com a academia; ver o roteiro de demonstração.
+
+## Fluxo de trabalho no GitHub
+
+- Desenvolver na branch designada pela sessão, nunca direto na `main`. Não abrir PR sem o usuário pedir.
+- Se o PR da branch já foi mergeado, recomece a branch a partir da `main` e trate o trabalho como mudança nova.
+- Commits e descrições de PR em português, com o resumo do que mudou e o que foi verificado.

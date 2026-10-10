@@ -8,7 +8,7 @@ Entregue o celular ou o notebook e peça para ele fazer tarefas reais. Observe o
 
 ## Antes de começar (10 minutos de preparação)
 
-- [ ] Abrir o sistema **no celular do professor** e também em um notebook. A chamada é a tela mais importante e é usada de pé, com o dedo.
+- [ ] Abrir o sistema **no celular do professor** e também em um notebook. O check-in do aluno é o fluxo mais importante e é usado de pé, com o dedo.
 - [ ] Testar o login de antemão. Entrar como `gestor@gb.com.br` / `treino123` (clique em uma linha de "Acessos de demonstração" — ela preenche e-mail e senha).
 - [ ] Ter este arquivo aberto para anotar as respostas (tabela no final).
 - [ ] Levar uma folha/ planilha dele de verdade (mensalidades, lista de chamada) para comparar com a tela.
@@ -29,14 +29,13 @@ Se só houver 15 minutos, faça apenas isto, nesta ordem, e agende o restante pa
 | Min | Bloco | Só estas perguntas |
 |---|---|---|
 | 2 | Avisos iniciais | Os 4 avisos acima |
-| 2 | 1. Painel | Os 4 números estão certos? **E12** |
-| 5 | 2. Chamada no celular | **E5**, **E8** |
+| 1 | 1. Painel | Os 4 números estão certos? **E12** |
+| 6 | 2. Check-in do aluno e correção pelo professor | **E14**, **E15**, **E16**, **E8** |
 | 3 | 3. Alunos (só "Em aberto" + cadastro) | **E6**, **E7** |
-| — | Se sobrar tempo: o fluxo de check-in do aluno (bloco 6, passos 1 a 3) | **E14** |
 | 2 | 4. Financeiro (só planos e forma de pagamento) | **E2**, **E3** |
 | 1 | 7. Fechamento | Perguntas 1 e 6 |
 
-Ficam para a segunda sessão: Agenda, Progresso (**E1**, o critério de graduação), categorias financeiras (**E4**) e papéis. Mas leve o check-in (**E14**) à primeira sessão se puder: é a funcionalidade que depende mais da opinião dele.
+Ficam para a segunda sessão: Agenda, Progresso (**E1**, o critério de graduação), categorias financeiras (**E4**) e papéis. O check-in (**E14**) já está na versão curta, porque é a funcionalidade que mais depende da opinião dele.
 Mas **E1 não pode esperar muito**: ele muda a tela de Progresso e a regra de elegibilidade.
 
 ## Roteiro completo (~35 minutos)
@@ -53,19 +52,32 @@ agenda dos próximos 3 dias, ocupação das turmas.
 - O que você perguntaria ao sistema que ele não responde? *(quem sumiu? quanto vou receber esta semana?)*
 - **[E12]** O que você faz **todo dia** e quantos cliques isso leva a partir daqui?
 
-### 2. Chamada pelo celular (5 min) — o teste mais importante
+### 2. Check-in do aluno e correção pelo professor (7 min) — o teste mais importante
 
-**Tarefa:** *"São 19h de segunda. Faça a chamada da turma de Fundamentos."* Menu **Presença** → escolher a aula → tocar em Presente / Justificado / Ausente
-em cada aluno → **Fechar chamada**. Mostre também o botão **Marcar todos**.
+**Regra do produto, que você deve dizer ao professor antes de começar:** *não existe chamada feita pelo professor.* O aluno faz o check-in pelo celular e vale na hora.
+Quem não faz check-in **tem falta**. O professor pode corrigir qualquer registro.
 
-**Observe:** consegue fazer de pé, com uma mão? Erra o botão? Demora quanto por aluno?
+**Antes da sessão:** o check-in só mostra as aulas do **dia da demonstração**. Se esse dia não tiver aula no quadro (o quadro simulado não tem aulas aos domingos), a tela mostra "Sem aula hoje".
+Nesse caso, inclua uma aula para hoje em **Agenda** antes de começar. Faça o fluxo **sem recarregar a página** (o que foi feito fica só na memória do navegador).
+
+**Tarefa, passo a passo (o professor mexe, você observa):**
+1. Entre como **`aluno@gb.com.br`** → **Check-in** → **Fazer check-in**. Mostre o **Desfazer**.
+2. Saia (menu no canto superior direito → **Sair**) e entre como **`professor@gb.com.br`** → **Presença** → mesma aula. O aluno aparece como presente, com **"Check-in do aluno · hora"**. Quem não fez check-in aparece como **"Sem check-in · conta como falta"**.
+3. Peça: *"O Fulano chegou, mas esqueceu o celular. Corrija."* (**Presente**). Depois: *"O Pedro fez check-in e foi embora. Corrija."* (**Falta**).
+4. Volte como **aluno**: ele vê a falta marcada pelo professor e já não consegue desfazer.
+5. Abra a **ficha do aluno** (aba Presença): a coluna "Registrado por" mostra check-in do aluno ou professor.
+
+**Observe:** o professor entende que **ele não faz mais chamada**? Acha rápido o botão de corrigir? Quantos alunos "sem check-in" ele corrigiria numa aula real?
 
 **Perguntas:**
-- A lista de alunos está certa para essa turma? Quem **deveria** estar nela e não está? *(o protótipo mostra todos os alunos ativos que parecem da faixa etária — não existe vínculo real aluno ↔ turma)*
-- **[E5]** Como você decide quem pertence a qual turma? Um aluno pode treinar em mais de uma? Criança só vai em turma infantil?
-- **[E8]** Tem internet no tatame? Se cair o sinal no meio da chamada, o que você espera que aconteça?
-- **[E11]** Quando há feriado ou aula cancelada, como você registra hoje?
-- Justificado: o que significa na sua academia? Conta como falta?
+- **[E14]** Você aceita **não fazer chamada**? Todos os alunos têm celular e e-mail para criar o login? E as **crianças** (o responsável faz o check-in) e quem **não tem celular**?
+- **[E15]** Quem não faz check-in tem falta. Você acha justo? Se o aluno esquecer o celular, você corrige — com que frequência topa fazer isso? Você confiaria nesse número para decidir graduação?
+- **[E16]** Até quando o aluno pode fazer check-in (só durante a aula? até algumas horas depois?)? E até quando você corrige (no dia, numa semana, sem limite)?
+- **[E17]** Existe "falta justificada" na sua academia? Conta como falta ou não conta?
+- **[E8]** Tem internet no tatame? Se o aluno estiver sem sinal, o que você espera que aconteça?
+- **[E11]** Quando há feriado ou aula cancelada, como você registra hoje? (no sistema, quem cancela é você)
+- **[E5]** A lista de alunos está certa para essa turma? Como você decide quem pertence a qual turma? Um aluno pode treinar em mais de uma? *(o protótipo mostra todos os alunos ativos que parecem da faixa etária; não existe vínculo real aluno × turma)*
+- Que tipo de abuso você imagina (marcar de casa, marcar por um colega)? O que seria aceitável: confirmar só os suspeitos, ou só aceitar perto do horário da aula?
 
 ### 3. Alunos e a ficha (5 min)
 
@@ -98,24 +110,11 @@ em cada aluno → **Fechar chamada**. Mostre também o botão **Marcar todos**.
   *(o protótipo usa 12 meses + 70% de frequência para qualquer faixa — isso certamente está errado para faixas mais altas)*
 - Você registra graus (listras) no sistema? Quem aprova a graduação?
 
-### 6. Visão de cada papel e check-in do aluno (5 min)
+### 6. Visão de cada papel (3 min)
 
-Saia (menu do canto superior direito → **Sair**) e entre como **`professor@gb.com.br`**. Mostre que Financeiro e Planos somem.
-
-**Check-in do aluno — mostre este fluxo, nesta ordem, sem recarregar a página:**
-1. Entre como **`aluno@gb.com.br`** e abra **Check-in** no menu. Peça ao professor para tocar em **Fazer check-in** (só aparece aula no dia em que a demonstração for feita).
-2. Saia, entre de novo como **professor**, abra **Presença** na mesma aula: o aluno aparece marcado como presente, com a etiqueta **"Check-in do aluno"** e a hora.
-3. Abra a **ficha do aluno** (aba Presença): a coluna "Registrado por" mostra a origem.
-4. Pergunte antes de explicar a regra: *"Se o aluno pode marcar sozinho e vale na hora, o que você acha?"*
-
-**Antes da sessão:** o check-in só mostra as aulas do **dia da demonstração**. Se esse dia não tiver aula no quadro (o quadro simulado não tem aulas aos domingos), a tela mostra "Sem aula hoje". Nesse caso, inclua uma aula para hoje em **Agenda** antes de começar.
-
-Diga que, **hoje, o check-in não pede confirmação do professor**: foi uma decisão consciente para a primeira versão.
+Saia e entre como **`professor@gb.com.br`**. Mostre que Financeiro e Planos somem. (O acesso do aluno você já mostrou no bloco 2.)
 
 **Perguntas:**
-- **[E14]** O aluno marcar a própria presença ajuda você ou atrapalha? Você confiaria nesse número para decidir graduação?
-- **[E14]** Que tipo de abuso você imagina? (marcar de casa, marcar por um colega, marcar e não ir) O que seria aceitável para você: confirmar só os suspeitos, ou só aceitar perto do horário da aula?
-- **[E14]** Todos os alunos têm celular e e-mail para criar o login? E as crianças: o responsável faria o check-in por elas?
 - Quem mais da academia vai usar? Recepção? Outros professores? Eles podem ver o financeiro?
 - Há algo que o professor **não** deve ver além do financeiro?
 
@@ -140,16 +139,19 @@ Preencha durante a sessão. Cada linha destrava uma decisão do roadmap.
 | E2 — planos reais | | Cadastro de planos |
 | E3 — forma e dia de pagamento | | Geração de cobranças, e-mail |
 | E4 — categorias financeiras | | Financeiro |
-| E5 — aluno × turma | | Modelo (`aluno_turma`) e chamada |
+| E5 — aluno × turma | | Modelo (`aluno_turma`) e lista de presença |
 | E6 — campos do cadastro | | Cadastro de aluno |
 | E7 — menores / autorização | | Consentimento (LGPD) |
-| E8 — internet no tatame | | Chamada offline na v1? |
+| E8 — internet no tatame | | Check-in offline na v1? |
 | E9 — avisos por e-mail | | Rotinas automáticas |
 | E10 — planilha atual | | Importação |
-| E11 — feriados / aula cancelada | | Chamada / agenda |
+| E11 — feriados / aula cancelada | | Cancelar aula / agenda |
 | E12 — tarefa diária em ≤ 2 cliques | | Painel |
 | E13 — piloto em paralelo | | Fase 10 |
-| E14 — o professor quer o check-in do aluno? Que regra contra abuso? Crianças? | | Check-in na v1 e o que endurecer depois |
+| E14 — aceita não fazer chamada? Celular/login dos alunos? Crianças? | | Check-in na v1 |
+| E15 — falta por omissão é aceitável? Quanto corrige? | | Regra de frequência / graduação |
+| E16 — prazo do check-in e da correção | | Regras da API |
+| E17 — falta justificada existe? | | Modelo de presença |
 | V6 — cobrança automática vale a taxa? | | Escopo da v1 |
 | Nota 0–10 de adoção + o que sobe a nota | | Prioridades |
 

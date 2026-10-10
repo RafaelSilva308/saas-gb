@@ -3,6 +3,24 @@
 > **Ordem de execução, decisões pendentes, modelo do banco e custos:** veja [`ROADMAP.md`](./ROADMAP.md).
 > Onde este documento e o `ROADMAP.md` divergirem, vale o `ROADMAP.md`.
 
+> ## ⚠️ Atualização de produto — presença por check-in (supera o que está abaixo)
+>
+> Decisão do dono do produto, posterior à redação deste plano. **Onde as seções 1 a 10 falarem em "chamada feita pelo professor",
+> "fechar chamada" ou "marcar todos", vale o que está aqui:**
+>
+> 1. **Não existe chamada do professor.** Quem registra a presença é o **aluno**, pelo celular, com o **check-in** na aula do dia.
+> 2. Fez check-in = **presente na hora**. O professor **não precisa** marcar nem confirmar.
+> 3. **Quem não fez check-in tem falta** — a presença não é computada. A falta não é gravada: é a ausência do registro.
+> 4. O **professor tem liberdade total para editar**: marcar presente, falta (e, se mantido, justificado) para qualquer aluno e aula, inclusive de dias anteriores.
+>    Uma correção do professor passa a valer no lugar do check-in e o aluno não a altera mais. Toda correção é auditada.
+> 5. O **aluno passa a ter login na v1** (papel `aluno`), com Painel, Agenda, Progresso e Check-in.
+> 6. O risco de fraude (marcar de casa ou por um colega) foi **aceito** para a v1. Endurecimento futuro (janela de horário, QR code, geolocalização,
+>    confirmação do professor) está no `ROADMAP.md`; o banco já grava a origem de cada presença.
+>
+> Efeitos neste documento, já ajustados abaixo: modelo de dados (`chamada`, `presenca`), contrato de API (endpoints de chamada → check-in e correção),
+> fluxos E2E, perfis de uso e glossário. **Decisões que ainda dependem da academia:** prazo para o check-in e para a correção (E16), se "justificado" continua (E17),
+> alunos sem celular, crianças e quem não faz check-in (E14/E15). Detalhes e modelo SQL testado: `ROADMAP.md`, `BANCO_DE_DADOS.md`, `db/schema.sql`.
+
 Documento de referência do projeto. Descreve **o que já existe**, **como continuar** e
 **como o back-end deve ser construído** quando o front-end estiver aprovado.
 
@@ -37,8 +55,8 @@ status claros e caminhos curtos para as tarefas do dia.
 | Perfil | O que ele precisa | Prioridade na interface |
 |---|---|---|
 | **Gestor** (dono) | Indicadores, inadimplência, ocupação, retenção, resultado do mês | Painel, Financeiro, Planos |
-| **Professor** | Chamada, organização das turmas, observações de treino, acompanhamento individual | Presença, Agenda, Alunos |
-| **Aluno / responsável** | Calendário, presença, evolução de faixa, próximos objetivos | Painel do aluno, Agenda, Progresso |
+| **Professor** | Conferir e corrigir presenças (os alunos fazem check-in), organização das turmas, observações de treino, acompanhamento individual | Presença, Agenda, Alunos |
+| **Aluno / responsável** | Fazer check-in na aula, calendário, presença, evolução de faixa, próximos objetivos | Check-in, Painel do aluno, Agenda, Progresso |
 
 ---
 
@@ -53,7 +71,7 @@ Oito blocos, na ordem em que agregam valor:
 | 3 | Cadastro e edição de alunos | ✅ Front-end pronto | `src/pages/Alunos.tsx`, `AlunoDetalhe.tsx` |
 | 4 | Planos e vencimentos | ✅ Front-end pronto | `src/pages/Planos.tsx` |
 | 5 | Receitas e despesas | ✅ Front-end pronto | `src/pages/Financeiro.tsx` |
-| 6 | Controle de presença por turma | ✅ Front-end pronto | `src/pages/Presenca.tsx` |
+| 6 | Presença por check-in do aluno, com correção pelo professor | ✅ Front-end pronto (protótipo) | `src/pages/Checkin.tsx`, `src/pages/Presenca.tsx` |
 | 7 | Agenda de aulas | ✅ Front-end pronto | `src/pages/Agenda.tsx` |
 | 8 | Progresso de faixas | ✅ Front-end pronto | `src/pages/Progresso.tsx` |
 
@@ -153,7 +171,7 @@ Estratégia mobile-first com breakpoints Tailwind (`sm` 640 / `lg` 1024 / `xl` 1
 - **< 1024px:** sidebar vira gaveta com overlay; topbar ganha botão de menu.
 - **< 640px:** ações do cabeçalho ocupam a largura toda e dividem o espaço; filtros viram meia-largura; modais viram *bottom sheet*; abas rolam horizontalmente sem barra visível.
 - **Tabelas:** sempre dentro de `overflow-x-auto` com `min-w`, para o corpo da página nunca rolar na horizontal.
-- **Chamada (Presença):** botões Presente/Justificado/Ausente com 40px de altura e largura total no celular — pensados para uso com o dedo, em pé, no tatame.
+- **Check-in (aluno) e correção (professor):** o botão "Fazer check-in" ocupa a largura do cartão no celular; na tela do professor, Presente/Justificado/Falta têm 40px de altura, para uso com o dedo.
 - **Gráficos:** `ResponsiveContainer`, sem largura fixa.
 
 ### 4.5 Acessibilidade
@@ -189,7 +207,7 @@ Antes de escrever uma linha de back-end, percorrer com o professor:
 
 - [ ] Os quatro indicadores do painel são os certos? Falta algum? Sobra algum?
 - [ ] A ordem das telas na navegação lateral bate com a rotina do dia?
-- [ ] A tela de chamada funciona com o celular na mão, em pé, no tatame?
+- [ ] O check-in do aluno funciona com o celular na mão, na porta do tatame? O professor consegue conferir e corrigir as presenças rápido?
 - [ ] Os campos do cadastro de aluno são suficientes? (Falta CPF? Endereço? Convênio? Foto?)
 - [ ] Os planos refletem o que a academia vende hoje?
 - [ ] As categorias de receita e despesa são as que ele usa?
@@ -255,15 +273,17 @@ aula                       -- item recorrente do quadro de horários
   id, academia_id, turma_id → turma, titulo,
   dia_semana (0-6), inicio (time), fim (time), capacidade, local, ativa
 
-chamada                    -- uma ocorrência concreta de uma aula
+chamada                    -- ocorrência concreta de uma aula; nasce no 1º check-in ou ao cancelar a aula
   id, academia_id, aula_id → aula, data (date),
-  fechada, fechada_em, fechada_por → usuario
+  cancelada, cancelada_por → usuario, motivo
   UNIQUE (aula_id, data)
 
-presenca
-  id, chamada_id → chamada, aluno_id → aluno,
-  status (presente|ausente|justificado), registrado_em
-  UNIQUE (chamada_id, aluno_id)
+presenca                   -- só existe linha quando alguém agiu; FALTA = ausência de linha
+  chamada_id → chamada, aluno_id → aluno,
+  status (presente|ausente|justificado),
+  origem (aluno = check-in | professor = correção),
+  registrado_em, registrado_por → usuario, observacao
+  PRIMARY KEY (chamada_id, aluno_id)
 
 cobranca                   -- o que o aluno deve
   id, academia_id, aluno_id → aluno, plano_id → plano,
@@ -287,7 +307,8 @@ log_auditoria
 
 1. **Dinheiro em centavos, `integer`.** Nunca `float`.
 2. **`academia_id` em toda tabela** desde o início, mesmo com uma unidade. Adicionar multi-tenant depois é uma migração dolorosa; deixar o campo agora é gratuito.
-3. **`chamada` separada de `aula`.** `aula` é o horário recorrente ("segunda 19h"); `chamada` é o dia concreto. Sem essa separação não dá para registrar a aula de uma terça em que o professor mudou o conteúdo.
+3. **`chamada` separada de `aula`.** `aula` é o horário recorrente ("segunda 19h"); `chamada` é o dia concreto. Sem essa separação não dá para registrar a aula de uma terça em que o professor mudou o conteúdo. Com o check-in, a `chamada` virou o registro de que a aula aconteceu (ou foi cancelada).
+3b. **Falta não é gravada.** É a ausência de linha em `presenca` numa aula realizada. "Aula realizada" = não cancelada e com ao menos um presente (view `v_aula_realizada`). Uma rotina que "gerasse faltas" poderia falhar e deixar o dado errado; a view não falha.
 4. **`graduacao` como histórico.** A faixa atual do aluno é a última graduação — mas a jornada inteira precisa ficar registrada, é o coração emocional do produto.
 5. **`cobranca` separada de `transacao`.** Uma é o que se espera receber, a outra é o que entrou. Sem essa separação não existe relatório de inadimplência confiável.
 6. **`log_auditoria`** desde o começo: quem mudou a faixa de quem, quem apagou qual lançamento.
@@ -308,7 +329,7 @@ Base: `/api/v1`. Autenticação por `Authorization: Bearer <jwt>`. Respostas em 
 | `GET` | `/alunos/:id` | gestor, professor | `AlunoDetalhe` |
 | `PATCH` | `/alunos/:id` | gestor, professor | `store.salvarAluno` (edição) |
 | `DELETE` | `/alunos/:id` | gestor | `store.removerAluno` |
-| `GET` | `/alunos/:id/presencas` | gestor, professor | aba Presença da ficha |
+| `GET` | `/alunos/:id/presencas` | gestor, professor | aba Presença da ficha (com a origem de cada registro) |
 | `GET` | `/alunos/:id/cobrancas` | gestor | aba Financeiro da ficha |
 | `POST` | `/alunos/:id/graduacoes` | gestor, professor | promoção de faixa |
 | `GET` `POST` | `/planos` | gestor | `store.planos`, `salvarPlano` |
@@ -316,9 +337,11 @@ Base: `/api/v1`. Autenticação por `Authorization: Bearer <jwt>`. Respostas em 
 | `GET` | `/turmas` | autenticado | `TURMAS` |
 | `GET` `POST` | `/aulas` | gestor, professor | `store.aulas`, `salvarAula` |
 | `PATCH` `DELETE` | `/aulas/:id` | gestor, professor | `salvarAula`, `removerAula` |
-| `GET` | `/chamadas?aula_id&data` | gestor, professor | `store.chamadaDe` |
-| `PUT` | `/chamadas/:aulaId/:data/presencas` | gestor, professor | `store.marcarPresenca` (lote) |
-| `POST` | `/chamadas/:aulaId/:data/fechar` | gestor, professor | `store.fecharChamada` |
+| `GET` | `/chamadas?aula_id&data` | gestor, professor | `store.chamadaDe` (lista quem fez check-in e quem não fez) |
+| `POST` | `/aulas/:aulaId/checkin` | aluno (o próprio) | `store.fazerCheckin` |
+| `DELETE` | `/aulas/:aulaId/checkin` | aluno (o próprio) | `store.desfazerCheckin` |
+| `PUT` | `/chamadas/:aulaId/:data/presencas/:alunoId` | gestor, professor | `store.marcarPresenca` (correção; grava `origem = professor`; vai para a auditoria) |
+| `POST` | `/chamadas/:aulaId/:data/cancelar` | gestor, professor | cancelar aula / feriado |
 | `GET` | `/cobrancas?competencia&status` | gestor | lista de inadimplência |
 | `POST` | `/cobrancas/:id/pagar` | gestor | baixa de pagamento |
 | `GET` `POST` | `/transacoes?mes&tipo` | gestor | `store.transacoes`, `salvarTransacao` |
@@ -332,9 +355,12 @@ Base: `/api/v1`. Autenticação por `Authorization: Bearer <jwt>`. Respostas em 
 **Regra:** os cálculos de `selectors.ts` migram para o servidor. O front consome números prontos —
 o celular não deve varrer 45 dias de chamadas para desenhar um cartão.
 
-**Marcação de presença em lote.** `PUT /chamadas/:aulaId/:data/presencas` recebe o array inteiro e é
-idempotente. O professor pode perder sinal no meio da chamada; reenviar o estado completo é seguro,
-enviar deltas não é.
+**Check-in.** `POST /aulas/:aulaId/checkin` é idempotente e as regras valem **no servidor**: só a aula do dia; só aluno matriculado na turma; recusa se a aula foi cancelada;
+repetir é inofensivo (`on conflict do nothing`); o aluno **nunca sobrescreve** uma marcação do professor; `DELETE` só apaga o que o próprio aluno marcou.
+Prazo para fazer o check-in e para o professor corrigir: **pendência E16**, a definir antes de implementar.
+
+**Correção do professor.** Um registro por aluno e aula (`PUT .../:alunoId`), sem lote: não há mais uma chamada inteira para reenviar. Toda correção grava
+`log_auditoria` com o estado antes e depois, porque ela muda a frequência que decide graduação.
 
 ### 6.4 Autorização
 
@@ -344,7 +370,7 @@ Todo endpoint valida o papel no servidor. Regras:
 | Papel | Pode |
 |---|---|
 | `gestor` | Tudo dentro da própria academia |
-| `professor` | Alunos, turmas, aulas, chamadas, graduações. **Não vê Financeiro nem Planos.** |
+| `professor` | Alunos, turmas, aulas, correção de presenças, graduações. **Não vê Financeiro nem Planos.** |
 | `aluno` | Só a própria ficha, e a agenda |
 
 Todo *query* filtra por `academia_id` da sessão. Nenhuma rota aceita `academia_id` vindo do cliente.
@@ -430,15 +456,16 @@ por isso as URLs têm `#` (ex.: `/#/painel`).
 | Unidade | Vitest | `selectors.ts`, `format.ts`, regras de cobrança e graduação |
 | Componente | Testing Library | Formulários, validações, estados vazios |
 | API | Vitest + Supertest | Cada endpoint, incluindo negação por papel |
-| E2E | Playwright | Login → chamada → fechar chamada → ver no histórico |
+| E2E | Playwright | Aluno faz check-in → professor vê e corrige → histórico do aluno |
 
 **Fluxos que não podem quebrar** (E2E obrigatório):
 
-1. Fazer a chamada de uma turma e fechá-la.
+1. Aluno faz check-in; o professor vê o registro, corrige para falta, e o aluno não consegue desfazer nem refazer.
 2. Cadastrar aluno com plano e ver a cobrança gerada.
 3. Registrar pagamento e o aluno sair da lista de inadimplentes.
 4. Professor **não** conseguir abrir o Financeiro.
-5. Aluno **não** conseguir ver a ficha de outro aluno.
+5. Aluno **não** conseguir ver a ficha, os dados nem o check-in de outro aluno.
+6. Aluno **não** conseguir fazer check-in em aula de outro dia, de outra turma ou cancelada.
 
 ---
 
@@ -465,14 +492,14 @@ Total estimado: **~11 semanas** após a validação do front.
 
 Em ordem de valor percebido:
 
-1. **PWA instalável com chamada offline.** O tatame nem sempre tem sinal. Registrar offline e sincronizar depois é o recurso que mais muda o dia do professor.
-2. **Portal do aluno.** Ficha, presença, evolução de faixa no celular do aluno.
+1. **PWA instalável com check-in offline.** O tatame nem sempre tem sinal. Guardar o check-in e enviar quando a conexão voltar evita falta indevida.
+2. **Portal do aluno completo.** Hoje o aluno só tem Painel, Agenda, Progresso e Check-in.
 3. **Cobrança automatizada.** PIX com QR dinâmico (Asaas, Pagar.me ou Mercado Pago) e baixa automática na `cobranca`.
 4. **WhatsApp.** Lembretes no canal que a academia realmente usa.
 5. **Relatório de retenção.** *Cohort* por mês de matrícula — mostra em que ponto da jornada o aluno desiste.
 6. **Programa técnico por faixa.** Currículo de técnicas com marcação do que o aluno já domina.
 7. **Multi-unidade.** O `academia_id` já está no modelo; falta a troca de contexto na interface.
-8. **Check-in por QR code** na recepção, alimentando a presença sozinho.
+8. **Endurecer o check-in:** QR code no tatame, janela de horário, geolocalização, confirmação do professor (ver `ROADMAP.md`).
 
 ---
 
@@ -500,7 +527,8 @@ Em ordem de valor percebido:
 
 | Termo | Significado |
 |---|---|
-| **Chamada** | Registro de presença de uma aula em uma data específica |
+| **Chamada** | Ocorrência de uma aula em uma data. Não é mais uma lista preenchida pelo professor: reúne os check-ins e as correções |
+| **Check-in** | O próprio aluno registra presença na aula do dia, pelo celular, e vale na hora |
 | **Grau** | Marcação intermediária dentro de uma faixa (0 a 4) |
 | **Open Mat** | Treino livre, sem aula estruturada |
 | **No-Gi** | Treino sem kimono |

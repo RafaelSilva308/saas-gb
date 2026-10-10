@@ -142,7 +142,7 @@ export function Checkin() {
                                 : 'Presença registrada pelo professor'
                               : registro.status === 'justificado'
                                 ? 'Falta justificada pelo professor'
-                                : 'Ausência registrada pelo professor'}
+                                : 'Falta registrada pelo professor'}
                           </Badge>
                           {feitoPeloAluno && !encerrada && (
                             <Button variante="fantasma" tamanho="sm" onClick={() => agir(desfazerCheckin(aula.id, aluno.id))}>
@@ -178,7 +178,7 @@ export function Checkin() {
                   <span className="w-16 shrink-0 text-xs font-semibold text-gb-gray-500">{dataCurta(h.data)}</span>
                   <span className="min-w-0 flex-1 truncate text-sm font-semibold text-gb-ink">{aula?.titulo}</span>
                   <Badge tom={h.registro.status === 'presente' ? 'ok' : h.registro.status === 'justificado' ? 'alerta' : 'neutro'}>
-                    {h.registro.status === 'presente' ? 'Presente' : h.registro.status === 'justificado' ? 'Justificado' : 'Ausente'}
+                    {h.registro.status === 'presente' ? 'Presente' : h.registro.status === 'justificado' ? 'Justificado' : 'Falta'}
                   </Badge>
                 </li>
               )

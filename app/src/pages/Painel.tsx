@@ -102,7 +102,7 @@ export function Painel() {
             <>
               <ButtonLink to="/presenca" variante="secundaria">
                 <ClipboardCheck className="size-4" />
-                Registrar presença
+                Ver presenças
               </ButtonLink>
               <ButtonLink to="/alunos?novo=1" variante="primaria">
                 <UserPlus className="size-4" />
@@ -404,7 +404,7 @@ export function Painel() {
           <CardHeader titulo="Ações rápidas" descricao="Os caminhos mais curtos do dia a dia" />
           <CardBody className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { to: '/presenca', label: 'Fazer a chamada', desc: 'Registrar quem treinou hoje', Icone: ClipboardCheck },
+              { to: '/presenca', label: 'Ver presenças', desc: 'Conferir quem treinou hoje', Icone: ClipboardCheck },
               { to: '/alunos?novo=1', label: 'Adicionar aluno', desc: 'Cadastrar nova matrícula', Icone: UserPlus },
               { to: '/agenda', label: 'Agendar aula', desc: 'Incluir no quadro de horários', Icone: CalendarPlus },
             ].map(({ to, label, desc, Icone }) => (
