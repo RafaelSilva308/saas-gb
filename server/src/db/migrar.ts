@@ -3,7 +3,8 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { criarPool, type Db } from './pool.js'
 
-const RAIZ_DB = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'db')
+/** `DB_DIR` permite apontar a pasta `db/` quando a estrutura de diretórios muda (imagem Docker). */
+const RAIZ_DB = process.env.DB_DIR ?? join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'db')
 
 interface Migracao {
   nome: string

@@ -13,7 +13,9 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "migrar": "tsx src/db/migrar.ts",
-    "seed": "tsx src/db/seed.ts"
+    "seed": "tsx src/db/seed.ts",
+    "nova-academia": "tsx src/db/nova-academia.ts",
+    "rotinas": "tsx src/rotinas-cli.ts"
   },
   "dependencies": {
     "@fastify/cookie": "^11.1.3",

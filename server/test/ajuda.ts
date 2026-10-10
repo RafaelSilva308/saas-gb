@@ -36,6 +36,11 @@ export async function criarAmbiente(limiteLogin = 1000): Promise<Ambiente> {
     cookieSeguro: false,
     urlPublica: 'http://localhost:3000',
     limiteLogin,
+    resendApiKey: undefined,
+    emailRemetente: 'REDSHIELD <teste@redshield.test>',
+    rotinasAtivas: false,
+    horaDosAvisos: 8,
+    migrarNoInicio: true,
   }
   const relogio = { agora: AGORA }
   const app = await construirApp({ db, config, mailer, agora: () => relogio.agora })
