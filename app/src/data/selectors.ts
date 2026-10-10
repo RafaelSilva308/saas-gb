@@ -1,5 +1,5 @@
 import { ALUNOS, AULAS, CHAMADAS, PLANOS, TRANSACOES, TURMAS } from './mock'
-import type { Faixa } from '@/types'
+import type { Aluno, Aula, Faixa } from '@/types'
 import { FAIXAS } from '@/lib/format'
 
 /* Cálculos derivados. Na Fase 2 a maioria vira endpoint /metrics no back-end,
@@ -169,4 +169,12 @@ export function emRiscoDeEvasao(dias = 14) {
       .flatMap((c) => c.registros.filter((r) => r.status === 'presente').map((r) => r.alunoId)),
   )
   return alunosAtivos().filter((a) => !recentes.has(a.id))
+}
+
+/** O aluno pode estar na chamada desta aula? Ativo ou experimental, e turma infantil só com responsável.
+    Regra provisória do protótipo: na Fase 2 vem do vínculo aluno × turma (tabela `aluno_turma`). */
+export function alunoNaAula(aluno: Aluno, aula: Aula) {
+  if (aluno.status === 'inativo') return false
+  const infantil = ['t3', 't4'].includes(aula.turmaId)
+  return infantil ? !!aluno.responsavel : !aluno.responsavel
 }

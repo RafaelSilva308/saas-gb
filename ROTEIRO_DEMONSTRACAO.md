@@ -32,10 +32,11 @@ Se só houver 15 minutos, faça apenas isto, nesta ordem, e agende o restante pa
 | 2 | 1. Painel | Os 4 números estão certos? **E12** |
 | 5 | 2. Chamada no celular | **E5**, **E8** |
 | 3 | 3. Alunos (só "Em aberto" + cadastro) | **E6**, **E7** |
+| — | Se sobrar tempo: o fluxo de check-in do aluno (bloco 6, passos 1 a 3) | **E14** |
 | 2 | 4. Financeiro (só planos e forma de pagamento) | **E2**, **E3** |
 | 1 | 7. Fechamento | Perguntas 1 e 6 |
 
-Ficam para a segunda sessão: Agenda, Progresso (**E1**, o critério de graduação), categorias financeiras (**E4**) e papéis.
+Ficam para a segunda sessão: Agenda, Progresso (**E1**, o critério de graduação), categorias financeiras (**E4**) e papéis. Mas leve o check-in (**E14**) à primeira sessão se puder: é a funcionalidade que depende mais da opinião dele.
 Mas **E1 não pode esperar muito**: ele muda a tela de Progresso e a regra de elegibilidade.
 
 ## Roteiro completo (~35 minutos)
@@ -97,12 +98,24 @@ em cada aluno → **Fechar chamada**. Mostre também o botão **Marcar todos**.
   *(o protótipo usa 12 meses + 70% de frequência para qualquer faixa — isso certamente está errado para faixas mais altas)*
 - Você registra graus (listras) no sistema? Quem aprova a graduação?
 
-### 6. Visão de cada papel (3 min)
+### 6. Visão de cada papel e check-in do aluno (5 min)
 
-Saia (botão sair) e entre como **`professor@gb.com.br`**. Mostre que Financeiro e Planos somem.
+Saia (menu do canto superior direito → **Sair**) e entre como **`professor@gb.com.br`**. Mostre que Financeiro e Planos somem.
+
+**Check-in do aluno — mostre este fluxo, nesta ordem, sem recarregar a página:**
+1. Entre como **`aluno@gb.com.br`** e abra **Check-in** no menu. Peça ao professor para tocar em **Fazer check-in** (só aparece aula no dia em que a demonstração for feita).
+2. Saia, entre de novo como **professor**, abra **Presença** na mesma aula: o aluno aparece marcado como presente, com a etiqueta **"Check-in do aluno"** e a hora.
+3. Abra a **ficha do aluno** (aba Presença): a coluna "Registrado por" mostra a origem.
+4. Pergunte antes de explicar a regra: *"Se o aluno pode marcar sozinho e vale na hora, o que você acha?"*
+
+**Antes da sessão:** o check-in só mostra as aulas do **dia da demonstração**. Se esse dia não tiver aula no quadro (o quadro simulado não tem aulas aos domingos), a tela mostra "Sem aula hoje". Nesse caso, inclua uma aula para hoje em **Agenda** antes de começar.
+
+Diga que, **hoje, o check-in não pede confirmação do professor**: foi uma decisão consciente para a primeira versão.
 
 **Perguntas:**
-- **[V5]** Os alunos ou responsáveis vão querer entrar para ver a própria presença e evolução? Ou a v1 é só você e os professores?
+- **[E14]** O aluno marcar a própria presença ajuda você ou atrapalha? Você confiaria nesse número para decidir graduação?
+- **[E14]** Que tipo de abuso você imagina? (marcar de casa, marcar por um colega, marcar e não ir) O que seria aceitável para você: confirmar só os suspeitos, ou só aceitar perto do horário da aula?
+- **[E14]** Todos os alunos têm celular e e-mail para criar o login? E as crianças: o responsável faria o check-in por elas?
 - Quem mais da academia vai usar? Recepção? Outros professores? Eles podem ver o financeiro?
 - Há algo que o professor **não** deve ver além do financeiro?
 
@@ -136,7 +149,7 @@ Preencha durante a sessão. Cada linha destrava uma decisão do roadmap.
 | E11 — feriados / aula cancelada | | Chamada / agenda |
 | E12 — tarefa diária em ≤ 2 cliques | | Painel |
 | E13 — piloto em paralelo | | Fase 10 |
-| V5 — aluno entra no sistema? | | Escopo da v1 |
+| E14 — o professor quer o check-in do aluno? Que regra contra abuso? Crianças? | | Check-in na v1 e o que endurecer depois |
 | V6 — cobrança automática vale a taxa? | | Escopo da v1 |
 | Nota 0–10 de adoção + o que sobe a nota | | Prioridades |
 

@@ -46,7 +46,7 @@ erDiagram
 | Base | `academia`, `usuario` | `usuario.aluno_id` só existe para o papel `aluno` (restrição no banco) |
 | Alunos e planos | `aluno`, `plano` | Aluno guarda consentimento LGPD e autorização de imagem |
 | Turmas e agenda | `turma`, `aluno_turma`, `aula` | `aula` = horário recorrente. `aluno_turma` **é novo**: o protótipo não tinha esse vínculo |
-| Presença | `chamada`, `presenca` | `chamada` = uma ocorrência concreta de uma `aula` em uma data |
+| Presença | `chamada`, `presenca` | `chamada` = uma ocorrência concreta de uma `aula` em uma data. `presenca.origem` diz se foi o professor ou o aluno (check-in) |
 | Progresso | `graduacao` | Histórico append-only; um *trigger* atualiza a faixa atual do aluno |
 | Financeiro | `categoria_financeira`, `cobranca`, `transacao` | `cobranca` = o que se espera receber; `transacao` = o que entrou ou saiu |
 | E-mail | `config_aviso`, `envio_email` | Interruptores de Configurações + controle de envio |
@@ -78,7 +78,15 @@ erDiagram
 11. **`categoria_financeira` é tabela, não lista fixa no código.** O professor deve poder criar as categorias que ele usa (pendência **E4**).
 12. **LGPD no cadastro.** `consentimento_em`, `consentimento_por` e `uso_imagem_autorizado`. Aluno **menor de idade exige responsável** — o banco garante que
     nome e telefone do responsável vêm juntos; a regra "menor precisa de responsável" depende da data de hoje e por isso é validada na aplicação.
-13. **`usuario` sem senha.** Com Supabase Auth, `usuario.id` é o id do `auth.users`. Com autenticação própria, adicionar `senha_hash` (Argon2id).
+13. **Check-in do aluno (`presenca.origem = 'aluno'`).** Vale na hora, sem confirmação, por decisão de produto da v1. O banco guarda a origem para que
+    seja possível medir, auditar e, depois, endurecer a regra sem reescrever o histórico. Regras que a API deve impor, no servidor (o front só espelha):
+    - só na aula **do dia** e só para aluno matriculado na turma (`aluno_turma`);
+    - recusar se a `chamada` já está `fechada`;
+    - `insert ... on conflict (chamada_id, aluno_id) do nothing`: repetir o check-in é inofensivo, e o aluno **não sobrescreve** uma marcação do professor;
+    - "desfazer" só apaga linha com `origem = 'aluno'` e chamada aberta;
+    - quando o professor edita uma linha, ela passa a `origem = 'professor'`.
+    - **Ponto em aberto:** `v_aluno_frequencia_30d` conta todas as presenças, inclusive as de check-in. Se a fraude virar problema, filtre por `origem` ali.
+14. **`usuario` sem senha.** Com Supabase Auth, `usuario.id` é o id do `auth.users`. Com autenticação própria, adicionar `senha_hash` (Argon2id).
     A unicidade do e-mail é por academia e ignora maiúsculas.
 
 ## O que ainda depende de resposta da academia
@@ -89,6 +97,7 @@ erDiagram
 | `vencimento_dia` — fixo para todos ou por aluno? | E3 |
 | `plano` — trancamento, desconto família, taxa de matrícula não estão modelados | E2 |
 | `categoria_financeira` — lista inicial | E4 |
+| Check-in: janela de horário, QR code, geolocalização ou confirmação do professor (hoje nenhum; a origem já fica gravada) | E14 |
 | Campos extras de `aluno` (CPF, endereço, contato de emergência, atestado) | E6 |
 | Regra de elegibilidade à graduação (por faixa, tempo e frequência) — hoje não há tabela de regras | E1 |
 | Aula cancelada / feriado — ainda sem tabela de exceções | E11 |
@@ -103,7 +112,7 @@ Mesma ordem em que o produto é construído (veja o roadmap). O arquivo `schema.
 | Migração | Conteúdo | Fase |
 |---|---|---|
 | 001 | tipos, `academia`, `plano`, `aluno`, `usuario`, `log_auditoria` | 2–3 |
-| 002 | `turma`, `aluno_turma`, `aula`, `chamada`, `presenca` | 4 |
+| 002 | `turma`, `aluno_turma`, `aula`, `chamada`, `presenca` (com `origem`) | 4 |
 | 003 | `categoria_financeira`, `cobranca`, `transacao`, `v_aluno_pagamento`, `v_fluxo_mensal` | 5 |
 | 004 | `graduacao` + trigger, `v_aluno_frequencia_30d` | 6 |
 | 005 | `config_aviso`, `envio_email` | 7 |

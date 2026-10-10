@@ -31,6 +31,8 @@ export function AlunoDetalhe() {
         data: c.data,
         aula: aulaPorId(c.aulaId),
         status: c.registros.find((r) => r.alunoId === aluno.id)!.status,
+        origem: c.registros.find((r) => r.alunoId === aluno.id)!.origem,
+        horario: c.registros.find((r) => r.alunoId === aluno.id)!.horario,
       }))
       .sort((a, b) => b.data.localeCompare(a.data))
       .slice(0, 30)
@@ -209,6 +211,7 @@ export function AlunoDetalhe() {
                       <span className="block truncate text-sm font-semibold text-gb-ink">{h.aula?.titulo}</span>
                       <span className="block text-xs text-gb-gray-500">
                         {turmaPorId(h.aula?.turmaId ?? '')?.nome} · {h.aula?.inicio}
+                        {h.origem === 'aluno' && ' · check-in do aluno'}
                       </span>
                     </span>
                     <Badge tom={h.status === 'presente' ? 'ok' : h.status === 'justificado' ? 'alerta' : 'neutro'}>
@@ -232,7 +235,7 @@ export function AlunoDetalhe() {
               <table className="w-full min-w-[600px] text-left">
                 <thead>
                   <tr className="border-b border-gb-gray-200">
-                    {['Data', 'Aula', 'Turma', 'Horário', 'Situação'].map((h) => (
+                    {['Data', 'Aula', 'Turma', 'Horário', 'Situação', 'Registrado por'].map((h) => (
                       <th key={h} className="gb-label px-5 py-3">
                         {h}
                       </th>
@@ -250,6 +253,9 @@ export function AlunoDetalhe() {
                         <Badge tom={h.status === 'presente' ? 'ok' : h.status === 'justificado' ? 'alerta' : 'neutro'}>
                           {h.status === 'presente' ? 'Presente' : h.status === 'justificado' ? 'Justificado' : 'Ausente'}
                         </Badge>
+                      </td>
+                      <td className="px-5 py-3 text-sm text-gb-gray-700">
+                        {h.origem === 'aluno' ? `Check-in do aluno${h.horario ? ` · ${h.horario}` : ''}` : 'Chamada do professor'}
                       </td>
                     </tr>
                   ))}

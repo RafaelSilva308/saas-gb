@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import {
+  CalendarCheck,
   CalendarDays,
   ClipboardCheck,
   CreditCard,
@@ -24,6 +25,7 @@ interface Item {
 
 const ITENS: Item[] = [
   { para: '/painel', rotulo: 'Painel', Icone: LayoutDashboard, papeis: ['gestor', 'professor', 'aluno'] },
+  { para: '/checkin', rotulo: 'Check-in', Icone: CalendarCheck, papeis: ['aluno'] },
   { para: '/alunos', rotulo: 'Alunos', Icone: Users, papeis: ['gestor', 'professor'] },
   { para: '/agenda', rotulo: 'Agenda', Icone: CalendarDays, papeis: ['gestor', 'professor', 'aluno'] },
   { para: '/presenca', rotulo: 'Presença', Icone: ClipboardCheck, papeis: ['gestor', 'professor'] },

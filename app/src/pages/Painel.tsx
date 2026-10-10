@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { AlertTriangle, CalendarPlus, ClipboardCheck, TrendingUp, UserPlus, Users, Wallet } from 'lucide-react'
+import { AlertTriangle, CalendarCheck, CalendarPlus, ClipboardCheck, TrendingUp, UserPlus, Users, Wallet } from 'lucide-react'
 import { PageHeader, Progress, ProgressRing } from '@/components/ui/Misc'
 import { StatCard } from '@/components/ui/StatCard'
 import { Card, CardBody, CardHeader } from '@/components/ui/Card'
@@ -67,6 +67,7 @@ export function Painel() {
   const risco = emRiscoDeEvasao(14)
   const atrasados = inadimplentes()
   const ehGestor = usuario?.papel === 'gestor'
+  const ehAluno = usuario?.papel === 'aluno'
 
   // Ignora títulos ("Prof.", "Professora") ao cumprimentar pelo primeiro nome.
   const primeiroNome = (usuario?.nome ?? '')
@@ -92,16 +93,23 @@ export function Painel() {
         titulo="Painel"
         subtitulo={`Bom treino, ${primeiroNome}. Aqui está o resumo da academia hoje.`}
         acoes={
-          <>
-            <ButtonLink to="/presenca" variante="secundaria">
-              <ClipboardCheck className="size-4" />
-              Registrar presença
+          ehAluno ? (
+            <ButtonLink to="/checkin" variante="primaria">
+              <CalendarCheck className="size-4" />
+              Fazer check-in
             </ButtonLink>
-            <ButtonLink to="/alunos?novo=1" variante="primaria">
-              <UserPlus className="size-4" />
-              Adicionar aluno
-            </ButtonLink>
-          </>
+          ) : (
+            <>
+              <ButtonLink to="/presenca" variante="secundaria">
+                <ClipboardCheck className="size-4" />
+                Registrar presença
+              </ButtonLink>
+              <ButtonLink to="/alunos?novo=1" variante="primaria">
+                <UserPlus className="size-4" />
+                Adicionar aluno
+              </ButtonLink>
+            </>
+          )
         }
       />
 
@@ -390,31 +398,33 @@ export function Painel() {
         </Card>
       </div>
 
-      {/* Ações rápidas */}
-      <Card className="mt-4">
-        <CardHeader titulo="Ações rápidas" descricao="Os caminhos mais curtos do dia a dia" />
-        <CardBody className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            { to: '/presenca', label: 'Fazer a chamada', desc: 'Registrar quem treinou hoje', Icone: ClipboardCheck },
-            { to: '/alunos?novo=1', label: 'Adicionar aluno', desc: 'Cadastrar nova matrícula', Icone: UserPlus },
-            { to: '/agenda', label: 'Agendar aula', desc: 'Incluir no quadro de horários', Icone: CalendarPlus },
-          ].map(({ to, label, desc, Icone }) => (
-            <Link
-              key={to + label}
-              to={to}
-              className="group flex items-start gap-3 rounded-md border border-gb-gray-200 p-4 transition-colors hover:border-gb-blue-300 hover:bg-gb-blue-50"
-            >
-              <span className="grid size-9 shrink-0 place-items-center rounded-md bg-gb-blue-50 text-gb-blue-600 group-hover:bg-white">
-                <Icone className="size-[18px]" />
-              </span>
-              <span className="min-w-0">
-                <span className="block text-sm font-bold text-gb-ink">{label}</span>
-                <span className="block text-xs text-gb-gray-500">{desc}</span>
-              </span>
-            </Link>
-          ))}
-        </CardBody>
-      </Card>
+      {/* Ações rápidas — levam a telas que o aluno não acessa */}
+      {!ehAluno && (
+        <Card className="mt-4">
+          <CardHeader titulo="Ações rápidas" descricao="Os caminhos mais curtos do dia a dia" />
+          <CardBody className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { to: '/presenca', label: 'Fazer a chamada', desc: 'Registrar quem treinou hoje', Icone: ClipboardCheck },
+              { to: '/alunos?novo=1', label: 'Adicionar aluno', desc: 'Cadastrar nova matrícula', Icone: UserPlus },
+              { to: '/agenda', label: 'Agendar aula', desc: 'Incluir no quadro de horários', Icone: CalendarPlus },
+            ].map(({ to, label, desc, Icone }) => (
+              <Link
+                key={to + label}
+                to={to}
+                className="group flex items-start gap-3 rounded-md border border-gb-gray-200 p-4 transition-colors hover:border-gb-blue-300 hover:bg-gb-blue-50"
+              >
+                <span className="grid size-9 shrink-0 place-items-center rounded-md bg-gb-blue-50 text-gb-blue-600 group-hover:bg-white">
+                  <Icone className="size-[18px]" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-sm font-bold text-gb-ink">{label}</span>
+                  <span className="block text-xs text-gb-gray-500">{desc}</span>
+                </span>
+              </Link>
+            ))}
+          </CardBody>
+        </Card>
+      )}
 
       {/* Turmas ativas — contexto de rodapé */}
       <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-gb-gray-500">

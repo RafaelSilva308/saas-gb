@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Check, CheckCheck, ClipboardCheck, Lock, Minus, Search, X } from 'lucide-react'
+import { Check, CheckCheck, ClipboardCheck, Lock, Minus, Search, Smartphone, X } from 'lucide-react'
 import { Card, CardBody, CardHeader } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input, Select } from '@/components/ui/Field'
@@ -9,7 +9,8 @@ import { Avatar } from '@/components/ui/Avatar'
 import { EmptyState, PageHeader, Progress } from '@/components/ui/Misc'
 import { useStore } from '@/app/store'
 import { turmaPorId } from '@/data/mock'
-import { DIAS_SEMANA_LONGO, dataLonga } from '@/lib/format'
+import { alunoNaAula } from '@/data/selectors'
+import { DIAS_SEMANA_LONGO, dataLonga, hojeISO } from '@/lib/format'
 import type { StatusPresenca } from '@/types'
 import { cn } from '@/lib/cn'
 
@@ -22,7 +23,7 @@ const OPCOES: { id: StatusPresenca; label: string; Icone: typeof Check; classe: 
 export function Presenca() {
   const { alunos, aulas, chamadaDe, marcarPresenca, fecharChamada } = useStore()
 
-  const [data, setData] = useState(new Date().toISOString().slice(0, 10))
+  const [data, setData] = useState(hojeISO())
   const [busca, setBusca] = useState('')
 
   const diaSemana = new Date(data + 'T12:00:00').getDay()
@@ -39,17 +40,16 @@ export function Presenca() {
   /* Elegíveis: turmas infantis mostram só alunos com responsável cadastrado. */
   const elegiveis = useMemo(() => {
     if (!aulaSelecionada) return []
-    const infantil = ['t3', 't4'].includes(aulaSelecionada.turmaId)
     const q = busca.trim().toLowerCase()
     return alunos
-      .filter((a) => a.status !== 'inativo')
-      .filter((a) => (infantil ? !!a.responsavel : !a.responsavel))
+      .filter((a) => alunoNaAula(a, aulaSelecionada))
       .filter((a) => !q || a.nome.toLowerCase().includes(q))
       .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
   }, [alunos, aulaSelecionada, busca])
 
   const statusDe = (alunoId: string): StatusPresenca | undefined =>
     chamada?.registros.find((r) => r.alunoId === alunoId)?.status
+  const registroDe = (alunoId: string) => chamada?.registros.find((r) => r.alunoId === alunoId)
 
   const presentes = elegiveis.filter((a) => statusDe(a.id) === 'presente').length
   const marcados = elegiveis.filter((a) => statusDe(a.id) !== undefined).length
@@ -225,7 +225,15 @@ export function Presenca() {
                         <span className="block truncate text-sm font-semibold text-gb-ink hover:text-gb-blue-600">
                           {a.nome}
                         </span>
-                        <FaixaBadge faixa={a.faixa} compacto />
+                        <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                          <FaixaBadge faixa={a.faixa} compacto />
+                          {registroDe(a.id)?.origem === 'aluno' && (
+                            <Badge tom="azul">
+                              <Smartphone className="size-3" />
+                              Check-in do aluno{registroDe(a.id)?.horario ? ` · ${registroDe(a.id)?.horario}` : ''}
+                            </Badge>
+                          )}
+                        </span>
                       </Link>
 
                       <span className="hidden shrink-0 text-xs text-gb-gray-500 sm:block">

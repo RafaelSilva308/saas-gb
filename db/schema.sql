@@ -18,6 +18,8 @@ create type faixa            as enum ('branca', 'cinza', 'amarela', 'laranja', '
 create type status_aluno     as enum ('ativo', 'inativo', 'experimental');
 create type periodicidade    as enum ('mensal', 'trimestral', 'semestral', 'anual');
 create type status_presenca  as enum ('presente', 'ausente', 'justificado');
+-- Quem registrou a presença: o professor na chamada, ou o próprio aluno pelo check-in.
+create type origem_presenca  as enum ('professor', 'aluno');
 -- "atrasada" não existe aqui de propósito: é uma cobrança 'aberta' com vencimento no passado.
 create type status_cobranca  as enum ('aberta', 'paga', 'cancelada');
 create type tipo_transacao   as enum ('receita', 'despesa');
@@ -165,11 +167,15 @@ create table presenca (
   chamada_id     uuid not null references chamada(id) on delete cascade,
   aluno_id       uuid not null references aluno(id),
   status         status_presenca not null,
+  -- Check-in do aluno vale na hora, sem confirmação (decisão de produto da v1). A origem fica registrada
+  -- para que dê para filtrar, auditar e, no futuro, exigir confirmação sem perder o histórico.
+  origem         origem_presenca not null default 'professor',
   registrado_em  timestamptz not null default now(),
-  registrado_por uuid references usuario(id),
+  registrado_por uuid references usuario(id),             -- quem gravou: o professor, ou o próprio aluno
   primary key (chamada_id, aluno_id)
 );
 create index presenca_aluno_idx on presenca (aluno_id);
+create index presenca_origem_idx on presenca (origem) where origem = 'aluno';
 
 -- ------------------------------------------------------------ graduação ----
 

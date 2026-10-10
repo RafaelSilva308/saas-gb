@@ -179,7 +179,7 @@ npm run preview  # serve o build
 |---|---|---|
 | `gestor@gb.com.br` | Gestor | Tudo, incluindo Financeiro e Planos |
 | `professor@gb.com.br` | Professor | Alunos, Agenda, Presença, Progresso |
-| `aluno@gb.com.br` | Aluno | Painel, Agenda, Progresso |
+| `aluno@gb.com.br` | Aluno | Painel, Agenda, Progresso, Check-in |
 
 ---
 

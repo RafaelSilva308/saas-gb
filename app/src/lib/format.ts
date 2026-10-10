@@ -71,3 +71,15 @@ export const STATUS_PAGAMENTO: Record<
   vence_em_breve: { label: 'Vence em breve', tom: 'alerta' },
   atrasado: { label: 'Atrasado', tom: 'urgente' },
 }
+
+/** Data de hoje (YYYY-MM-DD) no fuso do navegador. `toISOString()` usaria UTC e viraria o dia às 21h em Brasília. */
+export const hojeISO = () => {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+/** Hora atual (HH:MM) no fuso do navegador. */
+export const horaAgora = () => {
+  const d = new Date()
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+}

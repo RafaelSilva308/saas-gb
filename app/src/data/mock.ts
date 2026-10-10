@@ -43,7 +43,7 @@ const somaDias = (d: Date, n: number) => {
 export const USUARIOS: Usuario[] = [
   { id: 'u1', nome: 'Professor Carlos Barra', email: 'professor@gb.com.br', papel: 'professor' },
   { id: 'u2', nome: 'Renata Moura', email: 'gestor@gb.com.br', papel: 'gestor' },
-  { id: 'u3', nome: 'Pedro Almeida', email: 'aluno@gb.com.br', papel: 'aluno' },
+  { id: 'u3', nome: 'Pedro Almeida', email: 'aluno@gb.com.br', papel: 'aluno', alunoId: 'al1' },
 ]
 
 // ------------------------------------------------------------------ planos
