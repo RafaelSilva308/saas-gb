@@ -22,3 +22,13 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Segredos e cópias do banco: nunca versionar
+*.pem
+*.key
+*.p12
+*.dump
+*.sql.gz
+*.sql.enc
+*.dump.enc
+backups/
